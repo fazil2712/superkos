@@ -1,0 +1,5 @@
+jadi install mvn 3.9 dlu trus set environmental variablesnya di pc/laptop ente.
+install tomcat 9(wajib versi 9) 
+run apache/MySQL di xampp
+beres tinggal run webnya :D
+yg ga baca tapi nanya gw cium
