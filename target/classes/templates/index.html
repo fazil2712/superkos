@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superkos - Cari Hunian & Roommate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white !important;
+        }
+        
+        .rainbow-border-focus:focus-within {
+            border-image: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7) 1;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- Top Mini Navbar -->
+    <div class="border-b border-gray-200 hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6">
+            <a href="#" class="hover:text-purple-600 flex items-center gap-2"><i class="far fa-calendar-check"></i> Sewa Kos</a>
+        </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
+            <a href="/" class="flex items-center gap-2 text-2xl font-bold">
+                <i class="fas fa-home rainbow-text"></i> <span class="rainbow-text">Superkos</span>
+            </a>
+
+            <!-- Search Bar (Linked to the form via form attribute) -->
+            <div class="flex-1 max-w-4xl flex items-center gap-3">
+                <div class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
+                    <div class="pl-4 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input form="filterForm" type="text" name="keyword" th:value="${keyword}" placeholder="Masukkan nama lokasi/area/alamat" class="w-full py-3 px-3 outline-none text-gray-700">
+                    <button form="filterForm" type="submit" class="rainbow-bg text-white px-8 py-3 font-medium transition">
+                        Cari
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Actions (Dynamic based on Auth) -->
+            <div class="hidden md:flex items-center gap-4 ml-auto">
+                
+                <!-- Not Logged In -->
+                <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
+                    <a href="/login" class="text-gray-600 hover:text-purple-600 font-medium transition">Masuk</a>
+                    <a href="/register" class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition">Daftar</a>
+                </div>
+
+                <!-- Logged In -->
+                <div th:if="${loggedInUser != null}" class="flex items-center gap-4">
+                    <span class="text-gray-700 font-medium">Halo, <span th:text="${loggedInUser.nama}" class="font-bold text-gray-900">User</span>!</span>
+                    <a href="/logout" class="text-red-500 hover:text-red-600 font-medium border border-red-500 hover:bg-red-50 px-3 py-1 rounded transition">Keluar</a>
+                </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <form id="filterForm" action="/" method="GET" class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Sidebar (Filters) -->
+        <aside class="w-full lg:w-1/4 flex flex-col gap-6">
+            <h2 class="text-xl font-bold text-gray-800">Filter</h2>
+
+            <!-- Expandable Filter Cell: Tipe Kost -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <button type="button" onclick="toggleSection('genderContent', 'genderIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <span class="font-bold text-sm text-gray-800">Tipe Kost</span>
+                    <i id="genderIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                </button>
+                <div id="genderContent" class="hidden p-4 border-t border-gray-200 bg-white">
+                    <div class="flex flex-col gap-3">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="tipeGender" value="" th:checked="${tipeGender == null || tipeGender == ''}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Semua Tipe</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="tipeGender" value="Putra" th:checked="${tipeGender == 'Putra'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus Putra</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="tipeGender" value="Putri" th:checked="${tipeGender == 'Putri'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus Putri</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="tipeGender" value="Campur" th:checked="${tipeGender == 'Campur'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Campur</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expandable Filter Cell: Kategori Sewa -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <button type="button" onclick="toggleSection('kategoriContent', 'kategoriIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <span class="font-bold text-sm text-gray-800">Kategori Sewa</span>
+                    <i id="kategoriIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                </button>
+                <div id="kategoriContent" class="hidden p-4 border-t border-gray-200 bg-white">
+                    <div class="flex flex-col gap-3">
+                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }" class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="kategoriSewa" th:value="${opt}" th:checked="${kategoriSewa != null && kategoriSewa.contains(opt)}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition" th:text="${opt}">Opsi</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter: Durasi/Tanggal -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">Tanggal Sewa</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="border border-gray-300 rounded overflow-hidden">
+                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">Mulai Kos</div>
+                        <input type="date" name="startDate" th:value="${startDate != null ? #dates.format(startDate, 'yyyy-MM-dd') : ''}" class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()">
+                    </div>
+                    <div class="border border-gray-300 rounded overflow-hidden">
+                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">Selesai Kos</div>
+                        <input type="date" name="endDate" th:value="${endDate != null ? #dates.format(endDate, 'yyyy-MM-dd') : ''}" class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter: Harga -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">Harga</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+                        <span class="bg-gray-100 px-3 py-2 text-gray-500 text-sm font-medium">Rp</span>
+                        <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Harga Minimum" class="w-full px-2 py-2 text-sm outline-none text-gray-700">
+                    </div>
+                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+                        <span class="bg-gray-100 px-3 py-2 text-gray-500 text-sm font-medium">Rp</span>
+                        <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Harga Maksimum" class="w-full px-2 py-2 text-sm outline-none text-gray-700">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expandable Filter Cell: Roommate -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <button type="button" onclick="toggleSection('roommateContent', 'roommateIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <span class="font-bold text-sm text-gray-800">Kondisi Roommate</span>
+                    <i id="roommateIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                </button>
+                <div id="roommateContent" class="hidden p-4 border-t border-gray-200 bg-white">
+                    <div class="flex flex-col gap-3">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="roommate" value="" th:checked="${roommate == null}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Semua Kondisi</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="roommate" value="true" th:checked="${roommate != null and roommate}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Bisa Roommate (>1 Kamar)</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="roommate" value="false" th:checked="${roommate != null and !roommate}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Tidak Bisa Roommate</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full rainbow-bg text-white font-bold py-3 rounded-lg shadow-sm transition">
+                Terapkan Filter
+            </button>
+        </aside>
+
+        <!-- Right Content (Listings) -->
+        <div class="flex-1 w-full lg:w-3/4">
+            
+            <!-- Sort & Info Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
+                <p class="text-gray-600 text-sm font-medium">Menampilkan kos-kosan dari Database MySQL</p>
+                
+                <div class="flex items-center gap-3">
+                    <label class="text-sm font-bold text-gray-700">Urutkan:</label>
+                    <select name="sortBy" class="border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none text-gray-700 bg-white shadow-sm cursor-pointer" onchange="this.form.submit()">
+                        <option value="" th:selected="${sortBy == null || sortBy == ''}">Paling Sesuai</option>
+                        <option value="price_asc" th:selected="${sortBy == 'price_asc'}">Harga: Terendah</option>
+                        <option value="price_desc" th:selected="${sortBy == 'price_desc'}">Harga: Tertinggi</option>
+                        <option value="capacity_desc" th:selected="${sortBy == 'capacity_desc'}">Kapasitas: Terbanyak</option>
+                        <option value="capacity_asc" th:selected="${sortBy == 'capacity_asc'}">Kapasitas: Sedikit</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Listing Cards Loop -->
+            <div class="space-y-6">
+                <!-- If database is empty -->
+                <div th:if="${daftarHunian.empty}" class="p-8 text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
+                    <i class="fas fa-search-minus text-4xl mb-3 text-gray-300"></i>
+                    <p class="font-medium">Tidak ada hunian yang sesuai dengan filter.</p>
+                </div>
+
+                <!-- Loop through database rows -->
+                <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
+                    <!-- Placeholder Image (In real app, comes from DB URL) -->
+                    <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
+                    </div>
+                    
+                    <div class="flex flex-col flex-1 py-1">
+                        <div class="flex flex-wrap gap-2 mb-2 items-center">
+                            <!-- Gender Type dynamically from DB -->
+                            <span class="border border-gray-300 text-gray-600 text-xs px-2 py-1 rounded font-medium" th:text="${hunian.tipeGender}">Tipe</span>
+                            
+                            <!-- Dynamic Roommate Suitability Logic -->
+                            <span th:if="${hunian.jumlahKamar > 1}" class="bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded font-semibold flex items-center gap-1">
+                                <i class="fas fa-user-friends"></i> Bisa untuk Roommate
+                            </span>
+                            <span th:unless="${hunian.jumlahKamar > 1}" class="text-red-500 text-xs font-medium bg-red-50 px-2 py-0.5 rounded flex items-center gap-1">
+                                <i class="fas fa-user-slash w-4 text-red-400"></i> Tidak bisa Roommate
+                            </span>
+                        </div>
+                        
+                        <!-- Name & Location from DB -->
+                        <h2 class="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition" th:text="${hunian.namaHunian}">Nama Kost</h2>
+                        <p class="text-gray-500 text-sm mb-3"><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i> <span th:text="${hunian.lokasi}">Lokasi</span></p>
+                        
+                        <!-- Capacity from DB -->
+                        <div class="text-sm text-gray-600 space-y-1 mt-2">
+                            <p class="flex items-center gap-2">
+                                <i class="fas fa-bed w-4 text-gray-400"></i> Kapasitas Kamar: <span class="font-medium text-gray-800" th:text="${hunian.jumlahKamar + ' Orang/Kamar'}">1</span>
+                            </p>
+                            <p class="flex items-center gap-2">
+                                <i class="far fa-calendar-alt w-4 text-gray-400"></i> Tersedia: <span class="font-medium text-gray-800" th:text="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'dd MMM yyyy') : 'Segera'} + ' - ' + ${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'dd MMM yyyy') : 'Seterusnya'}">Tanggal</span>
+                            </p>
+                            <p class="flex items-center gap-2">
+                                <i class="fas fa-history w-4 text-gray-400"></i> Pilihan Sewa: <span class="font-medium text-gray-800" th:each="kat, iterStat : ${hunian.kategoriSewa}" th:text="${kat} + ${!iterStat.last ? ', ' : ''}">Harian</span>
+                            </p>
+                            <p class="flex items-center gap-2 text-gray-600 font-medium text-xs mt-1">
+                                <i class="fas fa-check-circle"></i> K. Mandi Dalam · WiFi · Kasur
+                            </p>
+                        </div>
+                        
+                        <!-- Price formatting from DB -->
+                        <div class="mt-auto flex justify-end items-end pt-4">
+                            <div class="text-right">
+                                <span class="text-xl font-bold text-gray-900" th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span><span class="text-gray-500 text-sm">/bulan</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function toggleSection(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            const isHidden = content.classList.contains('hidden');
+            
+            content.classList.toggle('hidden');
+            icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // Auto-expand jika filter sedang aktif saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const genderRadios = document.querySelectorAll('input[name="tipeGender"]');
+            genderRadios.forEach(radio => {
+                if (radio.checked && radio.value !== "") {
+                    toggleSection('genderContent', 'genderIcon');
+                }
+            });
+
+            const roommateRadios = document.querySelectorAll('input[name="roommate"]');
+            roommateRadios.forEach(radio => {
+                if (radio.checked && radio.value !== "") {
+                    toggleSection('roommateContent', 'roommateIcon');
+                }
+            });
+
+            const kategoriChecks = document.querySelectorAll('input[name="kategoriSewa"]');
+            let kategoriActive = false;
+            kategoriChecks.forEach(check => {
+                if (check.checked) kategoriActive = true;
+            });
+            if (kategoriActive) {
+                toggleSection('kategoriContent', 'kategoriIcon');
+            }
+        });
+    </script>
+
+</body>
+</html>
