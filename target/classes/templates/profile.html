@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil - Superkos</title>
+    <meta name="description" content="Edit dan kelola profil akun Superkos kamu.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white !important;
+        }
+
+        .avatar-ring {
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7);
+            background-size: 300% 300%;
+            animation: gradientFlow 4s ease infinite;
+            padding: 3px;
+            border-radius: 50%;
+        }
+
+        .avatar-inner {
+            background: white;
+            border-radius: 50%;
+            padding: 3px;
+        }
+
+        .avatar-initials {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .input-field {
+            width: 100%;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px 16px;
+            outline: none;
+            font-size: 0.95rem;
+            color: #111827;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+
+        .input-field:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            border: 1px solid #f3f4f6;
+        }
+
+        .gender-radio input[type="radio"] {
+            display: none;
+        }
+
+        .gender-radio label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .gender-radio input[type="radio"]:checked + label {
+            border-color: #a855f7;
+            background: #faf5ff;
+            color: #7c3aed;
+        }
+
+        .gender-radio label:hover {
+            border-color: #c4b5fd;
+            background: #faf5ff;
+        }
+
+        .success-banner {
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            color: white;
+            border-radius: 10px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .save-btn {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 32px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.2s, transform 0.15s;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3);
+        }
+
+        .save-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <header class="border-b border-gray-200 bg-white sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center gap-4">
+            <a href="/" class="flex items-center gap-2 text-2xl font-bold">
+                <i class="fas fa-home rainbow-text"></i>
+                <span class="rainbow-text">Superkos</span>
+            </a>
+            <span class="text-gray-300 text-xl font-light">/</span>
+            <span class="text-gray-500 font-medium text-sm">Edit Profil</span>
+        </div>
+    </header>
+
+    <div class="max-w-2xl mx-auto px-4 py-10">
+
+        <!-- Success Banner -->
+        <div th:if="${param.success}" class="success-banner mb-6">
+            <i class="fas fa-check-circle text-lg"></i>
+            Profil berhasil disimpan!
+        </div>
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">Edit Profil</h1>
+            <p class="text-gray-500 text-sm mt-1">Kelola informasi pribadi kamu di Superkos.</p>
+        </div>
+
+        <!-- Avatar Section -->
+        <div class="card p-6 mb-6 flex items-center gap-6">
+            <div class="avatar-ring flex-shrink-0">
+                <div class="avatar-inner">
+                    <div class="avatar-initials w-20 h-20 text-2xl"
+                         th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">
+                        ?
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="font-bold text-gray-900 text-lg" th:text="${loggedInUser.nama}">Nama User</p>
+                <p class="text-gray-500 text-sm" th:text="${loggedInUser.email}">email@example.com</p>
+                <span th:if="${loggedInUser.class.simpleName == 'PencariHunian'}"
+                      class="inline-block mt-1 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                    Pencari Hunian
+                </span>
+                <span th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}"
+                      class="inline-block mt-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                    Pemilik Properti
+                </span>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <div class="card p-6">
+            <form action="/profile" method="POST" class="space-y-6">
+
+                <!-- Nama -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fas fa-user text-purple-400 mr-1.5"></i>Nama Lengkap
+                    </label>
+                    <input type="text" name="nama" class="input-field"
+                           th:value="${loggedInUser.nama}" required placeholder="Masukkan nama lengkap kamu">
+                </div>
+
+                <!-- Biodata -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fas fa-align-left text-purple-400 mr-1.5"></i>Biodata / Tentang Aku
+                    </label>
+                    <textarea name="biodata" class="input-field"
+                              placeholder="Ceritakan sedikit tentang dirimu..."
+                              th:text="${loggedInUser.biodata}"></textarea>
+                </div>
+
+                <!-- Umur, Lokasi & Pekerjaan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-birthday-cake text-purple-400 mr-1.5"></i>Umur
+                        </label>
+                        <input type="number" name="umur" class="input-field" min="1" max="120"
+                               th:value="${loggedInUser.umur}" placeholder="cth: 21">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-map-marker-alt text-purple-400 mr-1.5"></i>Lokasi
+                        </label>
+                        <input type="text" name="lokasi" class="input-field"
+                               th:value="${loggedInUser.lokasi}" placeholder="cth: Bandung, Jawa Barat">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-briefcase text-purple-400 mr-1.5"></i>Pekerjaan
+                        </label>
+                        <input type="text" name="pekerjaan" class="input-field"
+                               th:value="${loggedInUser.pekerjaan}" placeholder="cth: Mahasiswa, Software Engineer, dll">
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-venus-mars text-purple-400 mr-1.5"></i>Gender
+                    </label>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="gender-radio">
+                            <input type="radio" name="gender" value="Pria" id="genderPria"
+                                   th:checked="${loggedInUser.gender == 'Pria'}">
+                            <label for="genderPria">
+                                <i class="fas fa-mars"></i> Pria
+                            </label>
+                        </div>
+                        <div class="gender-radio">
+                            <input type="radio" name="gender" value="Wanita" id="genderWanita"
+                                   th:checked="${loggedInUser.gender == 'Wanita'}">
+                            <label for="genderWanita">
+                                <i class="fas fa-venus"></i> Wanita
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <a href="/" class="text-sm text-gray-500 hover:text-gray-700 transition font-medium">
+                        <i class="fas fa-arrow-left mr-1"></i> Kembali
+                    </a>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save mr-2"></i>Simpan Profil
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+</body>
+</html>

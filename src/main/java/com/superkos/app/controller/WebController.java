@@ -2,12 +2,14 @@ package com.superkos.app.controller;
 
 import com.superkos.app.model.Hunian;
 import com.superkos.app.repository.HunianRepository;
+import com.superkos.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.superkos.app.model.User;
@@ -23,6 +25,9 @@ public class WebController {
     @Autowired
     private HunianRepository hunianRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/")
     public String index(
             @RequestParam(required = false) String keyword,
@@ -36,7 +41,7 @@ public class WebController {
             @RequestParam(required = false) String sortBy,
             HttpSession session,
             Model model) {
-        
+
         // Pass session user to the template if logged in
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
@@ -64,7 +69,7 @@ public class WebController {
         // Query the database
         List<Hunian> daftarHunian = hunianRepository.searchAndFilter(
                 searchKeyword, minPrice, maxPrice, roommate, tipeGender, startDate, endDate, filteredKategori, sort);
-        
+
         // Pass data and search filters back to the view
         model.addAttribute("daftarHunian", daftarHunian);
         model.addAttribute("keyword", keyword);
@@ -76,7 +81,7 @@ public class WebController {
         model.addAttribute("endDate", endDate);
         model.addAttribute("kategoriSewa", kategoriSewa);
         model.addAttribute("sortBy", sortBy);
-        
+
         return "index";
     }
 
@@ -92,5 +97,55 @@ public class WebController {
         } else {
             return "redirect:/"; // Redirect to home if property not found
         }
+    }
+
+    @GetMapping("/profile")
+    public String showProfile(HttpSession session, Model model) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        // Reload fresh data from DB to ensure up-to-date info
+        User freshUser = userRepository.findById(loggedInUser.getId()).orElse(loggedInUser);
+        session.setAttribute("loggedInUser", freshUser);
+        model.addAttribute("loggedInUser", freshUser);
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String saveProfile(
+            @RequestParam String nama,
+            @RequestParam(required = false) String biodata,
+            @RequestParam(required = false) Integer umur,
+            @RequestParam(required = false) String lokasi,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String pekerjaan,
+            HttpSession session,
+            Model model) {
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
+        // Fetch the managed entity from DB, then update it
+        User userToUpdate = userRepository.findById(loggedInUser.getId()).orElse(null);
+        if (userToUpdate == null) {
+            return "redirect:/login";
+        }
+
+        userToUpdate.setNama(nama);
+        userToUpdate.setBiodata(biodata);
+        userToUpdate.setUmur(umur);
+        userToUpdate.setLokasi(lokasi);
+        userToUpdate.setGender(gender);
+        userToUpdate.setPekerjaan(pekerjaan);
+
+        userRepository.save(userToUpdate);
+
+        // Refresh the session with updated data
+        session.setAttribute("loggedInUser", userToUpdate);
+
+        return "redirect:/profile?success=true";
     }
 }

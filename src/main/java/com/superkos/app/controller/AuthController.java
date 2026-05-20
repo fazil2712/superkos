@@ -49,9 +49,20 @@ public class AuthController {
             @RequestParam String password, 
             @RequestParam String role, 
             Model model) {
-            
+
         // Check if email already exists
-        if (userRepository.findByEmail(email) != null) {
+        // Wrapped in try-catch: if a user row exists in DB without a matching subclass row
+        // (can happen when records are deleted directly from MySQL without cascading),
+        // Hibernate throws "Cannot instantiate abstract class". We clean up the orphan and proceed.
+        User existingUser = null;
+        try {
+            existingUser = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            // Orphaned user row detected — delete it so registration can proceed cleanly
+            userRepository.deleteOrphanedByEmail(email);
+        }
+
+        if (existingUser != null) {
             model.addAttribute("error", "Email sudah terdaftar!");
             return "register";
         }
