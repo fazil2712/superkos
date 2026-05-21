@@ -34,6 +34,9 @@ public class PencariHunian extends User {
     )
     private List<Hunian> wishlist = new ArrayList<>();
 
+    public List<Hunian> getWishlist() { return wishlist; }
+    public void setWishlist(List<Hunian> wishlist) { this.wishlist = wishlist; }
+
     @Override
     public void dashboard() {}
     

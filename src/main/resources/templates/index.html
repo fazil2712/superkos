@@ -140,6 +140,50 @@
             border-radius: 999px;
             margin-top: 3px;
         }
+
+        /* Wishlist navbar icon */
+        .wishlist-nav-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            border: 1.5px solid #f3f4f6;
+            background: white;
+            color: #6b7280;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            flex-shrink: 0;
+        }
+        .wishlist-nav-btn:hover {
+            background: #fff1f2;
+            border-color: #fca5a5;
+            color: #ef4444;
+            transform: scale(1.07);
+        }
+        .wishlist-nav-btn .wl-badge {
+            position: absolute;
+            top: -7px; right: -7px;
+            min-width: 20px; height: 20px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            border-radius: 999px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 4px;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(239,68,68,0.4);
+        }
+        @keyframes badgePop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        .wl-badge-anim { animation: badgePop 0.4s ease; }
     </style>
 </head>
 <body class="bg-white text-gray-800">
@@ -190,6 +234,10 @@
                             <a href="/settings" class="dropdown-item">
                                 <i class="fas fa-cog"></i> Pengaturan Kuis
                             </a>
+                            <a href="/wishlist" class="dropdown-item"
+                               th:if="${loggedInUser.class.simpleName == 'PencariHunian'}">
+                                <i class="fas fa-heart" style="color:#ef4444"></i> Wishlist Saya
+                            </a>
                             <div style="height:1px; background:#f3f4f6; margin: 4px 0;"></div>
                             <a href="/logout" class="dropdown-item danger">
                                 <i class="fas fa-sign-out-alt"></i> Keluar
@@ -202,7 +250,7 @@
                 </a>
             </div>
 
-            <!-- Search Bar (Linked to the form via form attribute) -->
+            <!-- Search Bar + Wishlist Button -->
             <div class="flex-1 max-w-4xl flex items-center gap-3">
                 <div class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
                     <div class="pl-4 text-gray-400">
@@ -213,6 +261,18 @@
                         Cari
                     </button>
                 </div>
+
+                <!-- Wishlist Icon Button (only for logged-in PencariHunian) -->
+                <a href="/wishlist"
+                   th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
+                   class="wishlist-nav-btn"
+                   th:title="${wishlistCount > 0 ? wishlistCount + ' hunian tersimpan' : 'Wishlist Saya'}">
+                    <i class="fas fa-heart" style="font-size:1.05rem;"></i>
+                    <!-- Badge: shown whenever count > 0 -->
+                    <span th:if="${wishlistCount > 0}"
+                          class="wl-badge wl-badge-anim"
+                          th:text="${wishlistCount > 99 ? '99+' : wishlistCount}">0</span>
+                </a>
             </div>
 
             <!-- Right Actions (only shown when NOT logged in) -->
@@ -364,10 +424,25 @@
 
                 <!-- Loop through database rows -->
                 <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
-                    <!-- Placeholder Image (In real app, comes from DB URL) -->
+                    <!-- Placeholder Image -->
                     <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
+                        <!-- Wishlist Heart Button -->
+                        <div th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}">
+                            <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post"
+                                  style="position:absolute;top:8px;right:8px;"
+                                  onclick="event.stopPropagation();">
+                                <input type="hidden" name="returnUrl" value="/">
+                                <button type="submit"
+                                        th:title="${wishlistIds.contains(hunian.idHunian) ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}"
+                                        style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:transform 0.15s;"
+                                        onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+                                    <i th:class="${wishlistIds.contains(hunian.idHunian) ? 'fas fa-heart' : 'far fa-heart'}"
+                                       th:style="${wishlistIds.contains(hunian.idHunian) ? 'color:#ef4444;font-size:0.9rem;' : 'color:#9ca3af;font-size:0.9rem;'}"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     
                     <div class="flex flex-col flex-1 py-1">

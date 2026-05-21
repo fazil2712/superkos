@@ -2,6 +2,7 @@ package com.superkos.app.controller;
 
 import com.superkos.app.model.*;
 import com.superkos.app.repository.HunianRepository;
+import com.superkos.app.repository.PencariHunianRepository;
 import com.superkos.app.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,18 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebController {
 
-    @Autowired private HunianRepository hunianRepository;
-    @Autowired private UserRepository   userRepository;
+    @Autowired private HunianRepository        hunianRepository;
+    @Autowired private UserRepository          userRepository;
+    @Autowired private PencariHunianRepository pencariHunianRepository;
 
     // ── Home ─────────────────────────────────────────────────────────────────
 
@@ -72,6 +77,19 @@ public class WebController {
         model.addAttribute("kategoriSewa",  kategoriSewa);
         model.addAttribute("sortBy",        sortBy);
 
+        // Pass wishlist IDs so templates can show filled hearts
+        Set<Integer> wishlistIds = new HashSet<>();
+        int wishlistCount = 0;
+        if (loggedInUser instanceof PencariHunian pencari) {
+            PencariHunian fresh = pencariHunianRepository.findById(pencari.getId()).orElse(null);
+            if (fresh != null && fresh.getWishlist() != null) {
+                fresh.getWishlist().forEach(h -> wishlistIds.add(h.getIdHunian()));
+                wishlistCount = fresh.getWishlist().size();
+            }
+        }
+        model.addAttribute("wishlistIds", wishlistIds);
+        model.addAttribute("wishlistCount", wishlistCount);
+
         return "index";
     }
 
@@ -79,13 +97,73 @@ public class WebController {
 
     @GetMapping("/hunian/{id}")
     public String detailHunian(@PathVariable int id, HttpSession session, Model model) {
-        model.addAttribute("loggedInUser", session.getAttribute("loggedInUser"));
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser);
+
         Optional<Hunian> hunianOpt = hunianRepository.findById(id);
         if (hunianOpt.isPresent()) {
             model.addAttribute("hunian", hunianOpt.get());
+
+            // Is this hunian in the user's wishlist?
+            boolean inWishlist = false;
+            if (loggedInUser instanceof PencariHunian pencari) {
+                PencariHunian fresh = pencariHunianRepository.findById(pencari.getId()).orElse(null);
+                if (fresh != null && fresh.getWishlist() != null) {
+                    inWishlist = fresh.getWishlist().stream()
+                            .anyMatch(h -> h.getIdHunian() == id);
+                }
+            }
+            model.addAttribute("inWishlist", inWishlist);
             return "detail";
         }
         return "redirect:/";
+    }
+
+    // ── Wishlist ──────────────────────────────────────────────────────────────
+
+    @GetMapping("/wishlist")
+    public String showWishlist(HttpSession session, Model model) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) return "redirect:/login";
+        if (!(loggedInUser instanceof PencariHunian)) return "redirect:/";
+
+        PencariHunian fresh = pencariHunianRepository.findById(loggedInUser.getId()).orElse(null);
+        List<Hunian> wishlist = (fresh != null) ? fresh.getWishlist() : new ArrayList<>();
+
+        model.addAttribute("loggedInUser", loggedInUser);
+        model.addAttribute("wishlist", wishlist);
+        return "wishlist";
+    }
+
+    @PostMapping("/wishlist/toggle/{hunianId}")
+    public String toggleWishlist(@PathVariable int hunianId,
+                                  @RequestParam(defaultValue = "/") String returnUrl,
+                                  HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) return "redirect:/login";
+        if (!(loggedInUser instanceof PencariHunian)) return "redirect:/";
+
+        PencariHunian pencari = pencariHunianRepository.findById(loggedInUser.getId()).orElse(null);
+        if (pencari == null) return "redirect:/";
+
+        Optional<Hunian> hunianOpt = hunianRepository.findById(hunianId);
+        if (hunianOpt.isEmpty()) return "redirect:" + returnUrl;
+
+        Hunian hunian = hunianOpt.get();
+        boolean alreadySaved = pencari.getWishlist().stream()
+                .anyMatch(h -> h.getIdHunian() == hunianId);
+
+        if (alreadySaved) {
+            pencari.hapusDariWishlist(hunian);
+        } else {
+            pencari.tambahKeWishlist(hunian);
+        }
+
+        pencariHunianRepository.save(pencari);
+        // Refresh session
+        session.setAttribute("loggedInUser", pencariHunianRepository.findById(loggedInUser.getId()).orElse(pencari));
+
+        return "redirect:" + returnUrl;
     }
 
     // ── Profile ───────────────────────────────────────────────────────────────
