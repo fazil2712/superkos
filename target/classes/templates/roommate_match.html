@@ -94,41 +94,25 @@
         .page-btn:hover { background: #f5f3ff; border-color: #a855f7; color: #7c3aed; }
         .page-btn.disabled { opacity: 0.4; pointer-events: none; }
     </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
     <!-- Navbar -->
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center gap-6">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="avatar-ring">
-                    <div class="avatar-inner">
-                        <div class="avatar-initials-sm"
-                             th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">?</div>
-                    </div>
-                </div>
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
                 <a href="/" class="flex items-center gap-2 text-xl font-bold">
                     <i class="fas fa-home rainbow-text"></i>
                     <span class="rainbow-text">Superkos</span>
                 </a>
             </div>
-            <nav class="flex items-center gap-1 ml-auto">
-                <a href="/" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                    <i class="fas fa-home mr-1.5"></i>Beranda
-                </a>
-                <a href="/roommate/match" class="text-blue-600 bg-blue-50 text-sm font-semibold px-3 py-1.5 rounded-lg transition">
-                    <i class="fas fa-user-friends mr-1.5"></i>Cari Roommate
-                </a>
-                <a href="/wishlist" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                    <i class="fas fa-heart mr-1.5"></i>Wishlist
-                </a>
-                <a href="/settings" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                    <i class="fas fa-cog mr-1.5"></i>Pengaturan
-                </a>
-                <a href="/logout" class="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition ml-2">
-                    <i class="fas fa-sign-out-alt mr-1.5"></i>Keluar
-                </a>
-            </nav>
+            
+            <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
+                <a href="/login" class="text-gray-500 font-medium hover:text-gray-900 transition text-sm">Masuk</a>
+                <a href="/register" class="bg-gray-900 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-gray-800 transition">Daftar</a>
+            </div>
         </div>
     </header>
 
@@ -181,9 +165,10 @@
 
             <!-- Match Cards -->
             <div class="space-y-5">
-                <div th:each="r, iterStat : ${results}"
-                     class="match-card fade-up"
-                     th:style="'animation-delay:' + ${iterStat.index * 60} + 'ms'">
+                <a th:each="r, iterStat : ${results}"
+                   th:href="@{'/roommate/profile/' + ${r.candidateId}}"
+                   class="match-card fade-up block group"
+                   th:style="'animation-delay:' + ${iterStat.index * 60} + 'ms'">
 
                     <div class="p-5 flex flex-col sm:flex-row items-start gap-5">
 
@@ -199,7 +184,8 @@
                         <!-- Profile Info -->
                         <div class="flex-1 min-w-0">
                             <div class="flex flex-wrap items-center gap-2 mb-1">
-                                <h2 class="font-bold text-gray-900 text-base" th:text="${r.nama}">Nama</h2>
+                                <h2 class="font-bold text-gray-900 text-base group-hover:text-purple-700 transition"
+                                    th:text="${r.nama}">Nama</h2>
                                 <!-- Fuzzy label badge -->
                                 <span class="text-xs font-bold px-2.5 py-0.5 rounded-full"
                                       th:classappend="${r.fuzzyLabel == 'Sangat Cocok'} ? 'badge-sangat' :
@@ -309,7 +295,7 @@
                         </div>
 
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Pagination -->
@@ -331,5 +317,6 @@
         </div>
     </div>
 
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
 </body>
 </html>

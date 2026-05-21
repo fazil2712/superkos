@@ -2,6 +2,7 @@ com\superkos\app\converter\IntegerListConverter.class
 com\superkos\app\controller\WebController.class
 com\superkos\app\model\RoommateRequest.class
 com\superkos\app\repository\PencariHunianRepository.class
+com\superkos\app\controller\ChatController.class
 com\superkos\app\SuperkosApplication.class
 com\superkos\app\dto\MatchResult.class
 com\superkos\app\model\PemilikProperti.class
@@ -17,9 +18,12 @@ com\superkos\app\model\PencariHunian.class
 com\superkos\app\model\SearchEngine.class
 com\superkos\app\repository\UserRepository.class
 com\superkos\app\model\Hunian.class
+com\superkos\app\repository\ChatRoomRepository.class
 com\superkos\app\config\DummyDataLoader.class
+com\superkos\app\repository\RoommateRequestRepository.class
 com\superkos\app\model\Message.class
 com\superkos\app\controller\AuthController.class
 com\superkos\app\model\RoommateSurvey.class
 com\superkos\app\controller\RoommateMatchController.class
 com\superkos\app\model\ISearchFilter.class
+com\superkos\app\repository\MessageRepository.class

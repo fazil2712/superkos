@@ -158,18 +158,22 @@
             transform: translateY(0);
         }
     </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
     <!-- Navbar -->
     <header class="border-b border-gray-200 bg-white sticky top-0 z-50 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center gap-4">
-            <a href="/" class="flex items-center gap-2 text-2xl font-bold">
-                <i class="fas fa-home rainbow-text"></i>
-                <span class="rainbow-text">Superkos</span>
-            </a>
-            <span class="text-gray-300 text-xl font-light">/</span>
-            <span class="text-gray-500 font-medium text-sm">Edit Profil</span>
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+                <a href="/" class="flex items-center gap-2 text-2xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
+                </a>
+                <span class="text-gray-300 text-xl font-light">/</span>
+                <span class="text-gray-500 font-medium text-sm">Edit Profil</span>
+            </div>
         </div>
     </header>
 
@@ -305,5 +309,6 @@
 
     </div>
 
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
 </body>
 </html>

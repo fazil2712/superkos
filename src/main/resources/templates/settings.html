@@ -101,41 +101,22 @@
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
-        }
         .fade-up { animation: fadeUp 0.4s ease; }
     </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
     <!-- Navbar -->
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center gap-6">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="avatar-ring" title="Menu">
-                    <div class="avatar-inner">
-                        <div class="avatar-initials"
-                             th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">?</div>
-                    </div>
-                </div>
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
                 <a href="/" class="flex items-center gap-2 text-xl font-bold">
                     <i class="fas fa-home rainbow-text"></i>
                     <span class="rainbow-text">Superkos</span>
                 </a>
             </div>
-            <nav class="flex items-center gap-1 ml-auto">
-                <a href="/" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                    <i class="fas fa-home mr-1.5"></i>Beranda
-                </a>
-                <a href="/profile" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                    <i class="fas fa-user-edit mr-1.5"></i>Edit Profil
-                </a>
-                <a href="/settings" class="text-purple-700 bg-purple-50 text-sm font-semibold px-3 py-1.5 rounded-lg transition">
-                    <i class="fas fa-cog mr-1.5"></i>Pengaturan
-                </a>
-                <a href="/logout" class="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition ml-2">
-                    <i class="fas fa-sign-out-alt mr-1.5"></i>Keluar
-                </a>
-            </nav>
         </div>
     </header>
 
@@ -326,5 +307,6 @@
 
     </div>
 
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
 </body>
 </html>
