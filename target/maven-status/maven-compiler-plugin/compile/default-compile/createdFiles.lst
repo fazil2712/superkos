@@ -1,11 +1,14 @@
+com\superkos\app\converter\IntegerListConverter.class
 com\superkos\app\controller\WebController.class
 com\superkos\app\model\RoommateRequest.class
 com\superkos\app\repository\PencariHunianRepository.class
 com\superkos\app\SuperkosApplication.class
 com\superkos\app\model\PemilikProperti.class
+com\superkos\app\repository\RoommateSurveyRepository.class
 com\superkos\app\model\LaporanReview.class
 com\superkos\app\model\ChatRoom.class
 com\superkos\app\model\User.class
+com\superkos\app\converter\IntegerListConverter$1.class
 com\superkos\app\model\ISortStrategy.class
 com\superkos\app\repository\HunianRepository.class
 com\superkos\app\model\Admin.class

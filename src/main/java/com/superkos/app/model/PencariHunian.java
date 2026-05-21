@@ -17,6 +17,9 @@ public class PencariHunian extends User {
     @JoinColumn(name = "survey_id", referencedColumnName = "idSurvey")
     private RoommateSurvey roommateSurvey;
 
+    public RoommateSurvey getRoommateSurvey() { return roommateSurvey; }
+    public void setRoommateSurvey(RoommateSurvey s) { this.roommateSurvey = s; }
+
     @OneToMany(mappedBy = "pencariHunian", cascade = CascadeType.ALL)
     private List<RoommateRequest> roommateRequests = new ArrayList<>();
 

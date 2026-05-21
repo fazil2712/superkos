@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
@@ -13,7 +14,7 @@ public abstract class User {
     protected String email;
     protected String password;
 
-    // Profile customization fields
+    // ── Profile fields ────────────────────────────────────────────────────────
     @Column(columnDefinition = "TEXT")
     protected String biodata;
     protected Integer umur;
@@ -21,14 +22,14 @@ public abstract class User {
     protected String gender;
     protected String pekerjaan;
 
-    // Based on the UML Methods
+    // ── UML Methods ───────────────────────────────────────────────────────────
     public void dashboard() {}
     public void login() {}
     public void logout() {}
     public void registrasi() {}
     public void popnotif() {}
 
-    // Getters and Setters
+    // ── Getters & Setters ─────────────────────────────────────────────────────
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

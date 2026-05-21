@@ -10,17 +10,17 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class PemilikProperti extends User {
-    
+
     @OneToMany(mappedBy = "pemilik", cascade = CascadeType.ALL)
     private List<Hunian> daftarHunian = new ArrayList<>();
 
     @Override
     public void dashboard() {}
-    
+
     public void tambahHunian(Hunian hunian) {
         daftarHunian.add(hunian);
         hunian.setPemilik(this);
     }
-    
+
     public void kelolaPenyewa() {}
 }

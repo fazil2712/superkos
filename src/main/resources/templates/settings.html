@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Superkos</title>
+    <meta name="description" content="Atur preferensi dan kuis roommatemu di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+
+        /* Avatar */
+        .avatar-ring {
+            width: 36px; height: 36px; border-radius: 50%; padding: 2px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6, #10b981);
+            cursor: pointer;
+        }
+        .avatar-inner {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: white; display: flex; align-items: center; justify-content: center;
+        }
+        .avatar-initials { font-size: 0.75rem; font-weight: 800; color: #7c3aed; }
+
+        /* Settings card */
+        .settings-card {
+            background: white; border-radius: 20px; border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .settings-card-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #f9fafb;
+            display: flex; align-items: center; gap-12px;
+        }
+
+        /* Cooldown progress bar */
+        .cooldown-track {
+            height: 10px; background: #f3f4f6; border-radius: 5px; overflow: hidden;
+        }
+        .cooldown-fill-locked {
+            height: 100%; border-radius: 5px;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            transition: width 0.8s ease;
+        }
+        .cooldown-fill-done {
+            height: 100%; border-radius: 5px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+
+        /* Locked card */
+        .locked-card {
+            background: linear-gradient(135deg, #fff7ed, #fef3c7);
+            border: 2px solid #fcd34d; border-radius: 16px;
+            padding: 24px;
+        }
+
+        /* Available card */
+        .available-card {
+            background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+            border: 2px solid #86efac; border-radius: 16px;
+            padding: 24px;
+        }
+
+        .retake-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: white; font-weight: 700; font-size: 0.95rem;
+            padding: 14px 32px; border-radius: 12px; text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(168,85,247,0.3);
+        }
+        .retake-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(168,85,247,0.4); }
+
+        .score-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.4s ease; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="avatar-ring" title="Menu">
+                    <div class="avatar-inner">
+                        <div class="avatar-initials"
+                             th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">?</div>
+                    </div>
+                </div>
+                <a href="/" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
+            <nav class="flex items-center gap-1 ml-auto">
+                <a href="/" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-home mr-1.5"></i>Beranda
+                </a>
+                <a href="/profile" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-user-edit mr-1.5"></i>Edit Profil
+                </a>
+                <a href="/settings" class="text-purple-700 bg-purple-50 text-sm font-semibold px-3 py-1.5 rounded-lg transition">
+                    <i class="fas fa-cog mr-1.5"></i>Pengaturan
+                </a>
+                <a href="/logout" class="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition ml-2">
+                    <i class="fas fa-sign-out-alt mr-1.5"></i>Keluar
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-3xl mx-auto px-4 py-10 fade-up">
+
+        <!-- Page title -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-black text-gray-900">Pengaturan</h1>
+            <p class="text-gray-500 text-sm mt-1">Kelola preferensi dan kuis roommateму</p>
+        </div>
+
+        <!-- Success Banner -->
+        <div th:if="${param.success}" class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-check text-emerald-600 text-sm"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-emerald-800 text-sm">Kuis berhasil diperbarui!</p>
+                <p class="text-emerald-600 text-xs mt-0.5">Preferensi roommatemu telah disimpan. Cooldown 7 hari dimulai sekarang.</p>
+            </div>
+        </div>
+
+        <!-- Cooldown blocked banner -->
+        <div th:if="${param.cooldown}" class="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-lock text-amber-600 text-sm"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-amber-800 text-sm">Kuis masih dalam cooldown</p>
+                <p class="text-amber-600 text-xs mt-0.5">Kamu belum bisa retake kuis saat ini. Coba lagi nanti.</p>
+            </div>
+        </div>
+
+        <!-- ── Profile Summary Card ───────────────────────────── -->
+        <div class="settings-card mb-6">
+            <div class="p-6 flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
+                     style="background: linear-gradient(135deg, #a855f7, #3b82f6);"
+                     th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">
+                    ?
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-gray-900" th:text="${loggedInUser.nama}">Nama</p>
+                    <p class="text-gray-500 text-sm" th:text="${loggedInUser.email}">email@contoh.com</p>
+                    <div class="flex items-center gap-2 mt-1.5">
+                        <span class="score-chip bg-purple-100 text-purple-700"
+                              th:if="${loggedInUser.class.simpleName == 'PencariHunian'}">
+                            <i class="fas fa-search text-[10px]"></i> Pencari Hunian
+                        </span>
+                        <span class="score-chip bg-blue-100 text-blue-700"
+                              th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}">
+                            <i class="fas fa-building text-[10px]"></i> Pemilik Properti
+                        </span>
+                        <span class="text-xs text-gray-400" th:if="${loggedInUser.lokasi != null}"
+                              th:text="'📍 ' + ${loggedInUser.lokasi}"></span>
+                    </div>
+                </div>
+                <a href="/profile" class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition flex items-center gap-1.5">
+                    <i class="fas fa-pen text-xs"></i> Edit
+                </a>
+            </div>
+        </div>
+
+        <!-- ── Quiz Preferences Card ──────────────────────────── -->
+        <div class="settings-card" th:if="${isPencariHunian}">
+            <div class="p-6 border-b border-gray-50 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-sliders-h text-purple-600"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-gray-900">Preferensi Kuis</h2>
+                    <p class="text-xs text-gray-400">20 pertanyaan · Sosial, Kebersihan, Tidur</p>
+                </div>
+            </div>
+
+            <div class="p-6">
+
+                <!-- Last taken info -->
+                <div th:if="${survey != null && survey.lastQuizTaken != null}" class="flex items-center gap-2 text-sm text-gray-500 mb-5">
+                    <i class="fas fa-calendar-check text-purple-400"></i>
+                    <span>Kuis terakhir diambil:
+                        <span class="font-semibold text-gray-700"
+                              th:text="${#temporals.format(survey.lastQuizTaken, 'dd MMMM yyyy, HH:mm')}">
+                            tanggal
+                        </span>
+                    </span>
+                </div>
+
+                <!-- No quiz yet -->
+                <div th:if="${survey == null || survey.lastQuizTaken == null}" class="text-center py-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-question-circle text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="font-semibold text-gray-700 mb-1">Belum ada data kuis</p>
+                    <p class="text-sm text-gray-400 mb-4">Isi kuis preferensi untuk mulai mencari roommate yang cocok</p>
+                    <a href="/quiz/setup" class="retake-btn">
+                        <i class="fas fa-play-circle"></i> Mulai Kuis
+                    </a>
+                </div>
+
+                <!-- Has quiz data -->
+                <div th:if="${survey != null && survey.lastQuizTaken != null}">
+
+                    <!-- ── LOCKED ─────────────────────────────────── -->
+                    <div th:if="${!canRetake}" class="locked-card">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-lock text-amber-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-amber-900 mb-1">Kuis Terkunci</h3>
+                                <p class="text-sm text-amber-700 mb-4">
+                                    Kamu perlu menunggu 7 hari penuh sejak kuis terakhir sebelum bisa retake lagi.
+                                    Ini memastikan preferensimu mencerminkan kebiasaan jangka panjang, bukan suasana hati sesaat.
+                                </p>
+
+                                <!-- Cooldown progress -->
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-xs font-semibold text-amber-800 mb-1.5">
+                                        <span th:text="'Hari ke-' + ${daysElapsed} + ' dari 7'">Hari ke-</span>
+                                        <span th:text="${remainingDays} + ' hari ' + ${remainingHoursOnly} + ' jam lagi'">X hari lagi</span>
+                                    </div>
+                                    <div class="cooldown-track">
+                                        <div class="cooldown-fill-locked" th:style="'width:' + ${progressPct} + '%'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Remaining time badges -->
+                                <div class="flex items-center gap-2 flex-wrap mt-3">
+                                    <div class="flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-bold">
+                                        <i class="fas fa-clock text-xs"></i>
+                                        <span th:text="${remainingDays} + ' hari'">X hari</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-bold">
+                                        <span th:text="${remainingHoursOnly} + ' jam lagi'">X jam</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Disabled button -->
+                        <div class="mt-5 pt-4 border-t border-amber-200">
+                            <button disabled
+                                    class="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-amber-200 text-amber-500 font-bold cursor-not-allowed text-sm">
+                                <i class="fas fa-lock"></i> Retake Kuis (Terkunci)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── AVAILABLE ──────────────────────────────── -->
+                    <div th:if="${canRetake}" class="available-card">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-unlock text-emerald-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-emerald-900 mb-1">Siap untuk Retake! ✅</h3>
+                                <p class="text-sm text-emerald-700 mb-2">
+                                    Sudah lebih dari 7 hari sejak kuis terakhirmu. Kamu bisa mengisi ulang preferensimu sekarang.
+                                    Jawaban baru akan langsung digunakan untuk mencarikan roommate yang lebih cocok.
+                                </p>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg mb-4">
+                                    <p class="text-xs font-bold text-emerald-800 flex items-center gap-1.5"><i class="fas fa-exclamation-triangle"></i> Perhatian</p>
+                                    <p class="text-xs text-emerald-700 mt-1">Jika kamu melakukan retake kuis sekarang, kuis akan kembali <b class="font-bold">terkunci selama 7 hari</b>. Jawablah dengan jujur tanpa mencoba memanipulasi hasil.</p>
+                                </div>
+                                <!-- Completed bar -->
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-xs font-semibold text-emerald-800 mb-1.5">
+                                        <span>Cooldown selesai</span><span>100%</span>
+                                    </div>
+                                    <div class="cooldown-track">
+                                        <div class="cooldown-fill-done" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-emerald-200">
+                            <a href="/settings/quiz" onclick="return confirm('PERINGATAN: Setelah kamu retake kuis ini, kamu TIDAK BISA mengulanginya lagi selama 7 hari ke depan. Pastikan kamu menjawab dengan jujur!\n\nLanjutkan?');" class="retake-btn w-full justify-center block text-center">
+                                <i class="fas fa-redo-alt"></i> Mulai Retake Kuis
+                            </a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

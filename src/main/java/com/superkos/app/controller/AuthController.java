@@ -24,15 +24,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, HttpSession session, Model model) {
-        User user = userRepository.findByEmail(email);
-        
-        // Basic plain-text password check (In production, use Spring Security & BCrypt!)
+    public String login(@RequestParam String email, @RequestParam String password,
+                        HttpSession session, Model model) {
+        User user = null;
+        try {
+            user = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            model.addAttribute("error", "Terjadi kesalahan data. Coba hubungi admin.");
+            return "login";
+        }
+
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("loggedInUser", user);
             return "redirect:/";
         }
-        
+
         model.addAttribute("error", "Email atau password salah!");
         return "login";
     }
@@ -44,21 +50,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(
-            @RequestParam String nama, 
-            @RequestParam String email, 
-            @RequestParam String password, 
-            @RequestParam String role, 
+            @RequestParam String nama,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String role,
+            HttpSession session,
             Model model) {
 
-        // Check if email already exists
-        // Wrapped in try-catch: if a user row exists in DB without a matching subclass row
-        // (can happen when records are deleted directly from MySQL without cascading),
-        // Hibernate throws "Cannot instantiate abstract class". We clean up the orphan and proceed.
+        // Check if email already exists — wrapped in try-catch for orphaned DB records
         User existingUser = null;
         try {
             existingUser = userRepository.findByEmail(email);
         } catch (Exception e) {
-            // Orphaned user row detected — delete it so registration can proceed cleanly
+            // Orphaned user row — delete it so registration can proceed cleanly
             userRepository.deleteOrphanedByEmail(email);
         }
 
@@ -68,25 +72,32 @@ public class AuthController {
         }
 
         User newUser;
-        // Check what role they are registering for
         if ("PEMILIK".equals(role)) {
             newUser = new PemilikProperti();
         } else {
             newUser = new PencariHunian();
         }
-        
+
         newUser.setNama(nama);
         newUser.setEmail(email);
-        newUser.setPassword(password); // Note: Store hashed passwords in a real app
-        
+        newUser.setPassword(password);
+
         userRepository.save(newUser);
-        
-        return "redirect:/login"; // Redirect to login page after successful registration
+        session.setAttribute("loggedInUser", newUser);
+
+        // Only PencariHunian needs to complete the preference quiz
+        if (newUser instanceof PencariHunian) {
+            session.setAttribute("pendingQuizSetup", true);
+            return "redirect:/quiz/setup";
+        }
+
+        // PemilikProperti goes directly to the home page — no quiz needed
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // Destroy session
+        session.invalidate();
         return "redirect:/";
     }
 }
