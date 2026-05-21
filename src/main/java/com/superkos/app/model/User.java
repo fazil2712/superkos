@@ -21,6 +21,8 @@ public abstract class User {
     protected String lokasi;
     protected String gender;
     protected String pekerjaan;
+    /** WhatsApp / Instagram / line / etc. Shown on the roommate match card. */
+    protected String kontak;
 
     // ── UML Methods ───────────────────────────────────────────────────────────
     public void dashboard() {}
@@ -56,4 +58,7 @@ public abstract class User {
 
     public String getPekerjaan() { return pekerjaan; }
     public void setPekerjaan(String pekerjaan) { this.pekerjaan = pekerjaan; }
+
+    public String getKontak() { return kontak; }
+    public void setKontak(String kontak) { this.kontak = kontak; }
 }

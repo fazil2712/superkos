@@ -187,6 +187,7 @@ public class WebController {
             @RequestParam(required = false) String lokasi,
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String pekerjaan,
+            @RequestParam(required = false) String kontak,
             HttpSession session) {
 
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -201,6 +202,7 @@ public class WebController {
         userToUpdate.setLokasi(lokasi);
         userToUpdate.setGender(gender);
         userToUpdate.setPekerjaan(pekerjaan);
+        userToUpdate.setKontak(kontak);
 
         userRepository.save(userToUpdate);
         session.setAttribute("loggedInUser", userToUpdate);

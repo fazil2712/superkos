@@ -89,9 +89,55 @@ public class RoommateSurvey {
         this.lastQuizTaken = LocalDateTime.now();
     }
 
-    /** Placeholder — fuzzy logic matching to be implemented separately. */
+    /**
+     * Calculates compatibility between this survey and a target survey.
+     *
+     * Formula (per category):
+     *   compatibility = (1 - |myScore - targetScore| / 9) * 100
+     * Overall score:
+     *   (socialComp + cleanComp + sleepComp) / 3
+     *
+     * @return overall compatibility 0–100, or -1 if either survey is incomplete.
+     */
     public double hitungKecocokan(RoommateSurvey target) {
-        return 0.0;
+        if (!this.isQuizComplete() || target == null || !target.isQuizComplete()) return -1;
+
+        double socialComp = (1.0 - Math.abs(this.socialScore      - target.getSocialScore())      / 9.0) * 100.0;
+        double cleanComp  = (1.0 - Math.abs(this.cleanlinessScore - target.getCleanlinessScore()) / 9.0) * 100.0;
+        double sleepComp  = (1.0 - Math.abs(this.sleepScore       - target.getSleepScore())       / 9.0) * 100.0;
+
+        // Clamp each to [0, 100]
+        socialComp = Math.max(0, Math.min(100, socialComp));
+        cleanComp  = Math.max(0, Math.min(100, cleanComp));
+        sleepComp  = Math.max(0, Math.min(100, sleepComp));
+
+        return (socialComp + cleanComp + sleepComp) / 3.0;
+    }
+
+    /**
+     * Per-category compatibility breakdown (social, cleanliness, sleep).
+     * Returns an array of 3 doubles [socialComp, cleanComp, sleepComp], each 0–100.
+     * Returns null if either survey is incomplete.
+     */
+    public double[] getBreakdown(RoommateSurvey target) {
+        if (!this.isQuizComplete() || target == null || !target.isQuizComplete()) return null;
+
+        double socialComp = Math.max(0, Math.min(100,
+                (1.0 - Math.abs(this.socialScore      - target.getSocialScore())      / 9.0) * 100.0));
+        double cleanComp  = Math.max(0, Math.min(100,
+                (1.0 - Math.abs(this.cleanlinessScore - target.getCleanlinessScore()) / 9.0) * 100.0));
+        double sleepComp  = Math.max(0, Math.min(100,
+                (1.0 - Math.abs(this.sleepScore       - target.getSleepScore())       / 9.0) * 100.0));
+
+        return new double[]{ socialComp, cleanComp, sleepComp };
+    }
+
+    /** Fuzzy label based on overall compatibility percentage. */
+    public static String fuzzyLabel(double overallPct) {
+        if (overallPct >= 90) return "Sangat Cocok";
+        if (overallPct >= 75) return "Cocok";
+        if (overallPct >= 60) return "Lumayan Cocok";
+        return "Kurang Cocok";
     }
 
     public String getKategori() { return kategoriGayaHidup; }

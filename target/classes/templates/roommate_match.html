@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Roommate - Superkos</title>
+    <meta name="description" content="Temukan roommate yang paling cocok denganmu berdasarkan kuis preferensi di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+        .avatar-ring {
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7);
+            padding: 2px; border-radius: 50%;
+        }
+        .avatar-inner { background: white; border-radius: 50%; padding: 2px; }
+        .avatar-initials-sm {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 0.9rem;
+        }
+
+        /* Match card */
+        .match-card {
+            background: white;
+            border-radius: 20px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .match-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(0,0,0,0.10);
+        }
+
+        /* Score arc container */
+        .score-ring {
+            position: relative;
+            width: 96px; height: 96px;
+            flex-shrink: 0;
+        }
+        .score-ring svg { transform: rotate(-90deg); }
+        .score-center {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+
+        /* Fuzzy label badge colours */
+        .badge-sangat  { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-cocok   { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+        .badge-lumayan { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+        .badge-kurang  { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+        /* Bar track */
+        .bar-track { height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+        .bar-fill  { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.35s ease both; }
+
+        /* Pagination button */
+        .page-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+            border: 1.5px solid #e5e7eb; background: white; color: #374151;
+            text-decoration: none; transition: background 0.15s, border-color 0.15s;
+        }
+        .page-btn:hover { background: #f5f3ff; border-color: #a855f7; color: #7c3aed; }
+        .page-btn.disabled { opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="avatar-ring">
+                    <div class="avatar-inner">
+                        <div class="avatar-initials-sm"
+                             th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">?</div>
+                    </div>
+                </div>
+                <a href="/" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
+            <nav class="flex items-center gap-1 ml-auto">
+                <a href="/" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-home mr-1.5"></i>Beranda
+                </a>
+                <a href="/roommate/match" class="text-blue-600 bg-blue-50 text-sm font-semibold px-3 py-1.5 rounded-lg transition">
+                    <i class="fas fa-user-friends mr-1.5"></i>Cari Roommate
+                </a>
+                <a href="/wishlist" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-heart mr-1.5"></i>Wishlist
+                </a>
+                <a href="/settings" class="text-gray-500 hover:text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-cog mr-1.5"></i>Pengaturan
+                </a>
+                <a href="/logout" class="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition ml-2">
+                    <i class="fas fa-sign-out-alt mr-1.5"></i>Keluar
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-5xl mx-auto px-4 py-10">
+
+        <!-- Page Header -->
+        <div class="mb-8 flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-user-friends text-blue-600 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-gray-900">Cari Roommate Cocok</h1>
+                <p class="text-gray-500 text-sm mt-0.5">Diurutkan berdasarkan kecocokan preferensi gaya hidup dari kuis yang sudah kamu isi.</p>
+            </div>
+        </div>
+
+        <!-- ── No Survey State ──────────────────────────────────────────────── -->
+        <div th:if="${noSurvey}" class="text-center py-24 fade-up">
+            <div class="w-24 h-24 rounded-3xl bg-purple-50 flex items-center justify-center mx-auto mb-5">
+                <i class="fas fa-clipboard-list text-5xl text-purple-300"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-700 mb-2">Kamu belum mengisi kuis preferensi</h2>
+            <p class="text-gray-400 text-sm mb-6">Isi kuis terlebih dahulu agar kami bisa mencarikan roommate yang paling cocok untukmu.</p>
+            <a href="/quiz/setup" class="inline-flex items-center gap-2 rainbow-bg text-white font-bold px-6 py-3 rounded-xl shadow">
+                <i class="fas fa-play-circle"></i> Mulai Kuis Sekarang
+            </a>
+        </div>
+
+        <!-- ── Results ─────────────────────────────────────────────────────── -->
+        <div th:unless="${noSurvey}">
+
+            <!-- Result count info -->
+            <p class="text-sm text-gray-500 mb-6" th:if="${totalResults > 0}">
+                Menampilkan <span class="font-bold text-gray-800" th:text="${results.size()}">0</span>
+                dari <span class="font-bold text-gray-800" th:text="${totalResults}">0</span>
+                calon roommate yang sudah mengisi kuis
+                <span th:if="${totalPages > 1}">
+                    · Halaman <span th:text="${currentPage + 1}">1</span> dari <span th:text="${totalPages}">1</span>
+                </span>
+            </p>
+
+            <!-- Empty state: nobody has taken quiz yet -->
+            <div th:if="${results.empty}" class="text-center py-20 fade-up">
+                <div class="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users-slash text-4xl text-gray-300"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-600 mb-2">Belum ada calon roommate</h2>
+                <p class="text-gray-400 text-sm">Pengguna lain belum mengisi kuis preferensi. Coba lagi nanti!</p>
+            </div>
+
+            <!-- Match Cards -->
+            <div class="space-y-5">
+                <div th:each="r, iterStat : ${results}"
+                     class="match-card fade-up"
+                     th:style="'animation-delay:' + ${iterStat.index * 60} + 'ms'">
+
+                    <div class="p-5 flex flex-col sm:flex-row items-start gap-5">
+
+                        <!-- Rank + Avatar -->
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            <div class="text-2xl font-black text-gray-200 w-6 text-center select-none"
+                                 th:text="'#' + (${currentPage} * 10 + ${iterStat.index + 1})">#1</div>
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0"
+                                 style="background: linear-gradient(135deg, #a855f7, #3b82f6);"
+                                 th:text="${r.initial}">A</div>
+                        </div>
+
+                        <!-- Profile Info -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h2 class="font-bold text-gray-900 text-base" th:text="${r.nama}">Nama</h2>
+                                <!-- Fuzzy label badge -->
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full"
+                                      th:classappend="${r.fuzzyLabel == 'Sangat Cocok'} ? 'badge-sangat' :
+                                                      (${r.fuzzyLabel == 'Cocok'} ? 'badge-cocok' :
+                                                      (${r.fuzzyLabel == 'Lumayan Cocok'} ? 'badge-lumayan' : 'badge-kurang'))"
+                                      th:text="${r.fuzzyLabel}">Cocok</span>
+                            </div>
+
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3">
+                                <span th:if="${r.gender != null}" class="flex items-center gap-1">
+                                    <i class="fas fa-venus-mars text-gray-400"></i> <span th:text="${r.gender}">Gender</span>
+                                </span>
+                                <span th:if="${r.umur != null}" class="flex items-center gap-1">
+                                    <i class="fas fa-birthday-cake text-gray-400"></i> <span th:text="${r.umur + ' tahun'}">21 tahun</span>
+                                </span>
+                                <span th:if="${r.lokasi != null}" class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt text-gray-400"></i> <span th:text="${r.lokasi}">Lokasi</span>
+                                </span>
+                                <span th:if="${r.pekerjaan != null}" class="flex items-center gap-1">
+                                    <i class="fas fa-briefcase text-gray-400"></i> <span th:text="${r.pekerjaan}">Pekerjaan</span>
+                                </span>
+                            </div>
+
+                            <p th:if="${r.biodata != null && !r.biodata.isEmpty()}"
+                               class="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2"
+                               th:text="${r.biodata}">Bio...</p>
+
+                            <!-- Category Breakdown Bars -->
+                            <div class="space-y-2">
+                                <!-- Social -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold text-purple-600 w-20 flex-shrink-0">
+                                        <i class="fas fa-users text-[10px] mr-1"></i>Sosial
+                                    </span>
+                                    <div class="flex-1 bar-track">
+                                        <div class="bar-fill" style="background: linear-gradient(90deg,#a855f7,#3b82f6);"
+                                             th:style="'width:' + ${r.socialScore} + '%; background: linear-gradient(90deg,#a855f7,#3b82f6);'"></div>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-700 w-10 text-right"
+                                          th:text="${r.socialScore} + '%'">0%</span>
+                                </div>
+                                <!-- Cleanliness -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold text-emerald-600 w-20 flex-shrink-0">
+                                        <i class="fas fa-broom text-[10px] mr-1"></i>Kebersihan
+                                    </span>
+                                    <div class="flex-1 bar-track">
+                                        <div class="bar-fill" style="background: linear-gradient(90deg,#10b981,#3b82f6);"
+                                             th:style="'width:' + ${r.cleanScore} + '%; background: linear-gradient(90deg,#10b981,#3b82f6);'"></div>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-700 w-10 text-right"
+                                          th:text="${r.cleanScore} + '%'">0%</span>
+                                </div>
+                                <!-- Sleep -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold text-blue-600 w-20 flex-shrink-0">
+                                        <i class="fas fa-moon text-[10px] mr-1"></i>Tidur
+                                    </span>
+                                    <div class="flex-1 bar-track">
+                                        <div class="bar-fill" style="background: linear-gradient(90deg,#3b82f6,#6366f1);"
+                                             th:style="'width:' + ${r.sleepScore} + '%; background: linear-gradient(90deg,#3b82f6,#6366f1);'"></div>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-700 w-10 text-right"
+                                          th:text="${r.sleepScore} + '%'">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Score Ring + Contact -->
+                        <div class="flex flex-col items-center gap-3 flex-shrink-0 ml-auto">
+                            <!-- SVG Arc Score Ring -->
+                            <div class="score-ring">
+                                <svg width="96" height="96" viewBox="0 0 96 96">
+                                    <!-- Track -->
+                                    <circle cx="48" cy="48" r="40" fill="none" stroke="#f3f4f6" stroke-width="8"/>
+                                    <!-- Fill — stroke-dasharray = 251.2 (circumference of r=40) -->
+                                    <circle cx="48" cy="48" r="40" fill="none"
+                                            stroke="url(#matchGrad)" stroke-width="8"
+                                            stroke-linecap="round"
+                                            th:attr="stroke-dasharray=${r.overallScore * 2.512} + ' 251.2'"
+                                            stroke-dashoffset="0"/>
+                                    <defs>
+                                        <linearGradient id="matchGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%"   stop-color="#a855f7"/>
+                                            <stop offset="50%"  stop-color="#3b82f6"/>
+                                            <stop offset="100%" stop-color="#10b981"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="score-center">
+                                    <span class="text-xl font-black text-gray-900" th:text="${r.overallScore} + '%'">0%</span>
+                                    <span class="text-[10px] text-gray-400 font-semibold">COCOK</span>
+                                </div>
+                            </div>
+
+                            <!-- Contact button -->
+                            <div th:if="${r.kontak != null && !r.kontak.isEmpty()}"
+                                 class="text-center">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wide mb-1">Kontak</p>
+                                <p class="text-xs font-semibold text-gray-700 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg max-w-[120px] break-words text-center"
+                                   th:text="${r.kontak}">-</p>
+                            </div>
+                            <div th:if="${r.kontak == null || r.kontak.isEmpty()}"
+                                 class="text-center">
+                                <p class="text-[10px] text-gray-300 italic">Kontak belum diisi</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${totalPages > 1}" class="flex items-center justify-center gap-3 mt-10">
+                <a th:href="@{/roommate/match(page=${currentPage - 1})}"
+                   th:classappend="${!hasPrevious} ? ' disabled' : ''"
+                   class="page-btn">
+                    <i class="fas fa-chevron-left text-xs"></i> Sebelumnya
+                </a>
+                <span class="text-sm font-semibold text-gray-600"
+                      th:text="'Halaman ' + ${currentPage + 1} + ' dari ' + ${totalPages}">1 dari 1</span>
+                <a th:href="@{/roommate/match(page=${currentPage + 1})}"
+                   th:classappend="${!hasNext} ? ' disabled' : ''"
+                   class="page-btn">
+                    Berikutnya <i class="fas fa-chevron-right text-xs"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

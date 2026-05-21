@@ -238,6 +238,10 @@
                                th:if="${loggedInUser.class.simpleName == 'PencariHunian'}">
                                 <i class="fas fa-heart" style="color:#ef4444"></i> Wishlist Saya
                             </a>
+                            <a href="/roommate/match" class="dropdown-item"
+                               th:if="${loggedInUser.class.simpleName == 'PencariHunian'}">
+                                <i class="fas fa-user-friends" style="color:#3b82f6"></i> Cari Roommate
+                            </a>
                             <div style="height:1px; background:#f3f4f6; margin: 4px 0;"></div>
                             <a href="/logout" class="dropdown-item danger">
                                 <i class="fas fa-sign-out-alt"></i> Keluar
