@@ -35,11 +35,17 @@ public class GlobalModelAdvice {
 
                 long totalInboxNotifications = pendingRequests + acceptedUnread + unreadMessages;
                 model.addAttribute("inboxNotificationCount", totalInboxNotifications);
+                
+                // Retrieve actual notification messages using popnotif model method
+                java.util.List<String> notificationsList = fresh.popnotif(requestRepository);
+                model.addAttribute("notificationsList", notificationsList);
             } else {
                 model.addAttribute("inboxNotificationCount", 0L);
+                model.addAttribute("notificationsList", new java.util.ArrayList<String>());
             }
         } else {
             model.addAttribute("inboxNotificationCount", 0L);
+            model.addAttribute("notificationsList", new java.util.ArrayList<String>());
         }
     }
 }

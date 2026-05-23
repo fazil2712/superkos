@@ -47,13 +47,12 @@ public class PemilikController {
 
         List<Hunian> properties = hunianRepository.findByPemilikOrderByIdHunianDesc(me);
 
-        long totalProperties = properties.size();
-        long availableCount  = properties.stream().filter(Hunian::isStatusTersedia).count();
+        java.util.Map<String, Object> stats = me.dashboard();
 
         model.addAttribute("loggedInUser",    me);
         model.addAttribute("properties",      properties);
-        model.addAttribute("totalProperties", totalProperties);
-        model.addAttribute("availableCount",  availableCount);
+        model.addAttribute("totalProperties", stats.get("totalProperties"));
+        model.addAttribute("availableCount",  stats.get("availableCount"));
         return "pemilik_dashboard";
     }
 

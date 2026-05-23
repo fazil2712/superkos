@@ -16,6 +16,8 @@ public interface HunianRepository extends JpaRepository<Hunian, Integer> {
     /** All properties owned by a specific pemilik, newest first. */
     List<Hunian> findByPemilikOrderByIdHunianDesc(PemilikProperti pemilik);
 
+    List<Hunian> findByLokasiContainingIgnoreCase(String lokasi);
+
     
     @Query("SELECT DISTINCT h FROM Hunian h LEFT JOIN h.kategoriSewa k WHERE " +
            "(:keyword IS NULL OR LOWER(h.namaHunian) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(h.lokasi) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +

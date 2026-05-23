@@ -34,7 +34,7 @@ public class AuthController {
             return "login";
         }
 
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && user.login(password)) {
             session.setAttribute("loggedInUser", user);
             return "redirect:/";
         }
@@ -92,7 +92,12 @@ public class AuthController {
             newUser.setKontak(kontak.trim());
         }
 
-        userRepository.save(newUser);
+        try {
+            newUser.registrasi(userRepository);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "register";
+        }
         session.setAttribute("loggedInUser", newUser);
 
         // Only PencariHunian needs to complete the preference quiz

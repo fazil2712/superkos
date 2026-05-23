@@ -1,6 +1,8 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
+import com.superkos.app.repository.UserRepository;
+import com.superkos.app.repository.RoommateRequestRepository;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -25,11 +27,28 @@ public abstract class User {
     protected String kontak;
 
     // ── UML Methods ───────────────────────────────────────────────────────────
-    public void dashboard() {}
-    public void login() {}
-    public void logout() {}
-    public void registrasi() {}
-    public void popnotif() {}
+    public java.util.Map<String, Object> dashboard() {
+        return new java.util.HashMap<>();
+    }
+
+    public boolean login(String inputPassword) {
+        return this.password != null && this.password.equals(inputPassword);
+    }
+
+    public void logout() {
+        System.out.println("User " + this.email + " logged out.");
+    }
+
+    public void registrasi(UserRepository repository) {
+        if (repository.findByEmail(this.email) != null) {
+            throw new IllegalArgumentException("Email sudah terdaftar!");
+        }
+        repository.save(this);
+    }
+
+    public java.util.List<String> popnotif(RoommateRequestRepository reqRepo) {
+        return new java.util.ArrayList<>();
+    }
 
     // ── Getters & Setters ─────────────────────────────────────────────────────
     public int getId() { return id; }

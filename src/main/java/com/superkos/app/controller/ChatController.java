@@ -131,11 +131,7 @@ public class ChatController {
             return "redirect:/roommate/profile/" + targetId;
         }
 
-        RoommateRequest req = new RoommateRequest();
-        req.setPencariHunian(me);
-        req.setTargetPencari(target);
-        req.setStatus("PENDING");
-        requestRepository.save(req);
+        me.kirimRoommateRequest(target, requestRepository);
 
         return "redirect:/roommate/profile/" + targetId + "?sent=true";
     }

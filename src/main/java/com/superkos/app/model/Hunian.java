@@ -34,7 +34,11 @@ public class Hunian {
     @OneToMany(mappedBy = "hunian", cascade = CascadeType.ALL)
     private List<LaporanReview> laporanReviews = new ArrayList<>();
 
-    public void tampilkanDetail() {}
+    public String tampilkanDetail() {
+        return String.format("%s (%s) di %s - Rp %,.2f per bulan (%s)", 
+                this.namaHunian, this.tipeHunian, this.lokasi, this.harga, 
+                this.statusTersedia ? "Tersedia" : "Tidak Tersedia");
+    }
 
     // Getters and Setters
     public int getIdHunian() { return idHunian; }
