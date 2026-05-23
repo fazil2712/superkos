@@ -71,10 +71,15 @@
     <!-- ── Active Chats ──────────────────────────────────────────────── -->
     <div class="section-card mb-6">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+            <div class="relative w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
                 <i class="fas fa-comment-dots text-green-600 text-sm"></i>
+                <span th:if="${unreadChatsCount > 0}"
+                      class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
             </div>
             <h2 class="font-bold text-gray-800">Obrolan Aktif</h2>
+            <span th:if="${unreadChatsCount > 0}"
+                  class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full"
+                  th:text="${unreadChatsCount} + ' baru'">0 baru</span>
             <span class="ml-auto text-xs text-gray-400 font-semibold" th:text="${chats.size()} + ' obrolan'">0 obrolan</span>
         </div>
 
@@ -89,7 +94,13 @@
                     <div class="mini-avatar" style="background: linear-gradient(135deg,#10b981,#3b82f6);"
                          th:text="${other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
                     <div class="flex-1">
-                        <p class="font-semibold text-gray-900 text-sm" th:text="${other.nama}">Nama</p>
+                        <div class="flex items-center gap-2">
+                            <p class="font-semibold text-gray-900 text-sm" th:text="${other.nama}">Nama</p>
+                            <span th:with="unreadMsgCount=${chat.getUnreadCount(loggedInUser)}"
+                                  th:if="${unreadMsgCount > 0}"
+                                  class="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full"
+                                  th:text="${unreadMsgCount}">1</span>
+                        </div>
                         <p class="text-xs text-gray-400" th:text="${other.lokasi ?: 'Lokasi tidak diisi'}">Lokasi</p>
                     </div>
                     <a th:href="@{'/chat/' + ${chat.idChat}}"
@@ -104,12 +115,14 @@
     <!-- ── Incoming Requests ─────────────────────────────────────────── -->
     <div class="section-card mb-6">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+            <div class="relative w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
                 <i class="fas fa-bell text-amber-600 text-sm"></i>
+                <span th:if="${pendingCount > 0}"
+                      class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
             </div>
             <h2 class="font-bold text-gray-800">Permintaan Masuk</h2>
             <span th:if="${pendingCount > 0}"
-                  class="ml-auto text-xs font-black bg-red-500 text-white px-2 py-0.5 rounded-full"
+                  class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full"
                   th:text="${pendingCount} + ' baru'">0</span>
         </div>
 
@@ -122,7 +135,10 @@
             <div class="mini-avatar" style="background: linear-gradient(135deg,#f59e0b,#ef4444);"
                  th:text="${req.pencariHunian.nama != null ? req.pencariHunian.nama.substring(0,1).toUpperCase() : '?'}">A</div>
             <div class="flex-1">
-                <p class="font-semibold text-gray-900 text-sm" th:text="${req.pencariHunian.nama}">Nama</p>
+                <div class="flex items-center gap-2">
+                    <p class="font-semibold text-gray-900 text-sm" th:text="${req.pencariHunian.nama}">Nama</p>
+                    <span th:if="${req.status == 'PENDING'}" class="w-2 h-2 rounded-full bg-red-500 animate-pulse" title="Permintaan baru"></span>
+                </div>
                 <p class="text-xs" th:classappend="${req.status == 'PENDING'} ? 'text-amber-600 font-semibold' : (${req.status == 'ACCEPTED'} ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold')"
                    th:text="${req.status == 'PENDING'} ? 'Menunggu responmu' : (${req.status == 'ACCEPTED'} ? '✓ Diterima' : '✗ Ditolak')">Status</p>
             </div>
@@ -154,10 +170,15 @@
     <!-- ── Sent Requests ──────────────────────────────────────────────── -->
     <div class="section-card">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+            <div class="relative w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                 <i class="fas fa-paper-plane text-blue-600 text-sm"></i>
+                <span th:if="${unreadAcceptedCount > 0}"
+                      class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
             </div>
             <h2 class="font-bold text-gray-800">Permintaan Terkirim</h2>
+            <span th:if="${unreadAcceptedCount > 0}"
+                  class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full"
+                  th:text="${unreadAcceptedCount} + ' baru'">0 baru</span>
         </div>
 
         <div th:if="${sent.empty}" class="p-8 text-center text-gray-400">
@@ -169,7 +190,10 @@
             <div class="mini-avatar" style="background: linear-gradient(135deg,#3b82f6,#a855f7);"
                  th:text="${req.targetPencari.nama != null ? req.targetPencari.nama.substring(0,1).toUpperCase() : '?'}">A</div>
             <div class="flex-1">
-                <p class="font-semibold text-gray-900 text-sm" th:text="${req.targetPencari.nama}">Nama</p>
+                <div class="flex items-center gap-2">
+                    <p class="font-semibold text-gray-900 text-sm" th:text="${req.targetPencari.nama}">Nama</p>
+                    <span th:if="${req.status == 'ACCEPTED' && !req.senderRead}" class="w-2 h-2 rounded-full bg-red-500 animate-pulse" title="Baru diterima"></span>
+                </div>
                 <p class="text-xs" th:classappend="${req.status == 'PENDING'} ? 'text-blue-500 font-semibold' : (${req.status == 'ACCEPTED'} ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold')"
                    th:text="${req.status == 'PENDING'} ? 'Menunggu respons...' : (${req.status == 'ACCEPTED'} ? '✓ Diterima' : '✗ Ditolak')">Status</p>
             </div>

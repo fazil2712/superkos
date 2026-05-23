@@ -54,6 +54,7 @@ public class AuthController {
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam String role,
+            @RequestParam(required = false) String kontak,
             HttpSession session,
             Model model) {
 
@@ -71,6 +72,12 @@ public class AuthController {
             return "register";
         }
 
+        // Validate kontak is required for PemilikProperti
+        if ("PEMILIK".equals(role) && (kontak == null || kontak.trim().isEmpty())) {
+            model.addAttribute("error", "Kontak wajib diisi untuk Pemilik Properti!");
+            return "register";
+        }
+
         User newUser;
         if ("PEMILIK".equals(role)) {
             newUser = new PemilikProperti();
@@ -81,6 +88,9 @@ public class AuthController {
         newUser.setNama(nama);
         newUser.setEmail(email);
         newUser.setPassword(password);
+        if (kontak != null && !kontak.trim().isEmpty()) {
+            newUser.setKontak(kontak.trim());
+        }
 
         userRepository.save(newUser);
         session.setAttribute("loggedInUser", newUser);
@@ -91,7 +101,7 @@ public class AuthController {
             return "redirect:/quiz/setup";
         }
 
-        // PemilikProperti goes directly to the home page — no quiz needed
+        // PemilikProperti goes directly to the dashboard
         return "redirect:/";
     }
 

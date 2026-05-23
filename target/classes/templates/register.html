@@ -51,17 +51,17 @@
         <div th:if="${error != null}" class="bg-red-50 text-red-500 p-3 rounded mb-4 text-sm text-center border border-red-200" th:text="${error}">
         </div>
 
-        <form action="/register" method="POST" class="space-y-4">
+        <form action="/register" method="POST" class="space-y-4" id="registerForm">
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Daftar Sebagai</label>
                 <div class="flex gap-4">
                     <label class="flex-1 border border-gray-300 p-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-gray-50 focus-within:rainbow-animate-border focus-within:ring-1">
-                        <input type="radio" name="role" value="PENCARI" checked class="accent-purple-500">
+                        <input type="radio" name="role" value="PENCARI" checked class="accent-purple-500" onchange="toggleKontak()">
                         <span class="text-sm font-medium">Pencari Hunian</span>
                     </label>
                     <label class="flex-1 border border-gray-300 p-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-gray-50 focus-within:rainbow-animate-border focus-within:ring-1">
-                        <input type="radio" name="role" value="PEMILIK" class="accent-purple-500">
+                        <input type="radio" name="role" value="PEMILIK" class="accent-purple-500" onchange="toggleKontak()">
                         <span class="text-sm font-medium">Pemilik Properti</span>
                     </label>
                 </div>
@@ -82,6 +82,17 @@
                 <input type="password" name="password" required class="w-full border border-gray-300 px-4 py-2 rounded-lg outline-none focus:rainbow-animate-border focus:ring-1">
             </div>
 
+            <!-- Kontak field — shown only for Pemilik Properti -->
+            <div id="kontakField" style="display:none;">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Kontak <span class="text-red-500">*</span>
+                    <span class="text-gray-400 font-normal">(WA / Instagram / Line)</span>
+                </label>
+                <input type="text" name="kontak" id="kontakInput" placeholder="Contoh: 08123456789"
+                       class="w-full border border-gray-300 px-4 py-2 rounded-lg outline-none focus:rainbow-animate-border focus:ring-1">
+                <p class="text-xs text-gray-400 mt-1"><i class="fas fa-info-circle"></i> Kontak akan ditampilkan pada properti Anda</p>
+            </div>
+
             <button type="submit" class="w-full rainbow-animate-bg text-white font-bold py-3 rounded-lg transition shadow mt-2">
                 Daftar Sekarang
             </button>
@@ -92,5 +103,22 @@
         </p>
     </div>
 
+    <script>
+        function toggleKontak() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const field = document.getElementById('kontakField');
+            const input = document.getElementById('kontakInput');
+            if (role === 'PEMILIK') {
+                field.style.display = 'block';
+                input.setAttribute('required', '');
+            } else {
+                field.style.display = 'none';
+                input.removeAttribute('required');
+                input.value = '';
+            }
+        }
+    </script>
+
 </body>
 </html>
+

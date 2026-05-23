@@ -26,6 +26,8 @@ public class RoommateRequest {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
+    private boolean senderRead = false;
+
     /** Accepts the request and updates status. ChatRoom is linked by the controller. */
     public void terima() { this.status = "ACCEPTED"; }
 
@@ -47,4 +49,7 @@ public class RoommateRequest {
 
     public ChatRoom getChatRoom()                  { return chatRoom; }
     public void setChatRoom(ChatRoom chatRoom)     { this.chatRoom = chatRoom; }
+
+    public boolean isSenderRead()                  { return senderRead; }
+    public void setSenderRead(boolean senderRead)  { this.senderRead = senderRead; }
 }

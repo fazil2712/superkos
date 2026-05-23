@@ -1,6 +1,7 @@
 package com.superkos.app.repository;
 
 import com.superkos.app.model.Hunian;
+import com.superkos.app.model.PemilikProperti;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +12,10 @@ import java.util.List;
 
 @Repository
 public interface HunianRepository extends JpaRepository<Hunian, Integer> {
+
+    /** All properties owned by a specific pemilik, newest first. */
+    List<Hunian> findByPemilikOrderByIdHunianDesc(PemilikProperti pemilik);
+
     
     @Query("SELECT DISTINCT h FROM Hunian h LEFT JOIN h.kategoriSewa k WHERE " +
            "(:keyword IS NULL OR LOWER(h.namaHunian) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(h.lokasi) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +

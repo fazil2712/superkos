@@ -3,9 +3,11 @@ package com.superkos.app.repository;
 import com.superkos.app.model.PencariHunian;
 import com.superkos.app.model.RoommateRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,4 +45,16 @@ public interface RoommateRequestRepository extends JpaRepository<RoommateRequest
 
     /** Count pending requests received by a user (for inbox badge). */
     long countByTargetPencariAndStatus(PencariHunian target, String status);
+
+    /** Count accepted requests sent by a user that they haven't read yet. */
+    long countByPencariHunianAndStatusAndSenderRead(PencariHunian sender, String status, boolean senderRead);
+
+    /** Mark all accepted requests sent by a user as read in the database. */
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE RoommateRequest r SET r.senderRead = true
+        WHERE r.pencariHunian = :sender AND r.status = 'ACCEPTED' AND r.senderRead = false
+    """)
+    void markAcceptedRequestsAsRead(@Param("sender") PencariHunian sender);
 }

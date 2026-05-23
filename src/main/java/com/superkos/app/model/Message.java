@@ -22,6 +22,8 @@ public class Message {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
+    private boolean isRead = false;
+
     public int getIdMessage() { return idMessage; }
     public void setIdMessage(int idMessage) { this.idMessage = idMessage; }
 
@@ -36,4 +38,7 @@ public class Message {
 
     public ChatRoom getChatRoom() { return chatRoom; }
     public void setChatRoom(ChatRoom chatRoom) { this.chatRoom = chatRoom; }
+
+    public boolean isRead() { return isRead; }
+    public void setRead(boolean read) { isRead = read; }
 }

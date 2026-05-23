@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pemilik - Superkos</title>
+    <meta name="description" content="Dashboard pemilik properti Superkos. Kelola dan pantau properti Anda.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 20px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .property-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(0,0,0,0.10);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.35s ease both; }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Navbar -->
+<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i>
+                <span class="rainbow-text">Superkos</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+    <!-- Hero Header -->
+    <div class="mb-10 fade-up">
+        <div class="flex items-center gap-4 mb-2">
+            <div class="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
+                <i class="fas fa-building text-blue-600 text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-gray-900">
+                    Halo, <span th:text="${loggedInUser.nama}" class="rainbow-text">Pemilik</span>!
+                </h1>
+                <p class="text-gray-500 text-sm mt-0.5">Kelola properti dan pantau hunian Anda dari sini.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Cards Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10 fade-up" style="animation-delay: 80ms;">
+        <div class="stat-card">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-home text-purple-600"></i>
+                </div>
+                <p class="text-sm font-semibold text-gray-500">Total Properti</p>
+            </div>
+            <p class="text-3xl font-black text-gray-900" th:text="${totalProperties}">0</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600"></i>
+                </div>
+                <p class="text-sm font-semibold text-gray-500">Tersedia</p>
+            </div>
+            <p class="text-3xl font-black text-green-600" th:text="${availableCount}">0</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+                    <i class="fas fa-times-circle text-red-500"></i>
+                </div>
+                <p class="text-sm font-semibold text-gray-500">Tidak Tersedia</p>
+            </div>
+            <p class="text-3xl font-black text-red-500" th:text="${totalProperties - availableCount}">0</p>
+        </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="flex items-center justify-between mb-6 fade-up" style="animation-delay: 140ms;">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                <i class="fas fa-list text-blue-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800 text-lg">Properti Saya</h2>
+            <span class="text-xs text-gray-400 font-semibold" th:text="${totalProperties} + ' properti'">0 properti</span>
+        </div>
+        <a href="/pemilik/properti"
+           class="inline-flex items-center gap-2 text-sm font-bold text-white px-5 py-2.5 rounded-xl rainbow-bg shadow transition hover:shadow-lg">
+            <i class="fas fa-plus"></i> Tambah Properti
+        </a>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${properties.empty}" class="text-center py-24 fade-up" style="animation-delay: 200ms;">
+        <div class="w-24 h-24 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-5">
+            <i class="fas fa-building text-5xl text-gray-300"></i>
+        </div>
+        <h2 class="text-xl font-bold text-gray-600 mb-2">Belum ada properti</h2>
+        <p class="text-gray-400 text-sm mb-6">Mulai tambahkan properti kost Anda agar bisa ditemukan oleh pencari hunian.</p>
+        <a href="/pemilik/properti"
+           class="inline-flex items-center gap-2 rainbow-bg text-white font-bold px-6 py-3 rounded-xl shadow">
+            <i class="fas fa-plus-circle"></i> Tambah Properti Pertama
+        </a>
+    </div>
+
+    <!-- Property Cards Grid -->
+    <div th:unless="${properties.empty}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div th:each="h, iterStat : ${properties}"
+             class="property-card fade-up"
+             th:style="'animation-delay:' + ${200 + iterStat.index * 60} + 'ms'">
+            <div class="p-5">
+                <!-- Header -->
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="font-bold text-gray-900 text-base truncate" th:text="${h.namaHunian}">Nama Kost</h3>
+                            <span th:if="${h.statusTersedia}"
+                                  class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200 flex-shrink-0">Tersedia</span>
+                            <span th:unless="${h.statusTersedia}"
+                                  class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200 flex-shrink-0">Penuh</span>
+                        </div>
+                        <p class="text-xs text-gray-400 flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${h.lokasi ?: 'Lokasi belum diisi'}">Lokasi</span>
+                        </p>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ml-3"
+                         style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
+                        <i class="fas fa-home text-white"></i>
+                    </div>
+                </div>
+
+                <!-- Details Row -->
+                <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3">
+                    <span class="flex items-center gap-1" th:if="${h.tipeGender != null}">
+                        <i class="fas fa-venus-mars text-gray-400"></i>
+                        <span th:text="${h.tipeGender}">Campur</span>
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <i class="fas fa-bed text-gray-400"></i>
+                        <span th:text="${h.jumlahKamar} + ' orang/kamar'">1 orang/kamar</span>
+                    </span>
+                    <span class="flex items-center gap-1" th:if="${h.tipeUnit != null}">
+                        <i class="fas fa-door-open text-gray-400"></i>
+                        <span th:text="${h.tipeUnit}">Tipe</span>
+                    </span>
+                </div>
+
+                <!-- Price -->
+                <div class="flex items-end justify-between">
+                    <p class="text-lg font-black text-gray-900">
+                        <span th:text="'Rp' + ${#numbers.formatDecimal(h.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span>
+                        <span class="text-xs font-medium text-gray-400">/bulan</span>
+                    </p>
+                    <a th:href="@{'/pemilik/properti/' + ${h.idHunian} + '/edit'}"
+                       class="text-xs font-bold text-purple-600 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-100 transition flex items-center gap-1.5">
+                        <i class="fas fa-pen text-[10px]"></i> Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+</body>
+</html>

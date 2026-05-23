@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Properti - Superkos</title>
+    <meta name="description" content="Tambah dan kelola properti hunian Anda di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .input-field {
+            width: 100%;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px 16px;
+            outline: none;
+            font-size: 0.95rem;
+            color: #111827;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+        .input-field:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+        }
+        select.input-field { cursor: pointer; }
+
+        .row-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f9fafb;
+            transition: background .12s;
+        }
+        .row-item:last-child { border-bottom: none; }
+        .row-item:hover { background: #faf5ff; }
+
+        .mini-avatar {
+            width: 42px; height: 42px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: white; flex-shrink: 0;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.3s ease both; }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Navbar -->
+<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i>
+                <span class="rainbow-text">Superkos</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-4xl mx-auto px-4 py-10 fade-up">
+
+    <!-- Page Header -->
+    <div class="mb-8 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+            <i class="fas fa-building text-blue-600 text-xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-gray-900">Kelola Properti</h1>
+            <p class="text-gray-500 text-sm mt-0.5">Tambah, edit, atau hapus hunian Anda</p>
+        </div>
+        <a href="/pemilik/dashboard"
+           class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
+            <i class="fas fa-arrow-left text-[10px]"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- Success Notifications -->
+    <div th:if="${param.added}" class="bg-green-50 text-green-700 p-3 rounded-xl mb-5 text-sm font-semibold text-center border border-green-200 fade-up">
+        <i class="fas fa-check-circle mr-1"></i> Properti baru berhasil ditambahkan!
+    </div>
+    <div th:if="${param.saved}" class="bg-green-50 text-green-700 p-3 rounded-xl mb-5 text-sm font-semibold text-center border border-green-200 fade-up">
+        <i class="fas fa-check-circle mr-1"></i> Perubahan berhasil disimpan!
+    </div>
+    <div th:if="${param.deleted}" class="bg-red-50 text-red-600 p-3 rounded-xl mb-5 text-sm font-semibold text-center border border-red-200 fade-up">
+        <i class="fas fa-trash-alt mr-1"></i> Properti berhasil dihapus.
+    </div>
+
+    <!-- ── Add New Property Form ────────────────────────────────────────── -->
+    <div class="section-card mb-8">
+        <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                <i class="fas fa-plus text-green-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800">Tambah Properti Baru</h2>
+        </div>
+
+        <form action="/pemilik/properti" method="post" class="p-5 space-y-5">
+            <!-- Row 1: Nama + Tipe -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
+                    <input type="text" name="namaHunian" required class="input-field" placeholder="Contoh: Kost Melati Indah">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Hunian</label>
+                    <select name="tipeHunian" class="input-field">
+                        <option value="Kost">Kost</option>
+                        <option value="Kontrakan">Kontrakan</option>
+                        <option value="Apartemen">Apartemen</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Harga + Lokasi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
+                    <input type="number" name="harga" required min="0" class="input-field" placeholder="Contoh: 1500000">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                    <input type="text" name="lokasi" required class="input-field" placeholder="Contoh: Depok, Jawa Barat">
+                </div>
+            </div>
+
+            <!-- Row 3: Tipe Gender + Jumlah Kamar + Tipe Unit -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
+                    <select name="tipeGender" class="input-field">
+                        <option value="Campur">Campur</option>
+                        <option value="Putra">Putra</option>
+                        <option value="Putri">Putri</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
+                    <input type="number" name="jumlahKamar" value="1" min="1" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Unit</label>
+                    <input type="text" name="tipeUnit" class="input-field" placeholder="Contoh: Kamar Biasa">
+                </div>
+            </div>
+
+            <!-- Row 4: Dates -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
+                    <input type="date" name="availableDateStart" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Akhir Tersedia</label>
+                    <input type="date" name="availableDateEnd" class="input-field">
+                </div>
+            </div>
+
+            <!-- Row 5: Kategori Sewa + Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
+                    <div class="flex flex-wrap gap-3">
+                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
+                               class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="kategoriSewa" th:value="${opt}" class="w-4 h-4 accent-purple-600">
+                            <span class="text-sm text-gray-700" th:text="${opt}">Opsi</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="true" checked class="accent-green-500">
+                            <span class="text-sm font-medium text-green-700">Tersedia</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="false" class="accent-red-500">
+                            <span class="text-sm font-medium text-red-600">Penuh / Tidak Tersedia</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="w-full rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm">
+                <i class="fas fa-plus-circle mr-1"></i> Tambah Properti
+            </button>
+        </form>
+    </div>
+
+    <!-- ── Existing Properties List ─────────────────────────────────────── -->
+    <div class="section-card">
+        <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                <i class="fas fa-list text-purple-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800">Properti Anda</h2>
+            <span class="ml-auto text-xs text-gray-400 font-semibold" th:text="${properties.size()} + ' properti'">0 properti</span>
+        </div>
+
+        <div th:if="${properties.empty}" class="p-8 text-center text-gray-400">
+            <i class="fas fa-building text-3xl mb-2 block"></i>
+            <p class="text-sm">Belum ada properti. Isi form di atas untuk menambahkan!</p>
+        </div>
+
+        <div th:each="h : ${properties}" class="row-item">
+            <div class="mini-avatar" style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
+                <i class="fas fa-home text-sm"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                    <p class="font-semibold text-gray-900 text-sm truncate" th:text="${h.namaHunian}">Nama</p>
+                    <span th:if="${h.statusTersedia}"
+                          class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200">Tersedia</span>
+                    <span th:unless="${h.statusTersedia}"
+                          class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200">Penuh</span>
+                </div>
+                <p class="text-xs text-gray-400" th:text="${h.lokasi ?: 'Lokasi belum diisi'}">Lokasi</p>
+                <p class="text-xs text-gray-500 font-semibold" th:text="'Rp' + ${#numbers.formatDecimal(h.harga, 0, 'COMMA', 0, 'POINT')} + '/bulan'">Rp0/bulan</p>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+                <a th:href="@{'/pemilik/properti/' + ${h.idHunian} + '/edit'}"
+                   class="text-xs font-bold text-purple-600 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-100 transition flex items-center gap-1">
+                    <i class="fas fa-pen text-[10px]"></i> Edit
+                </a>
+                <form th:action="@{'/pemilik/properti/' + ${h.idHunian} + '/delete'}" method="post"
+                      onsubmit="return confirm('Yakin ingin menghapus properti ini?');">
+                    <button type="submit"
+                            class="text-xs font-bold text-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-100 transition flex items-center gap-1">
+                        <i class="fas fa-trash text-[10px]"></i> Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+</body>
+</html>

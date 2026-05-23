@@ -86,6 +86,12 @@ public class ChatController {
             RoommateRequest acc = acceptedOpt.get();
             requestId = acc.getIdRequest();
             if (acc.getChatRoom() != null) chatRoomId = acc.getChatRoom().getIdChat();
+
+            // Mark as read if current user is the sender of this request
+            if (acc.getPencariHunian().getId() == me.getId() && !acc.isSenderRead()) {
+                acc.setSenderRead(true);
+                requestRepository.save(acc);
+            }
         } else if (pendingOpt.isPresent()) {
             RoommateRequest req = pendingOpt.get();
             requestId = req.getIdRequest();
@@ -144,13 +150,19 @@ public class ChatController {
         List<RoommateRequest> received = requestRepository.findByTargetPencariOrderByIdRequestDesc(me);
         List<RoommateRequest> sent     = requestRepository.findByPencariHunianOrderByIdRequestDesc(me);
         List<ChatRoom>        chats    = chatRoomRepository.findByParticipant(me);
-        long pendingCount              = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
 
-        model.addAttribute("loggedInUser",  me);
-        model.addAttribute("received",      received);
-        model.addAttribute("sent",          sent);
-        model.addAttribute("chats",         chats);
-        model.addAttribute("pendingCount",  pendingCount);
+        // Compute counts before marking them as read in DB
+        long unreadChatsCount    = chats.stream().filter(c -> c.getUnreadCount(me) > 0).count();
+        long unreadAcceptedCount = requestRepository.countByPencariHunianAndStatusAndSenderRead(me, "ACCEPTED", false);
+        long pendingCount        = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
+
+        model.addAttribute("loggedInUser",       me);
+        model.addAttribute("received",           received);
+        model.addAttribute("sent",               sent);
+        model.addAttribute("chats",              chats);
+        model.addAttribute("pendingCount",       pendingCount);
+        model.addAttribute("unreadChatsCount",    unreadChatsCount);
+        model.addAttribute("unreadAcceptedCount", unreadAcceptedCount);
         return "chat_inbox";
     }
 
@@ -211,8 +223,33 @@ public class ChatController {
         if (!isParticipant) return "redirect:/roommate/inbox";
 
         List<Message> messages = messageRepository.findByChatRoomOrderByTimestampAsc(room);
+
+        // Mark messages from other as read
+        boolean msgUpdated = false;
+        for (Message msg : messages) {
+            if (msg.getSender().getId() != me.getId() && !msg.isRead()) {
+                msg.setRead(true);
+                msgUpdated = true;
+            }
+        }
+        if (msgUpdated) {
+            messageRepository.saveAll(messages);
+        }
+
         User other = room.getParticipant1().getId() == me.getId()
                 ? room.getParticipant2() : room.getParticipant1();
+
+        // Mark request as read if current user is the sender of the accepted request
+        if (other instanceof PencariHunian otherPencari) {
+            Optional<RoommateRequest> reqOpt = requestRepository.findAcceptedBetween(me, otherPencari);
+            if (reqOpt.isPresent()) {
+                RoommateRequest req = reqOpt.get();
+                if (req.getPencariHunian().getId() == me.getId() && !req.isSenderRead()) {
+                    req.setSenderRead(true);
+                    requestRepository.save(req);
+                }
+            }
+        }
 
         long pendingCount = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
 

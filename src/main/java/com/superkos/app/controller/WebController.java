@@ -51,6 +51,11 @@ public class WebController {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
 
+        // PemilikProperti gets their own dashboard
+        if (loggedInUser instanceof PemilikProperti) {
+            return "redirect:/pemilik/dashboard";
+        }
+
         Sort sort = Sort.unsorted();
         if (sortBy != null && !sortBy.isEmpty()) {
             if      (sortBy.equals("price_asc"))     sort = Sort.by(Sort.Direction.ASC,  "harga");

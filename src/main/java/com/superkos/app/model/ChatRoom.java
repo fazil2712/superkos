@@ -33,6 +33,13 @@ public class ChatRoom {
 
     public List<Message> getRiwayatPesan() { return messages; }
 
+    public long getUnreadCount(User user) {
+        if (messages == null) return 0;
+        return messages.stream()
+                .filter(m -> m.getSender().getId() != user.getId() && !m.isRead())
+                .count();
+    }
+
     // ── Getters & Setters ─────────────────────────────────────────────────────
     public int  getIdChat()                         { return idChat; }
     public void setIdChat(int idChat)               { this.idChat = idChat; }
