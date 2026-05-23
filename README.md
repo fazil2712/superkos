@@ -71,12 +71,12 @@ Pengelola sistem dan moderasi aplikasi.
 
 | Nama | Role / PIC |
 |------|------|
-| Yuriko Astiani | PencariHunian & PemilikProperti |
-| Zulfa Almajid Basyaasyah | ReportReview & Notifikasi |
-| Muhammad Fazil Attaurahman | Hunian & Registrasi |
-| Dini Nadia Mawaddah | Admin & Roommate Survey |
-| Adam Nugraha | SearchEngine & RoommateRequest |
-| Muhammad Naufal Hartono | User & Chat System |
+| Yuriko Astiani |  |
+| Zulfa Almajid Basyaasyah |  |
+| Muhammad Fazil Attaurahman |  |
+| Dini Nadia Mawaddah |  |
+| Adam Nugraha |  |
+| Muhammad Naufal Hartono |  |
 
 ---
 
