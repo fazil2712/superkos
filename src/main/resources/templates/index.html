@@ -34,7 +34,52 @@
         .rainbow-border-focus:focus-within {
             border-image: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7) 1;
         }
+
+        /* Wishlist navbar icon */
+        .wishlist-nav-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            border: 1.5px solid #f3f4f6;
+            background: white;
+            color: #6b7280;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            flex-shrink: 0;
+        }
+        .wishlist-nav-btn:hover {
+            background: #fff1f2;
+            border-color: #fca5a5;
+            color: #ef4444;
+            transform: scale(1.07);
+        }
+        .wishlist-nav-btn .wl-badge {
+            position: absolute;
+            top: -7px; right: -7px;
+            min-width: 20px; height: 20px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            border-radius: 999px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 4px;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(239,68,68,0.4);
+        }
+        @keyframes badgePop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        .wl-badge-anim { animation: badgePop 0.4s ease; }
     </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-white text-gray-800">
 
@@ -48,11 +93,15 @@
     <!-- Main Navbar -->
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
-            <a href="/" class="flex items-center gap-2 text-2xl font-bold">
-                <i class="fas fa-home rainbow-text"></i> <span class="rainbow-text">Superkos</span>
-            </a>
+            <!-- Logo + Avatar Dropdown (when logged in) -->
+            <div class="flex items-center gap-3">
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+                <a href="/" class="flex items-center gap-2 text-2xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i> <span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
 
-            <!-- Search Bar (Linked to the form via form attribute) -->
+            <!-- Search Bar + Wishlist Button -->
             <div class="flex-1 max-w-4xl flex items-center gap-3">
                 <div class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
                     <div class="pl-4 text-gray-400">
@@ -63,23 +112,26 @@
                         Cari
                     </button>
                 </div>
+
+                <!-- Wishlist Icon Button (only for logged-in PencariHunian) -->
+                <a href="/wishlist"
+                   th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
+                   class="wishlist-nav-btn"
+                   th:title="${wishlistCount > 0 ? wishlistCount + ' hunian tersimpan' : 'Wishlist Saya'}">
+                    <i class="fas fa-heart" style="font-size:1.05rem;"></i>
+                    <!-- Badge: shown whenever count > 0 -->
+                    <span th:if="${wishlistCount > 0}"
+                          class="wl-badge wl-badge-anim"
+                          th:text="${wishlistCount > 99 ? '99+' : wishlistCount}">0</span>
+                </a>
             </div>
 
-            <!-- Right Actions (Dynamic based on Auth) -->
+            <!-- Right Actions (only shown when NOT logged in) -->
             <div class="hidden md:flex items-center gap-4 ml-auto">
-                
-                <!-- Not Logged In -->
                 <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
                     <a href="/login" class="text-gray-600 hover:text-purple-600 font-medium transition">Masuk</a>
                     <a href="/register" class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition">Daftar</a>
                 </div>
-
-                <!-- Logged In -->
-                <div th:if="${loggedInUser != null}" class="flex items-center gap-4">
-                    <span class="text-gray-700 font-medium">Halo, <span th:text="${loggedInUser.nama}" class="font-bold text-gray-900">User</span>!</span>
-                    <a href="/logout" class="text-red-500 hover:text-red-600 font-medium border border-red-500 hover:bg-red-50 px-3 py-1 rounded transition">Keluar</a>
-                </div>
-                
             </div>
         </div>
     </header>
@@ -223,10 +275,25 @@
 
                 <!-- Loop through database rows -->
                 <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
-                    <!-- Placeholder Image (In real app, comes from DB URL) -->
+                    <!-- Placeholder Image -->
                     <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
+                        <!-- Wishlist Heart Button -->
+                        <div th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}">
+                            <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post"
+                                  style="position:absolute;top:8px;right:8px;"
+                                  onclick="event.stopPropagation();">
+                                <input type="hidden" name="returnUrl" value="/">
+                                <button type="submit"
+                                        th:title="${wishlistIds.contains(hunian.idHunian) ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}"
+                                        style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:transform 0.15s;"
+                                        onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+                                    <i th:class="${wishlistIds.contains(hunian.idHunian) ? 'fas fa-heart' : 'far fa-heart'}"
+                                       th:style="${wishlistIds.contains(hunian.idHunian) ? 'color:#ef4444;font-size:0.9rem;' : 'color:#9ca3af;font-size:0.9rem;'}"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     
                     <div class="flex flex-col flex-1 py-1">
@@ -275,8 +342,8 @@
         </div>
     </form>
 
-    <script>
-        function toggleSection(contentId, iconId) {
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+    <script>        function toggleSection(contentId, iconId) {
             const content = document.getElementById(contentId);
             const icon = document.getElementById(iconId);
             const isHidden = content.classList.contains('hidden');

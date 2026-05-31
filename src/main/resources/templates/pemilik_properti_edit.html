@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Properti - Superkos</title>
+    <meta name="description" content="Edit properti hunian Anda di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .input-field {
+            width: 100%;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px 16px;
+            outline: none;
+            font-size: 0.95rem;
+            color: #111827;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+        .input-field:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+        }
+        select.input-field { cursor: pointer; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.3s ease both; }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Navbar -->
+<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i>
+                <span class="rainbow-text">Superkos</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-3xl mx-auto px-4 py-10 fade-up">
+
+    <!-- Page Header -->
+    <div class="mb-8 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
+            <i class="fas fa-pen text-amber-600 text-xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-gray-900">Edit Properti</h1>
+            <p class="text-gray-500 text-sm mt-0.5" th:text="${hunian.namaHunian}">Nama Hunian</p>
+        </div>
+        <a href="/pemilik/properti"
+           class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
+            <i class="fas fa-arrow-left text-[10px]"></i> Kembali
+        </a>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="section-card">
+        <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                <i class="fas fa-edit text-amber-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800">Detail Properti</h2>
+        </div>
+
+        <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/edit'}" method="post" class="p-5 space-y-5">
+            <!-- Row 1: Nama + Tipe -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
+                    <input type="text" name="namaHunian" required class="input-field" th:value="${hunian.namaHunian}">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Hunian</label>
+                    <select name="tipeHunian" class="input-field">
+                        <option value="Kost" th:selected="${hunian.tipeHunian == 'Kost'}">Kost</option>
+                        <option value="Kontrakan" th:selected="${hunian.tipeHunian == 'Kontrakan'}">Kontrakan</option>
+                        <option value="Apartemen" th:selected="${hunian.tipeHunian == 'Apartemen'}">Apartemen</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Harga + Lokasi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
+                    <input type="number" name="harga" required min="0" class="input-field" th:value="${hunian.harga}">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                    <input type="text" name="lokasi" required class="input-field" th:value="${hunian.lokasi}">
+                </div>
+            </div>
+
+            <!-- Row 3: Tipe Gender + Jumlah Kamar + Tipe Unit -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
+                    <select name="tipeGender" class="input-field">
+                        <option value="Campur" th:selected="${hunian.tipeGender == 'Campur'}">Campur</option>
+                        <option value="Putra" th:selected="${hunian.tipeGender == 'Putra'}">Putra</option>
+                        <option value="Putri" th:selected="${hunian.tipeGender == 'Putri'}">Putri</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
+                    <input type="number" name="jumlahKamar" min="1" class="input-field" th:value="${hunian.jumlahKamar}">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Unit</label>
+                    <input type="text" name="tipeUnit" class="input-field" th:value="${hunian.tipeUnit}">
+                </div>
+            </div>
+
+            <!-- Row 4: Dates -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
+                    <input type="date" name="availableDateStart" class="input-field"
+                           th:value="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'yyyy-MM-dd') : ''}">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Akhir Tersedia</label>
+                    <input type="date" name="availableDateEnd" class="input-field"
+                           th:value="${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'yyyy-MM-dd') : ''}">
+                </div>
+            </div>
+
+            <!-- Row 5: Kategori Sewa + Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
+                    <div class="flex flex-wrap gap-3">
+                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
+                               class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="kategoriSewa" th:value="${opt}"
+                                   th:checked="${hunian.kategoriSewa != null && hunian.kategoriSewa.contains(opt)}"
+                                   class="w-4 h-4 accent-purple-600">
+                            <span class="text-sm text-gray-700" th:text="${opt}">Opsi</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="true"
+                                   th:checked="${hunian.statusTersedia}" class="accent-green-500">
+                            <span class="text-sm font-medium text-green-700">Tersedia</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="false"
+                                   th:checked="${!hunian.statusTersedia}" class="accent-red-500">
+                            <span class="text-sm font-medium text-red-600">Penuh / Tidak Tersedia</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button type="submit"
+                        class="flex-1 rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm">
+                    <i class="fas fa-save mr-1"></i> Simpan Perubahan
+                </button>
+                <a href="/pemilik/properti"
+                   class="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 border border-gray-200 hover:bg-gray-200 transition flex items-center justify-center">
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="mt-6 section-card border-red-200" style="border-color: #fecaca;">
+        <div class="px-5 py-4 border-b border-red-50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-red-700 text-sm">Zona Berbahaya</h2>
+        </div>
+        <div class="p-5 flex items-center justify-between">
+            <div>
+                <p class="text-sm font-semibold text-gray-700">Hapus Properti Ini</p>
+                <p class="text-xs text-gray-400">Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/delete'}" method="post"
+                  onsubmit="return confirm('Yakin ingin menghapus properti ini? Tindakan ini tidak bisa dibatalkan.');">
+                <button type="submit"
+                        class="text-xs font-bold text-red-600 bg-red-50 border border-red-300 px-4 py-2 rounded-lg hover:bg-red-100 transition flex items-center gap-1.5">
+                    <i class="fas fa-trash"></i> Hapus Properti
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+</body>
+</html>

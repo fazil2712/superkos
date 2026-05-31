@@ -24,15 +24,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, HttpSession session, Model model) {
-        User user = userRepository.findByEmail(email);
-        
-        // Basic plain-text password check (In production, use Spring Security & BCrypt!)
-        if (user != null && user.getPassword().equals(password)) {
+    public String login(@RequestParam String email, @RequestParam String password,
+                        HttpSession session, Model model) {
+        User user = null;
+        try {
+            user = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            model.addAttribute("error", "Terjadi kesalahan data. Coba hubungi admin.");
+            return "login";
+        }
+
+        if (user != null && user.login(password)) {
             session.setAttribute("loggedInUser", user);
             return "redirect:/";
         }
-        
+
         model.addAttribute("error", "Email atau password salah!");
         return "login";
     }
@@ -44,38 +50,69 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(
-            @RequestParam String nama, 
-            @RequestParam String email, 
-            @RequestParam String password, 
-            @RequestParam String role, 
+            @RequestParam String nama,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String role,
+            @RequestParam(required = false) String kontak,
+            HttpSession session,
             Model model) {
-            
-        // Check if email already exists
-        if (userRepository.findByEmail(email) != null) {
+
+        // Check if email already exists — wrapped in try-catch for orphaned DB records
+        User existingUser = null;
+        try {
+            existingUser = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            // Orphaned user row — delete it so registration can proceed cleanly
+            userRepository.deleteOrphanedByEmail(email);
+        }
+
+        if (existingUser != null) {
             model.addAttribute("error", "Email sudah terdaftar!");
             return "register";
         }
 
+        // Validate kontak is required for PemilikProperti
+        if ("PEMILIK".equals(role) && (kontak == null || kontak.trim().isEmpty())) {
+            model.addAttribute("error", "Kontak wajib diisi untuk Pemilik Properti!");
+            return "register";
+        }
+
         User newUser;
-        // Check what role they are registering for
         if ("PEMILIK".equals(role)) {
             newUser = new PemilikProperti();
         } else {
             newUser = new PencariHunian();
         }
-        
+
         newUser.setNama(nama);
         newUser.setEmail(email);
-        newUser.setPassword(password); // Note: Store hashed passwords in a real app
-        
-        userRepository.save(newUser);
-        
-        return "redirect:/login"; // Redirect to login page after successful registration
+        newUser.setPassword(password);
+        if (kontak != null && !kontak.trim().isEmpty()) {
+            newUser.setKontak(kontak.trim());
+        }
+
+        try {
+            newUser.registrasi(userRepository);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "register";
+        }
+        session.setAttribute("loggedInUser", newUser);
+
+        // Only PencariHunian needs to complete the preference quiz
+        if (newUser instanceof PencariHunian) {
+            session.setAttribute("pendingQuizSetup", true);
+            return "redirect:/quiz/setup";
+        }
+
+        // PemilikProperti goes directly to the dashboard
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // Destroy session
+        session.invalidate();
         return "redirect:/";
     }
 }

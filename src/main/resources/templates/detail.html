@@ -1,231 +1,619 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="${hunian.namaHunian} + ' - Superkos'">Detail Hunian</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
 
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+      @keyframes gradientFlow {
+        0% {
+          background-position: 0% 50%;
         }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
 
-        .rainbow-text {
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientFlow 5s linear infinite;
-        }
+      .rainbow-text {
+        background: linear-gradient(
+          90deg,
+          #ef4444,
+          #f59e0b,
+          #10b981,
+          #3b82f6,
+          #a855f7,
+          #ef4444
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientFlow 5s linear infinite;
+      }
 
-        .rainbow-bg {
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
-            background-size: 200% auto;
-            animation: gradientFlow 5s linear infinite;
-            color: white !important;
-        }
+      .rainbow-bg {
+        background: linear-gradient(
+          90deg,
+          #ef4444,
+          #f59e0b,
+          #10b981,
+          #3b82f6,
+          #a855f7,
+          #ef4444
+        );
+        background-size: 200% auto;
+        animation: gradientFlow 5s linear infinite;
+        color: white !important;
+      }
     </style>
-</head>
-<body class="bg-white text-gray-800">
-
+  </head>
+  <body class="bg-white text-gray-800">
     <!-- Top Mini Navbar -->
     <div class="border-b border-gray-200 hidden md:block">
-        <div class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6">
-            <a href="#" class="hover:rainbow-text flex items-center gap-2"><i class="far fa-calendar-check"></i> Sewa Kos</a>
-        </div>
+      <div
+        class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6"
+      >
+        <a href="#" class="hover:rainbow-text flex items-center gap-2"
+          ><i class="far fa-calendar-check"></i> Sewa Kos</a
+        >
+      </div>
     </div>
 
     <!-- Main Navbar -->
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
-        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
-            <a href="/" class="flex items-center gap-2 text-2xl font-bold rainbow-text">
-                <i class="fas fa-arrow-left"></i> Superkos
-            </a>
+      <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
+        <a
+          href="/"
+          class="flex items-center gap-2 text-2xl font-bold rainbow-text"
+        >
+          <i class="fas fa-arrow-left"></i> Superkos
+        </a>
 
-            <!-- Right Actions (Dynamic based on Auth) -->
-            <div class="hidden md:flex items-center gap-4 ml-auto">
-                <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
-                    <a href="/login" class="text-gray-600 hover:rainbow-text font-medium">Masuk</a>
-                    <a href="/register" class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition">Daftar</a>
-                </div>
-                <div th:if="${loggedInUser != null}" class="flex items-center gap-4">
-                    <span class="text-gray-700 font-medium">Halo, <span th:text="${loggedInUser.nama}" class="font-bold rainbow-text">User</span>!</span>
-                    <a href="/logout" class="text-red-500 hover:text-red-600 font-medium border border-red-500 hover:bg-red-50 px-3 py-1 rounded transition">Keluar</a>
-                </div>
-            </div>
+        <!-- Right Actions (Dynamic based on Auth) -->
+        <div class="hidden md:flex items-center gap-4 ml-auto">
+          <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
+            <a
+              href="/login"
+              class="text-gray-600 hover:rainbow-text font-medium"
+              >Masuk</a
+            >
+            <a
+              href="/register"
+              class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition"
+              >Daftar</a
+            >
+          </div>
+          <div th:if="${loggedInUser != null}" class="flex items-center gap-4">
+            <span class="text-gray-700 font-medium"
+              >Halo,
+              <span
+                th:text="${loggedInUser.nama}"
+                class="font-bold rainbow-text"
+                >User</span
+              >!</span
+            >
+            <a
+              href="/logout"
+              class="text-red-500 hover:text-red-600 font-medium border border-red-500 hover:bg-red-50 px-3 py-1 rounded transition"
+              >Keluar</a
+            >
+          </div>
         </div>
+      </div>
     </header>
 
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-8">
-        
-        <!-- Breadcrumbs -->
-        <nav class="text-sm text-gray-500 mb-6">
-            <a href="/" class="hover:underline">Home</a> &gt; <span th:text="${hunian.namaHunian}">Nama Kost</span>
-        </nav>
+      <!-- SUCCESS ALERT -->
+      <div
+        th:if="${param.info != null and param.info[0] == 'sudah-diterima'}"
+        class="mb-6 p-4 rounded-xl bg-green-100 border border-green-300 text-green-800 shadow"
+      >
+        <div class="flex items-start gap-3">
+          <i class="fas fa-check-circle text-xl mt-0.5"></i>
 
-        <!-- Title Section -->
-        <h1 class="text-3xl font-bold text-gray-900 mb-2" th:text="${hunian.namaHunian}">Nama Kost</h1>
-        <div class="flex items-center gap-3 text-sm text-gray-600 mb-6 border-b border-gray-200 pb-4">
-            <span class="border border-gray-300 px-2 py-1 rounded font-medium" th:text="${hunian.tipeGender}">Tipe</span>
-            <span><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i> <span th:text="${hunian.lokasi}">Lokasi</span></span>
-            <span><i class="fas fa-star text-yellow-400"></i> 4.8 (Berdasarkan Review)</span>
+          <div>
+            <h3 class="font-bold">Reservasi Anda Sudah Disetujui</h3>
+
+            <p class="text-sm mt-1">
+              Selamat! Pengajuan sewa Anda untuk hunian ini telah disetujui oleh
+              pemilik. Anda tidak perlu mengajukan reservasi kembali.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WARNING ALERT -->
+      <div
+        th:if="${param.warning != null and param.warning[0] == 'masih-pending'}"
+        class="mb-6 p-4 rounded-xl bg-yellow-100 border border-yellow-300 text-yellow-800 shadow"
+      >
+        <div class="flex items-start gap-3">
+          <i class="fas fa-clock text-xl mt-0.5"></i>
+
+          <div>
+            <h3 class="font-bold">Reservasi Sedang Ditinjau</h3>
+
+            <p class="text-sm mt-1">
+              Pengajuan sewa Anda masih dalam proses peninjauan oleh pemilik
+              hunian. Mohon menunggu keputusan lebih lanjut.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ERROR ALERT -->
+      <div
+        th:if="${param.error != null}"
+        class="mb-6 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800 shadow"
+      >
+        <div class="flex items-start gap-3">
+          <i class="fas fa-exclamation-circle text-xl mt-0.5"></i>
+
+          <div>
+            <h3 class="font-bold">Pengajuan Tidak Dapat Diproses</h3>
+
+            <p
+              th:if="${param.error[0] == 'gender-tidak-cocok'}"
+              class="text-sm mt-1"
+            >
+              Gender Anda tidak sesuai dengan ketentuan hunian ini.
+            </p>
+
+            <p
+              th:if="${param.error[0] == 'lengkapi-profile'}"
+              class="text-sm mt-1"
+            >
+              Profil Anda belum lengkap. Silakan lengkapi data profil terlebih
+              dahulu sebelum mengajukan sewa hunian.
+            </p>
+
+            <div th:if="${param.error[0] == 'lengkapi-profile'}" class="mt-3">
+              <a
+                href="/profile"
+                class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+              >
+                Lengkapi Profil
+              </a>
+            </div>
+
+            <p
+              th:if="${param.error[0] == 'sudah-diterima'}"
+              class="text-sm mt-1"
+            >
+              Selamat! Pengajuan sewa Anda untuk hunian ini telah disetujui.
+              Anda tidak perlu mengajukan reservasi kembali.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Breadcrumbs -->
+      <nav class="text-sm text-gray-500 mb-6">
+        <a href="/" class="hover:underline">Home</a> &gt;
+        <span th:text="${hunian.namaHunian}">Nama Kost</span>
+      </nav>
+
+      <!-- Title Section -->
+      <h1
+        class="text-3xl font-bold text-gray-900 mb-2"
+        th:text="${hunian.namaHunian}"
+      >
+        Nama Kost
+      </h1>
+      <div
+        class="flex items-center gap-3 text-sm text-gray-600 mb-6 border-b border-gray-200 pb-4"
+      >
+        <span
+          class="border border-gray-300 px-2 py-1 rounded font-medium"
+          th:text="${hunian.tipeGender}"
+          >Tipe</span
+        >
+        <span
+          ><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+          <span th:text="${hunian.lokasi}">Lokasi</span></span
+        >
+        <span
+          ><i class="fas fa-star text-yellow-400"></i> 4.8 (Berdasarkan
+          Review)</span
+        >
+      </div>
+
+      <!-- Photo Grid (Airbnb Style) -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-4 gap-2 h-96 mb-8 rounded-xl overflow-hidden"
+      >
+        <div class="col-span-1 md:col-span-2 row-span-2">
+          <img
+            src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+            alt="Main Photo"
+            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
+          />
+        </div>
+        <div class="col-span-1">
+          <img
+            src="https://images.unsplash.com/photo-1502672260266-1c1c2c49e59b?auto=format&fit=crop&w=400&q=80"
+            alt="Photo 2"
+            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
+          />
+        </div>
+        <div class="col-span-1">
+          <img
+            src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80"
+            alt="Photo 3"
+            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
+          />
+        </div>
+        <div class="col-span-1">
+          <img
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80"
+            alt="Photo 4"
+            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
+          />
+        </div>
+        <div class="col-span-1 relative">
+          <img
+            src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=400&q=80"
+            alt="Photo 5"
+            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
+          />
+          <div
+            class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg font-medium text-sm shadow cursor-pointer border border-black hover:bg-gray-50"
+          >
+            <i class="fas fa-th"></i> Tampilkan semua foto
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Left Side: Information -->
+        <div class="col-span-1 lg:col-span-2 space-y-8">
+          <!-- Host Info -->
+          <div
+            class="flex items-center justify-between border-b border-gray-200 pb-6"
+          >
+            <div>
+              <h2 class="text-xl font-bold text-gray-900 mb-1">
+                Dikelola oleh Pemilik Superkos
+              </h2>
+              <p class="text-gray-500 text-sm">
+                Host Terpercaya · Bergabung sejak 2024
+              </p>
+            </div>
+            <div
+              class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden border border-gray-300"
+            >
+              <img
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                alt="Host Avatar"
+              />
+            </div>
+          </div>
+
+          <!-- Room Capacity & Match Highlight -->
+          <div class="border-b border-gray-200 pb-6 space-y-4">
+            <div class="flex items-start gap-4">
+              <i class="fas fa-bed text-2xl text-gray-600 mt-1"></i>
+              <div>
+                <h3 class="font-bold text-gray-800">Kapasitas Ruangan</h3>
+                <p
+                  class="text-gray-600 text-sm"
+                  th:text="${hunian.jumlahKamar + ' Orang Maksimal per Kamar'}"
+                >
+                  2 Orang
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <i class="fas fa-history text-2xl text-orange-400 mt-1"></i>
+              <div>
+                <h3 class="font-bold text-gray-800">Pilihan Sewa</h3>
+                <p class="text-gray-600 text-sm">
+                  Tersedia untuk:
+                  <span
+                    class="font-medium"
+                    th:if="${hunian.kategoriSewa != null and !hunian.kategoriSewa.empty}"
+                    th:each="kat, iterStat : ${hunian.kategoriSewa}"
+                    th:text="${kat} + ${!iterStat.last ? ', ' : ''}"
+                    >Harian</span
+                  ><span
+                    th:if="${hunian.kategoriSewa == null or hunian.kategoriSewa.empty}"
+                    class="font-medium"
+                    >Bulanan</span
+                  >
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <i class="far fa-calendar-check text-2xl text-green-500 mt-1"></i>
+              <div>
+                <h3 class="font-bold text-gray-800">Periode Ketersediaan</h3>
+                <p
+                  class="text-gray-600 text-sm"
+                  th:text="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'dd MMM yyyy') : 'Kapan saja'} + ' sampai ' + ${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'dd MMM yyyy') : 'waktu tidak ditentukan'}"
+                >
+                  1 Jan 2024 - 31 Des 2024
+                </p>
+              </div>
+            </div>
+
+            <div
+              th:if="${hunian.jumlahKamar > 1}"
+              class="flex items-start gap-4"
+            >
+              <i class="fas fa-user-friends text-2xl text-blue-500 mt-1"></i>
+              <div>
+                <h3 class="font-bold text-gray-800">Roommate Friendly</h3>
+                <p class="text-gray-600 text-sm">
+                  Hunian ini cocok dan diizinkan untuk mencari/membawa roommate.
+                  Gunakan fitur Roommate Match kami!
+                </p>
+              </div>
+            </div>
+
+            <div
+              th:unless="${hunian.jumlahKamar > 1}"
+              class="flex items-start gap-4"
+            >
+              <i class="fas fa-user-slash text-2xl text-red-400 mt-1"></i>
+              <div>
+                <h3 class="font-bold text-gray-800">Kamar Single</h3>
+                <p class="text-gray-600 text-sm">
+                  Hunian ini hanya diperuntukkan untuk 1 orang penyewa dan tidak
+                  bisa menggunakan sistem roommate.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="border-b border-gray-200 pb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+              Cerita Pemilik Tentang Kos Ini
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm text-justify">
+              Selamat datang di
+              <span th:text="${hunian.namaHunian}" class="font-bold">Kost</span
+              >. Bangunan baru dengan konsep modern minimalis yang memberikan
+              kenyamanan maksimal bagi para penghuni. Terletak strategis di
+              daerah
+              <span th:text="${hunian.lokasi}" class="font-bold">Lokasi</span>,
+              memudahkan akses Anda ke kampus, perkantoran, dan area komersial.
+              Aksesoris/dekorasi pada foto kamar digunakan sebagai ilustrasi
+              referensi, warna sprei dan bantal dapat berbeda sesuai
+              ketersediaan pada saat check-in.
+            </p>
+          </div>
+
+          <!-- Amenities -->
+          <div class="border-b border-gray-200 pb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+              Fasilitas yang ditawarkan
+            </h2>
+            <div class="grid grid-cols-2 gap-y-4 gap-x-8 text-sm text-gray-700">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-wifi w-6 text-center text-gray-400"></i> WiFi
+                Kecepatan Tinggi
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fas fa-snowflake w-6 text-center text-gray-400"></i>
+                AC Tersedia
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fas fa-bed w-6 text-center text-gray-400"></i> Kasur &
+                Bantal
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fas fa-tv w-6 text-center text-gray-400"></i> TV LED
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fas fa-bath w-6 text-center text-gray-400"></i> Kamar
+                Mandi Dalam
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fas fa-key w-6 text-center text-gray-400"></i> Akses
+                24 Jam
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Photo Grid (Airbnb Style) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 h-96 mb-8 rounded-xl overflow-hidden">
-            <div class="col-span-1 md:col-span-2 row-span-2">
-                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Main Photo" class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer">
+        <!-- Right Side: Booking / Contact Card -->
+        <div class="col-span-1 relative">
+          <div
+            class="sticky top-28 border border-gray-200 rounded-2xl p-6 shadow-xl bg-white"
+          >
+            <!-- Price Tag -->
+            <div class="mb-6">
+              <p class="text-sm text-red-500 font-bold mb-1">
+                <i class="fas fa-bolt"></i> Diskon Tersedia
+              </p>
+              <div class="flex items-end gap-1">
+                <span
+                  class="text-3xl font-extrabold text-gray-900"
+                  th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}"
+                  >Rp0</span
+                >
+                <span class="text-gray-500 font-medium pb-1">/ bulan</span>
+              </div>
             </div>
-            <div class="col-span-1">
-                <img src="https://images.unsplash.com/photo-1502672260266-1c1c2c49e59b?auto=format&fit=crop&w=400&q=80" alt="Photo 2" class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer">
-            </div>
-            <div class="col-span-1">
-                <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80" alt="Photo 3" class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer">
-            </div>
-            <div class="col-span-1">
-                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80" alt="Photo 4" class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer">
-            </div>
-            <div class="col-span-1 relative">
-                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=400&q=80" alt="Photo 5" class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer">
-                <div class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg font-medium text-sm shadow cursor-pointer border border-black hover:bg-gray-50">
-                    <i class="fas fa-th"></i> Tampilkan semua foto
+
+            <!-- Input Selectors -->
+            <div class="border border-gray-300 rounded-lg overflow-hidden mb-4">
+              <div class="flex border-b border-gray-300">
+                <div
+                  class="flex-1 p-3 border-r border-gray-300 cursor-pointer hover:bg-gray-50 transition"
+                >
+                  <label class="block text-xs font-bold text-gray-900 uppercase"
+                    >Mulai Kos</label
+                  >
+                  <div
+                    class="text-sm text-gray-600 mt-1 flex items-center justify-between"
+                  >
+                    Pilih Tanggal <i class="far fa-calendar-alt"></i>
+                  </div>
                 </div>
+                <div
+                  class="flex-1 p-3 cursor-pointer hover:bg-gray-50 transition"
+                >
+                  <label class="block text-xs font-bold text-gray-900 uppercase"
+                    >Durasi</label
+                  >
+                  <div
+                    class="text-sm text-gray-600 mt-1 flex items-center justify-between"
+                  >
+                    Per Bulan <i class="fas fa-chevron-down"></i>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- Tanya Pemilik -->
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+              <!-- Tanya Pemilik -->
+              <button
+                class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
+              >
+                <i class="far fa-comment-dots"></i>
+                Tanya Pemilik
+              </button>
+
+              <!-- USER SUDAH LOGIN -->
+              <div th:if="${loggedInUser != null}">
+                <form
+                  th:action="@{'/reservasi/ajukan/' + ${hunian.idHunian}}"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    class="w-full rainbow-bg text-white font-bold py-3 rounded-lg shadow transition"
+                  >
+                    Ajukan Sewa
+                  </button>
+                </form>
+              </div>
+
+              <!-- USER BELUM LOGIN -->
+              <div th:if="${loggedInUser == null}">
+                <button
+                  onclick="showLoginPopup()"
+                  type="button"
+                  class="w-full rainbow-bg text-white font-bold py-3 rounded-lg shadow transition"
+                >
+                  Ajukan Sewa
+                </button>
+              </div>
+
+              <!-- Wishlist -->
+              <div
+                th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
+              >
+                <form
+                  th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}"
+                  method="post"
+                >
+                  <input
+                    type="hidden"
+                    name="returnUrl"
+                    th:value="'/hunian/' + ${hunian.idHunian}"
+                  />
+
+                  <button
+                    type="submit"
+                    th:class="${inWishlist}
+                ? 'w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm border-2 border-red-400 text-red-500 bg-red-50 hover:bg-red-100 transition'
+                : 'w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm border-2 border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-red-300 hover:text-red-500 transition'"
+                  >
+                    <i
+                      th:class="${inWishlist}
+                    ? 'fas fa-heart'
+                    : 'far fa-heart'"
+                    ></i>
+
+                    <span
+                      th:text="${inWishlist}
+                    ? 'Hapus dari Wishlist'
+                    : 'Simpan ke Wishlist'"
+                    >
+                      Wishlist
+                    </span>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <p class="text-center text-xs text-gray-500 mt-4">
+              Anda belum dikenakan biaya
+            </p>
+          </div>
         </div>
-
-        <!-- 2-Column Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            
-            <!-- Left Side: Information -->
-            <div class="col-span-1 lg:col-span-2 space-y-8">
-                
-                <!-- Host Info -->
-                <div class="flex items-center justify-between border-b border-gray-200 pb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900 mb-1">Dikelola oleh Pemilik Superkos</h2>
-                        <p class="text-gray-500 text-sm">Host Terpercaya · Bergabung sejak 2024</p>
-                    </div>
-                    <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden border border-gray-300">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Host Avatar">
-                    </div>
-                </div>
-
-                <!-- Room Capacity & Match Highlight -->
-                <div class="border-b border-gray-200 pb-6 space-y-4">
-                    <div class="flex items-start gap-4">
-                        <i class="fas fa-bed text-2xl text-gray-600 mt-1"></i>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Kapasitas Ruangan</h3>
-                            <p class="text-gray-600 text-sm" th:text="${hunian.jumlahKamar + ' Orang Maksimal per Kamar'}">2 Orang</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-4">
-                        <i class="fas fa-history text-2xl text-orange-400 mt-1"></i>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Pilihan Sewa</h3>
-                            <p class="text-gray-600 text-sm">Tersedia untuk: <span class="font-medium" th:if="${hunian.kategoriSewa != null and !hunian.kategoriSewa.empty}" th:each="kat, iterStat : ${hunian.kategoriSewa}" th:text="${kat} + ${!iterStat.last ? ', ' : ''}">Harian</span><span th:if="${hunian.kategoriSewa == null or hunian.kategoriSewa.empty}" class="font-medium">Bulanan</span></p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-4">
-                        <i class="far fa-calendar-check text-2xl text-green-500 mt-1"></i>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Periode Ketersediaan</h3>
-                            <p class="text-gray-600 text-sm" th:text="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'dd MMM yyyy') : 'Kapan saja'} + ' sampai ' + ${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'dd MMM yyyy') : 'waktu tidak ditentukan'}">1 Jan 2024 - 31 Des 2024</p>
-                        </div>
-                    </div>
-                    
-                    <div th:if="${hunian.jumlahKamar > 1}" class="flex items-start gap-4">
-                        <i class="fas fa-user-friends text-2xl text-blue-500 mt-1"></i>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Roommate Friendly</h3>
-                            <p class="text-gray-600 text-sm">Hunian ini cocok dan diizinkan untuk mencari/membawa roommate. Gunakan fitur Roommate Match kami!</p>
-                        </div>
-                    </div>
-
-                    <div th:unless="${hunian.jumlahKamar > 1}" class="flex items-start gap-4">
-                        <i class="fas fa-user-slash text-2xl text-red-400 mt-1"></i>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Kamar Single</h3>
-                            <p class="text-gray-600 text-sm">Hunian ini hanya diperuntukkan untuk 1 orang penyewa dan tidak bisa menggunakan sistem roommate.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Cerita Pemilik Tentang Kos Ini</h2>
-                    <p class="text-gray-600 leading-relaxed text-sm text-justify">
-                        Selamat datang di <span th:text="${hunian.namaHunian}" class="font-bold">Kost</span>. Bangunan baru dengan konsep modern minimalis yang memberikan kenyamanan maksimal bagi para penghuni. 
-                        Terletak strategis di daerah <span th:text="${hunian.lokasi}" class="font-bold">Lokasi</span>, memudahkan akses Anda ke kampus, perkantoran, dan area komersial. 
-                        Aksesoris/dekorasi pada foto kamar digunakan sebagai ilustrasi referensi, warna sprei dan bantal dapat berbeda sesuai ketersediaan pada saat check-in.
-                    </p>
-                </div>
-
-                <!-- Amenities -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Fasilitas yang ditawarkan</h2>
-                    <div class="grid grid-cols-2 gap-y-4 gap-x-8 text-sm text-gray-700">
-                        <div class="flex items-center gap-3"><i class="fas fa-wifi w-6 text-center text-gray-400"></i> WiFi Kecepatan Tinggi</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-snowflake w-6 text-center text-gray-400"></i> AC Tersedia</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-bed w-6 text-center text-gray-400"></i> Kasur & Bantal</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-tv w-6 text-center text-gray-400"></i> TV LED</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-bath w-6 text-center text-gray-400"></i> Kamar Mandi Dalam</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-key w-6 text-center text-gray-400"></i> Akses 24 Jam</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Booking / Contact Card -->
-            <div class="col-span-1 relative">
-                <div class="sticky top-28 border border-gray-200 rounded-2xl p-6 shadow-xl bg-white">
-                    <!-- Price Tag -->
-                    <div class="mb-6">
-                        <p class="text-sm text-red-500 font-bold mb-1"><i class="fas fa-bolt"></i> Diskon Tersedia</p>
-                        <div class="flex items-end gap-1">
-                            <span class="text-3xl font-extrabold text-gray-900" th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span>
-                            <span class="text-gray-500 font-medium pb-1">/ bulan</span>
-                        </div>
-                    </div>
-
-                    <!-- Input Selectors -->
-                    <div class="border border-gray-300 rounded-lg overflow-hidden mb-4">
-                        <div class="flex border-b border-gray-300">
-                            <div class="flex-1 p-3 border-r border-gray-300 cursor-pointer hover:bg-gray-50 transition">
-                                <label class="block text-xs font-bold text-gray-900 uppercase">Mulai Kos</label>
-                                <div class="text-sm text-gray-600 mt-1 flex items-center justify-between">Pilih Tanggal <i class="far fa-calendar-alt"></i></div>
-                            </div>
-                            <div class="flex-1 p-3 cursor-pointer hover:bg-gray-50 transition">
-                                <label class="block text-xs font-bold text-gray-900 uppercase">Durasi</label>
-                                <div class="text-sm text-gray-600 mt-1 flex items-center justify-between">Per Bulan <i class="fas fa-chevron-down"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="space-y-3">
-                        <button class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2">
-                            <i class="far fa-comment-dots"></i> Tanya Pemilik
-                        </button>
-                        <button class="w-full rainbow-bg text-white font-bold py-3 rounded-lg shadow transition">
-                            Ajukan Sewa
-                        </button>
-                    </div>
-
-                    <p class="text-center text-xs text-gray-500 mt-4">Anda belum dikenakan biaya</p>
-                </div>
-            </div>
-
-        </div>
+      </div>
     </main>
+    <!-- LOGIN REQUIRED MODAL -->
+    <div
+      id="loginPopup"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+    >
+      <div
+        class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl"
+      >
+        <div class="text-5xl mb-4">🔒</div>
 
-</body>
+        <h2 class="text-2xl font-bold mb-2">Login Diperlukan</h2>
+
+        <p class="text-gray-600 mb-6">
+          Anda harus login terlebih dahulu untuk mengajukan sewa hunian ini.
+        </p>
+
+        <div class="flex gap-3">
+          <button
+            onclick="closeLoginPopup()"
+            class="flex-1 border border-gray-300 py-3 rounded-lg font-medium"
+          >
+            Nanti Saja
+          </button>
+
+          <a
+            href="/login"
+            class="flex-1 rainbow-bg py-3 rounded-lg text-white font-bold text-center"
+          >
+            Login
+          </a>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-500">
+          Belum punya akun?
+
+          <a href="/register" class="text-purple-600 font-semibold">
+            Daftar Sekarang
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showLoginPopup() {
+        document.getElementById("loginPopup").classList.remove("hidden");
+      }
+
+      function closeLoginPopup() {
+        document.getElementById("loginPopup").classList.add("hidden");
+      }
+    </script>
+  </body>
 </html>

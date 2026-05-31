@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist Saya - Superkos</title>
+    <meta name="description" content="Daftar hunian favorit yang kamu simpan di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+        .rainbow-bg {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
+        }
+        .avatar-ring {
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7);
+            padding: 2px; border-radius: 50%;
+        }
+        .avatar-inner { background: white; border-radius: 50%; padding: 2px; }
+        .avatar-initials {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            border: 1.5px solid #f3f4f6;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.4s ease; }
+
+        .heart-btn {
+            position: absolute; top: 10px; right: 10px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.92);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            transition: transform 0.15s;
+        .heart-btn:hover { transform: scale(1.15); }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+                <a href="/" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 py-10 fade-up">
+
+        <!-- Page Header -->
+        <div class="mb-8 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center">
+                <i class="fas fa-heart text-red-500 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-gray-900">Wishlist Saya</h1>
+                <p class="text-gray-500 text-sm mt-0.5">
+                    <span th:text="${wishlist.size()}">0</span> hunian tersimpan
+                </p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${wishlist.empty}" class="text-center py-24">
+            <div class="w-24 h-24 rounded-3xl bg-red-50 flex items-center justify-center mx-auto mb-5">
+                <i class="far fa-heart text-5xl text-red-300"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-700 mb-2">Wishlist masih kosong</h2>
+            <p class="text-gray-400 text-sm mb-6">Tekan ikon ❤️ pada hunian yang kamu suka untuk menyimpannya di sini.</p>
+            <a href="/" class="inline-flex items-center gap-2 rainbow-bg text-white font-bold px-6 py-3 rounded-xl shadow transition">
+                <i class="fas fa-search"></i> Jelajahi Hunian
+            </a>
+        </div>
+
+        <!-- Wishlist Grid -->
+        <div th:unless="${wishlist.empty}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="hunian : ${wishlist}" class="card group">
+
+                <!-- Image -->
+                <div class="relative h-48 overflow-hidden">
+                    <a th:href="@{'/hunian/' + ${hunian.idHunian}}">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"
+                             alt="Hunian" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </a>
+                    <!-- Remove from wishlist -->
+                    <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post">
+                        <input type="hidden" name="returnUrl" value="/wishlist">
+                        <button type="submit" class="heart-btn" title="Hapus dari Wishlist">
+                            <i class="fas fa-heart" style="color:#ef4444;font-size:0.9rem;"></i>
+                        </button>
+                    </form>
+                    <!-- Gender badge -->
+                    <div class="absolute bottom-3 left-3">
+                        <span class="bg-white text-gray-700 text-xs font-semibold px-2 py-1 rounded-lg shadow"
+                              th:text="${hunian.tipeGender}">Tipe</span>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="p-4">
+                    <a th:href="@{'/hunian/' + ${hunian.idHunian}}">
+                        <h2 class="font-bold text-gray-900 text-base group-hover:text-purple-600 transition mb-1 truncate"
+                            th:text="${hunian.namaHunian}">Nama Hunian</h2>
+                    </a>
+                    <p class="text-gray-500 text-xs flex items-center gap-1 mb-3">
+                        <i class="fas fa-map-marker-alt text-gray-400"></i>
+                        <span th:text="${hunian.lokasi}">Lokasi</span>
+                    </p>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-1.5 mb-3">
+                        <span th:if="${hunian.jumlahKamar > 1}"
+                              class="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <i class="fas fa-user-friends text-[10px]"></i> Bisa Roommate
+                        </span>
+                        <span th:each="kat : ${hunian.kategoriSewa}"
+                              class="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full"
+                              th:text="${kat}">Bulanan</span>
+                    </div>
+
+                    <!-- Price + CTA -->
+                    <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+                        <div>
+                            <span class="text-lg font-black text-gray-900"
+                                  th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span>
+                            <span class="text-gray-400 text-xs">/bln</span>
+                        </div>
+                        <a th:href="@{'/hunian/' + ${hunian.idHunian}}"
+                           class="text-xs font-bold text-purple-600 hover:text-purple-800 transition flex items-center gap-1">
+                            Lihat Detail <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+</body>
+</html>

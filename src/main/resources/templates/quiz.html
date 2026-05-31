@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${mode == 'setup'} ? 'Preferensi Kamu - Superkos' : 'Retake Kuis - Superkos'">Kuis - Superkos</title>
+    <meta name="description" content="Isi kuis preferensi untuk menemukan roommate yang cocok di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+        }
+
+        /* ── Step indicator ───────────────────────────────── */
+        .step-pill {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 16px; border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600;
+            border: 2px solid #e5e7eb; color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+        .step-pill.active   { border-color: currentColor; }
+        .step-pill.done     { opacity: 0.6; }
+        .step-pill.social   { color: #a855f7; }
+        .step-pill.clean    { color: #10b981; }
+        .step-pill.sleep    { color: #3b82f6; }
+        .step-pill.inactive { color: #d1d5db; border-color: #e5e7eb; }
+
+        /* ── Section cards ───────────────────────────────── */
+        .quiz-section { display: none; }
+        .quiz-section.active { display: block; }
+
+        /* ── Question cards ──────────────────────────────── */
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            border: 1.5px solid #f3f4f6;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        .question-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .question-card.social-card:hover  { border-color: #e9d5ff; }
+        .question-card.clean-card:hover   { border-color: #a7f3d0; }
+        .question-card.sleep-card:hover   { border-color: #bfdbfe; }
+
+        .category-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; padding: 3px 10px;
+            border-radius: 999px; margin-bottom: 10px;
+        }
+        .badge-social { background: #faf5ff; color: #7c3aed; }
+        .badge-clean  { background: #ecfdf5; color: #059669; }
+        .badge-sleep  { background: #eff6ff; color: #1d4ed8; }
+
+        /* ── Sliders ─────────────────────────────────────── */
+        .quiz-slider {
+            -webkit-appearance: none;
+            width: 100%; height: 8px;
+            border-radius: 4px; outline: none; cursor: pointer;
+        }
+        .quiz-slider.social-slider { accent-color: #a855f7; }
+        .quiz-slider.clean-slider  { accent-color: #10b981; }
+        .quiz-slider.sleep-slider  { accent-color: #3b82f6; }
+
+        .quiz-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px; height: 26px;
+            border-radius: 50%; cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .quiz-slider.social-slider::-webkit-slider-thumb { background: #a855f7; }
+        .quiz-slider.clean-slider::-webkit-slider-thumb  { background: #10b981; }
+        .quiz-slider.sleep-slider::-webkit-slider-thumb  { background: #3b82f6; }
+
+        .value-bubble {
+            min-width: 44px; height: 44px;
+            border-radius: 999px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; font-weight: 900; color: white;
+            flex-shrink: 0;
+        }
+        .bubble-social { background: linear-gradient(135deg, #a855f7, #6366f1); }
+        .bubble-clean  { background: linear-gradient(135deg, #10b981, #059669); }
+        .bubble-sleep  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+
+        /* ── Navigation buttons ──────────────────────────── */
+        .nav-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 12px;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            transition: all 0.2s; border: none;
+        }
+        .btn-prev { background: #f9fafb; color: #374151; border: 1.5px solid #e5e7eb; }
+        .btn-prev:hover { background: #f3f4f6; }
+        .btn-next-social  { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
+        .btn-next-clean   { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-next-sleep   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .btn-submit       {
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto; animation: gradientFlow 4s linear infinite;
+            color: white; box-shadow: 0 4px 16px rgba(168,85,247,0.3);
+        }
+        .nav-btn:hover { transform: translateY(-1px); }
+        .nav-btn:active { transform: translateY(0); }
+
+        /* ── Progress bar ────────────────────────────────── */
+        .progress-track {
+            height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, #a855f7, #3b82f6);
+            transition: width 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .quiz-section.active { animation: slideIn 0.35s ease; }
+    </style>
+</head>
+<body class="min-h-screen" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 50%, #eff6ff 100%);">
+
+    <!-- Navbar -->
+    <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i>
+                <span class="rainbow-text">Superkos</span>
+            </a>
+            <span class="text-sm text-gray-500 font-medium"
+                  th:text="${mode == 'setup'} ? 'Langkah Terakhir Pendaftaran' : 'Retake Preferensi Kuis'">
+                Kuis Preferensi
+            </span>
+        </div>
+    </header>
+
+    <div class="max-w-3xl mx-auto px-4 py-8">
+
+        <!-- Error Banner -->
+        <div th:if="${error}" class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-medium flex items-center gap-3">
+            <i class="fas fa-exclamation-circle text-lg"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 bg-white border border-purple-100 rounded-full px-4 py-1.5 text-xs font-semibold text-purple-600 mb-4 shadow-sm">
+                <i class="fas fa-magic"></i>
+                <span th:text="${mode == 'setup'} ? 'Preferensi Kos-kosanmu' : 'Perbarui Preferensimu'">Kuis</span>
+            </div>
+            <h1 class="text-3xl font-black text-gray-900 mb-2"
+                th:text="${mode == 'setup'} ? 'Hai, ' + ${loggedInUser.nama} + '! 👋' : 'Ambil Ulang Kuis'">
+                Hai!
+            </h1>
+            <p class="text-gray-500 max-w-md mx-auto text-sm"
+               th:text="${mode == 'setup'} ? 'Jawab 20 pertanyaan ini jujur ya — ini akan membantu kami menemukan roommate yang paling cocok untukmu.' : 'Jawab ulang 20 pertanyaan ini untuk memperbarui preferensi roommateму.'">
+                Jawab 20 pertanyaan berikut.
+            </p>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-center gap-3 mb-8" id="step-indicator">
+            <div class="step-pill social active" id="pill-1">
+                <i class="fas fa-users text-xs"></i> Sosial
+            </div>
+            <div class="w-8 h-px bg-gray-200"></div>
+            <div class="step-pill clean inactive" id="pill-2">
+                <i class="fas fa-broom text-xs"></i> Kebersihan
+            </div>
+            <div class="w-8 h-px bg-gray-200"></div>
+            <div class="step-pill sleep inactive" id="pill-3">
+                <i class="fas fa-moon text-xs"></i> Tidur
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-track mb-8">
+            <div class="progress-fill" id="progress-fill" style="width: 33%"></div>
+        </div>
+
+        <!-- ════════════════════════════════════════════ QUIZ FORM ══ -->
+        <form th:action="${formAction}" method="POST" id="quiz-form">
+
+            <!-- ── SECTION 1: SOCIAL (7 questions) ────────────── -->
+            <div class="quiz-section active" id="section-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+                        <i class="fas fa-users text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900">Sosial &amp; Kepribadian</h2>
+                        <p class="text-xs text-gray-400">7 pertanyaan — tentang gaya hidup sosialmu</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Q1 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 1/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa sering kamu ingin mengajak teman main atau nongkrong di kos/apartemen?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ1">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ1" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(0) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ1')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Tidak pernah</span>
+                                    <span class="text-xs text-gray-400">Hampir tiap hari</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 2/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana cara kamu bersantai setelah hari yang melelahkan?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ2">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ2" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(1) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ2')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Sendiri di kamar</span>
+                                    <span class="text-xs text-gray-400">Ngobrol di ruang tengah</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 3/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa malam minggu idealmu?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ3">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ3" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(2) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ3')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Me-time di kamar</span>
+                                    <span class="text-xs text-gray-400">Ngumpul bareng teman</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 4/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana perasaanmu jika pasangan (pacar) teman sekamarmu datang berkunjung/menginap?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ4">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ4" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(3) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ4')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Sangat tidak nyaman</span>
+                                    <span class="text-xs text-gray-400">Santai saja</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 5/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jika kita berpapasan di dapur atau ruang tengah, apa ekspektasimu?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ5">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ5" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(4) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ5')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Hanya senyum/menyapa</span>
+                                    <span class="text-xs text-gray-400">Ngobrol panjang lebar</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 6/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa suasana lingkungan yang kamu sukai saat di kos?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ6">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ6" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(5) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ6')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Hening total</span>
+                                    <span class="text-xs text-gray-400">Selalu ada suara/musik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="question-card social-card">
+                        <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 7/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Apa yang kamu harapkan dari seorang teman sekamar?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-social" id="bubble_socialQ7">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="socialQ7" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(6) : 5}"
+                                       class="quiz-slider social-slider" oninput="updateBubble(this, 'bubble_socialQ7')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Hanya partner sewa</span>
+                                    <span class="text-xs text-gray-400">Menjadi sahabat dekat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SECTION 2: CLEANLINESS (7 questions) ────────── -->
+            <div class="quiz-section" id="section-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                        <i class="fas fa-broom text-emerald-600"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900">Kebersihan &amp; Kerapian</h2>
+                        <p class="text-xs text-gray-400">7 pertanyaan — tentang standar kebersihan</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- C1 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 1/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Berapa lama piring kotor boleh dibiarkan di wastafel cucian?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ1">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ1" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(7) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ1')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Bisa berhari-hari</span>
+                                    <span class="text-xs text-gray-400">Langsung dicuci</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C2 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 2/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa sering kamar mandi atau lantai harus disikat/dibersihkan?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ2">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ2" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(8) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ2')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Kalau terlihat kotor saja</span>
+                                    <span class="text-xs text-gray-400">Rutin setiap minggu</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C3 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 3/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Kapan kamu biasanya membuang sampah ke luar?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ3">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ3" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(9) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ3')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Saat sudah menumpuk</span>
+                                    <span class="text-xs text-gray-400">Begitu mulai penuh/bau</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C4 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 4/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa kondisi kamarmu pada hari-hari biasa?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ4">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ4" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(10) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ4')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Baju berserakan</span>
+                                    <span class="text-xs text-gray-400">Sangat rapi &amp; bersih</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C5 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 5/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana pendapatmu tentang jadwal piket kebersihan bersama?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ5">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ5" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(11) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ5')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Benci, terlalu kaku</span>
+                                    <span class="text-xs text-gray-400">Sangat penting</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C6 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 6/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa cepat kamu mengelap meja dapur/kompor setelah memasak?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ6">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ6" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(12) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ6')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Nanti-nanti saja</span>
+                                    <span class="text-xs text-gray-400">Langsung dibersihkan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C7 -->
+                    <div class="question-card clean-card">
+                        <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 7/7</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana caramu menangani barang pinjaman (panci, sapu, alat pel)?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-clean" id="bubble_cleanQ7">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="cleanQ7" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(13) : 5}"
+                                       class="quiz-slider clean-slider" oninput="updateBubble(this, 'bubble_cleanQ7')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Bereskan nanti</span>
+                                    <span class="text-xs text-gray-400">Langsung dikembalikan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SECTION 3: SLEEP (6 questions) ─────────────── -->
+            <div class="quiz-section" id="section-3">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-moon text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900">Waktu Tidur &amp; Rutinitas</h2>
+                        <p class="text-xs text-gray-400">6 pertanyaan — tentang jadwal harian</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- S1 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 1/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jam berapa kamu biasanya bangun di akhir pekan?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ1">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ1" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(14) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ1')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Jam 1 siang+</span>
+                                    <span class="text-xs text-gray-400">Jam 6 pagi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S2 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 2/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jam berapa kamu biasanya mematikan lampu untuk tidur malam?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ2">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ2" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(15) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ2')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Jam 3 pagi+</span>
+                                    <span class="text-xs text-gray-400">Jam 9 malam</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S3 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 3/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Kapan kamu merasa paling aktif dan bisa fokus mengerjakan tugas/kerjaan?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ3">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ3" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(16) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ3')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Tengah malam</span>
+                                    <span class="text-xs text-gray-400">Jam 8 pagi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S4 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 4/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa hening suasana yang kamu butuhkan setelah jam 10 malam?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ4">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ4" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(17) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ4')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Bebas/Berisik santai</span>
+                                    <span class="text-xs text-gray-400">Harus hening total</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S5 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 5/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa awal alarm pagimu mulai berbunyi?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ5">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ5" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(18) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ5')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Menjelang siang</span>
+                                    <span class="text-xs text-gray-400">Sebelum matahari terbit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- S6 -->
+                    <div class="question-card sleep-card">
+                        <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 6/6</div>
+                        <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa beda jadwal harianmu di hari kerja dibandingkan akhir pekan?</p>
+                        <div class="flex items-center gap-4">
+                            <div class="value-bubble bubble-sleep" id="bubble_sleepQ6">5</div>
+                            <div class="flex-1">
+                                <input type="range" name="sleepQ6" min="1" max="10"
+                                       th:value="${survey != null ? survey.getAnswer(19) : 5}"
+                                       class="quiz-slider sleep-slider" oninput="updateBubble(this, 'bubble_sleepQ6')">
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">Sangat acak</span>
+                                    <span class="text-xs text-gray-400">Persis sama setiap hari</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Navigation ─────────────────────────────────── -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
+                <button type="button" class="nav-btn btn-prev" id="btn-prev" onclick="prevStep()" style="display:none;">
+                    <i class="fas fa-arrow-left text-sm"></i> Sebelumnya
+                </button>
+                <div></div>
+                <button type="button" class="nav-btn btn-next-social" id="btn-next" onclick="nextStep()">
+                    Selanjutnya <i class="fas fa-arrow-right text-sm"></i>
+                </button>
+                <button type="submit" class="nav-btn btn-submit" id="btn-submit" style="display:none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${mode == 'setup'} ? 'Selesai &amp; Daftar!' : 'Simpan Perubahan'">Simpan</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        const nextColors = ['btn-next-social', 'btn-next-clean', 'btn-next-sleep'];
+
+        // Init: sync all slider bubbles to initial values
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.quiz-slider').forEach(slider => {
+                const bubbleId = 'bubble_' + slider.name;
+                const bubble = document.getElementById(bubbleId);
+                if (bubble) bubble.textContent = slider.value;
+                updateSliderTrack(slider);
+            });
+        });
+
+        function updateBubble(slider, bubbleId) {
+            document.getElementById(bubbleId).textContent = slider.value;
+            updateSliderTrack(slider);
+        }
+
+        function updateSliderTrack(slider) {
+            const pct = ((slider.value - 1) / 9) * 100;
+            let color = '#a855f7';
+            if (slider.classList.contains('clean-slider')) color = '#10b981';
+            if (slider.classList.contains('sleep-slider')) color = '#3b82f6';
+            slider.style.background = `linear-gradient(to right, ${color} ${pct}%, #e5e7eb ${pct}%)`;
+        }
+
+        function goToStep(step) {
+            // Hide current
+            document.getElementById('section-' + currentStep).classList.remove('active');
+            // Update pills
+            const pillClasses = ['social', 'clean', 'sleep'];
+            document.getElementById('pill-' + currentStep).classList.remove('active');
+            document.getElementById('pill-' + currentStep).classList.add('inactive');
+            document.getElementById('pill-' + step).classList.remove('inactive');
+            document.getElementById('pill-' + step).classList.add('active');
+            // Show new
+            currentStep = step;
+            document.getElementById('section-' + currentStep).classList.add('active');
+            updateNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) goToStep(currentStep + 1);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        }
+
+        function updateNav() {
+            const prev = document.getElementById('btn-prev');
+            const next = document.getElementById('btn-next');
+            const submit = document.getElementById('btn-submit');
+
+            // Prev button
+            prev.style.display = currentStep === 1 ? 'none' : 'flex';
+
+            // Progress bar
+            const pct = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+
+            if (currentStep === totalSteps) {
+                next.style.display = 'none';
+                submit.style.display = 'flex';
+            } else {
+                next.style.display = 'flex';
+                submit.style.display = 'none';
+                // Update next button color
+                next.className = 'nav-btn ' + nextColors[currentStep - 1];
+            }
+        }
+    </script>
+
+</body>
+</html>
