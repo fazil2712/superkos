@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Handles the profile view, roommate requests, and chat rooms.
@@ -22,7 +23,7 @@ import java.util.Optional;
  *  GET  /roommate/inbox                — view received requests + accepted chats
  *  POST /roommate/request/{id}/accept  — accept a pending request (creates ChatRoom)
  *  POST /roommate/request/{id}/reject  — reject a pending request
- *  GET  /chat/{chatId}                 — open the chat room
+ *  GET  /chat/{chatId}                 — open the chat room (supports group chat)
  *  POST /chat/{chatId}/send            — send a message
  */
 @Controller
@@ -32,6 +33,7 @@ public class ChatController {
     @Autowired private RoommateRequestRepository requestRepository;
     @Autowired private ChatRoomRepository chatRoomRepository;
     @Autowired private MessageRepository messageRepository;
+    @Autowired private ReservasiRepository reservasiRepository;
     @Autowired private UserRepository userRepository;
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -40,6 +42,12 @@ public class ChatController {
         User u = (User) session.getAttribute("loggedInUser");
         if (u == null || !(u instanceof PencariHunian)) return null;
         return pencariHunianRepository.findById(u.getId()).orElse(null);
+    }
+
+    private User getMeGeneric(HttpSession session) {
+        User u = (User) session.getAttribute("loggedInUser");
+        if (u == null) return null;
+        return userRepository.findById(u.getId()).orElse(null);
     }
 
     private String initial(String nama) {
@@ -173,10 +181,11 @@ public class ChatController {
         if (req == null || req.getTargetPencari().getId() != me.getId()) return "redirect:/roommate/inbox";
         if (!"PENDING".equals(req.getStatus())) return "redirect:/roommate/inbox";
 
-        // Create the ChatRoom
+        // Create the ChatRoom with participants list
         ChatRoom room = new ChatRoom();
-        room.setParticipant1(req.getPencariHunian());
-        room.setParticipant2(req.getTargetPencari());
+        room.setChatType("ROOMMATE");
+        room.addParticipant(req.getPencariHunian());
+        room.addParticipant(req.getTargetPencari());
         room.setCreatedAt(new Date());
         room = chatRoomRepository.save(room);
 
@@ -203,24 +212,22 @@ public class ChatController {
         return "redirect:/roommate/inbox";
     }
 
-    // ── Chat Room ─────────────────────────────────────────────────────────────
+    // ── Chat Room (supports both 1-on-1 and group) ───────────────────────────
 
     @GetMapping("/chat/{chatId}")
     public String showChat(@PathVariable int chatId, HttpSession session, Model model) {
-        PencariHunian me = getMe(session);
+        User me = getMeGeneric(session);
         if (me == null) return "redirect:/login";
 
         ChatRoom room = chatRoomRepository.findById(chatId).orElse(null);
-        if (room == null) return "redirect:/roommate/inbox";
+        if (room == null) return "redirect:/";
 
         // Only participants may view the chat
-        boolean isParticipant = room.getParticipant1().getId() == me.getId()
-                || room.getParticipant2().getId() == me.getId();
-        if (!isParticipant) return "redirect:/roommate/inbox";
+        if (!room.isParticipant(me)) return "redirect:/";
 
         List<Message> messages = messageRepository.findByChatRoomOrderByTimestampAsc(room);
 
-        // Mark messages from other as read
+        // Mark messages from others as read
         boolean msgUpdated = false;
         for (Message msg : messages) {
             if (msg.getSender().getId() != me.getId() && !msg.isRead()) {
@@ -232,12 +239,17 @@ public class ChatController {
             messageRepository.saveAll(messages);
         }
 
-        User other = room.getParticipant1().getId() == me.getId()
-                ? room.getParticipant2() : room.getParticipant1();
+        // For 1-on-1 chats, set 'other' for backward compatibility with chatroom.html
+        boolean isGroupChat = "RESERVASI".equals(room.getChatType()) || room.getParticipants().size() > 2;
+        User other = null;
+        if (!isGroupChat && room.getParticipants().size() == 2) {
+            other = room.getParticipants().get(0).getId() == me.getId()
+                    ? room.getParticipants().get(1) : room.getParticipants().get(0);
+        }
 
-        // Mark request as read if current user is the sender of the accepted request
-        if (other instanceof PencariHunian otherPencari) {
-            Optional<RoommateRequest> reqOpt = requestRepository.findAcceptedBetween(me, otherPencari);
+        // Mark roommate request as read if applicable
+        if (me instanceof PencariHunian pencariMe && other instanceof PencariHunian otherPencari) {
+            Optional<RoommateRequest> reqOpt = requestRepository.findAcceptedBetween(pencariMe, otherPencari);
             if (reqOpt.isPresent()) {
                 RoommateRequest req = reqOpt.get();
                 if (req.getPencariHunian().getId() == me.getId() && !req.isSenderRead()) {
@@ -247,13 +259,41 @@ public class ChatController {
             }
         }
 
-        long pendingCount = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
+        // Build participant names for group chat header
+        List<User> otherParticipants = room.getParticipants().stream()
+                .filter(p -> p.getId() != me.getId())
+                .collect(Collectors.toList());
 
-        model.addAttribute("loggedInUser",  me);
-        model.addAttribute("room",          room);
-        model.addAttribute("messages",      messages);
-        model.addAttribute("other",         other);
-        model.addAttribute("pendingCount",  pendingCount);
+        String chatTitle;
+        if (isGroupChat && room.getHunian() != null) {
+            chatTitle = room.getHunian().getNamaHunian();
+        } else if (other != null) {
+            chatTitle = other.getNama();
+        } else {
+            chatTitle = "Chat";
+        }
+
+        // Find linked reservasi for "Invite Roommate" button
+        int inviteReservasiId = -1;
+        if ("RESERVASI".equals(room.getChatType()) && me instanceof PencariHunian) {
+            List<Reservasi> reservasiList = reservasiRepository.findByHunianAndStatus(room.getHunian(), "ACCEPTED");
+            for (Reservasi r : reservasiList) {
+                if (r.getPencariHunian().getId() == me.getId() && r.getChatRoom() != null
+                        && r.getChatRoom().getIdChat() == room.getIdChat()) {
+                    inviteReservasiId = r.getIdReservasi();
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute("loggedInUser",      me);
+        model.addAttribute("room",              room);
+        model.addAttribute("messages",          messages);
+        model.addAttribute("other",             other);
+        model.addAttribute("isGroupChat",       isGroupChat);
+        model.addAttribute("otherParticipants", otherParticipants);
+        model.addAttribute("chatTitle",         chatTitle);
+        model.addAttribute("inviteReservasiId", inviteReservasiId);
         return "chatroom";
     }
 
@@ -263,15 +303,11 @@ public class ChatController {
     public String sendMessage(@PathVariable int chatId,
                               @RequestParam String isiPesan,
                               HttpSession session) {
-        PencariHunian me = getMe(session);
+        User me = getMeGeneric(session);
         if (me == null) return "redirect:/login";
 
         ChatRoom room = chatRoomRepository.findById(chatId).orElse(null);
-        if (room == null) return "redirect:/roommate/inbox";
-
-        boolean isParticipant = room.getParticipant1().getId() == me.getId()
-                || room.getParticipant2().getId() == me.getId();
-        if (!isParticipant) return "redirect:/roommate/inbox";
+        if (room == null || !room.isParticipant(me)) return "redirect:/";
 
         if (isiPesan != null && !isiPesan.trim().isEmpty()) {
             Message msg = new Message();

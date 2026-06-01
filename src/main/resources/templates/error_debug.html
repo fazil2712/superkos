@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error Details</title>
+</head>
+<body style="font-family: monospace; background: #fff0f0; padding: 20px;">
+    <h2 style="color: red;">Application Error Occurred</h2>
+    <p><strong>Message:</strong> <span th:text="${message}"></span></p>
+    <hr>
+    <h3>Stack Trace:</h3>
+    <pre th:text="${trace}" style="background: #fff; padding: 10px; border: 1px solid #ccc; overflow-x: auto; font-size: 12px;"></pre>
+</body>
+</html>

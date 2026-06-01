@@ -16,10 +16,11 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     /** All messages in a chat room, ordered oldest first. */
     List<Message> findByChatRoomOrderByTimestampAsc(ChatRoom chatRoom);
 
+    /** Count all unread messages across all chats for a given user. */
     @Query("""
         SELECT COUNT(m) FROM Message m
         WHERE m.chatRoom IN (
-            SELECT c FROM ChatRoom c WHERE c.participant1 = :user OR c.participant2 = :user
+            SELECT DISTINCT c FROM ChatRoom c JOIN c.participants p WHERE p = :user
         )
         AND m.sender != :user
         AND m.isRead = false

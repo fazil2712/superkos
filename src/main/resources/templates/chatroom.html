@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="'Chat dengan ' + ${other.nama} + ' - Superkos'">Chat</title>
+    <title th:text="${chatTitle} + ' - Superkos'">Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -69,6 +69,11 @@
         }
         .bubble-wrap.mine .bubble-time { text-align: right; }
 
+        .sender-name {
+            font-size: .68rem; font-weight: 700; color: #6366f1;
+            margin-bottom: 2px;
+        }
+
         /* Mini avatar inside chat */
         .chat-av {
             width: 30px; height: 30px; border-radius: 50%;
@@ -104,13 +109,12 @@
         .send-btn:hover { transform: scale(1.08); }
         .send-btn:active { transform: scale(.96); }
 
-        /* Date divider */
-        .date-divider {
-            text-align: center; font-size: .7rem; color: #9ca3af; font-weight: 600;
-            display: flex; align-items: center; gap: 10px;
+        /* Group participant avatars */
+        .participant-avatars {
+            display: flex; margin-left: -6px;
         }
-        .date-divider::before, .date-divider::after {
-            content: ''; flex: 1; height: 1px; background: #e5e7eb;
+        .participant-avatars .chat-av {
+            margin-left: -6px; border: 2px solid white;
         }
     </style>
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
@@ -134,19 +138,71 @@
 
     <!-- Chat Header -->
     <div class="chat-header">
-        <a href="/roommate/inbox" class="text-gray-400 hover:text-gray-700 transition mr-1">
+        <!-- Back button: different targets based on user role -->
+        <a th:if="${loggedInUser.class.simpleName == 'PencariHunian'}"
+           href="/roommate/inbox" class="text-gray-400 hover:text-gray-700 transition mr-1">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <div class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
-             th:text="${other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
-        <div>
-            <p class="font-bold text-gray-900 text-sm" th:text="${other.nama}">Nama</p>
-            <p class="text-xs text-green-500 font-semibold flex items-center gap-1">
-                <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
-                Terhubung sebagai roommate
-            </p>
+        <a th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}"
+           href="/pemilik/reservasi" class="text-gray-400 hover:text-gray-700 transition mr-1">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+
+        <!-- Group chat header -->
+        <div th:if="${isGroupChat}" class="flex items-center gap-3 flex-1">
+            <div class="participant-avatars">
+                <div th:each="p : ${otherParticipants}"
+                     class="chat-av"
+                     th:style="'background: linear-gradient(135deg,#a855f7,#3b82f6);'"
+                     th:text="${p.nama != null && !p.nama.isEmpty() ? p.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-gray-900 text-sm" th:text="${chatTitle}">Group Chat</p>
+                <p class="text-xs text-gray-500 font-semibold flex items-center gap-1">
+                    <i class="fas fa-users text-purple-400" style="font-size:.6rem;"></i>
+                    <span th:text="${room.participants.size()} + ' anggota'">3 anggota</span>
+                </p>
+            </div>
+            <!-- Invite Roommate button (only for PencariHunian who owns the reservation) -->
+            <a th:if="${inviteReservasiId > 0}"
+               th:href="@{'/reservasi/' + ${inviteReservasiId} + '/invite-roommate'}"
+               class="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition flex items-center gap-1.5 flex-shrink-0">
+                <i class="fas fa-user-plus text-[9px]"></i> Undang
+            </a>
+        </div>
+
+        <!-- 1-on-1 chat header -->
+        <div th:unless="${isGroupChat}" class="flex items-center gap-3">
+            <div class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
+                 th:text="${other != null && other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+            <div>
+                <p class="font-bold text-gray-900 text-sm" th:text="${other != null ? other.nama : 'Chat'}">Nama</p>
+                <p class="text-xs text-green-500 font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
+                    Terhubung
+                </p>
+            </div>
         </div>
     </div>
+
+    <!-- Hunian Info Banner for Reservasi Chats -->
+    <a th:if="${room.chatType == 'RESERVASI' && room.hunian != null}"
+       th:href="@{'/hunian/' + ${room.hunian.idHunian}}"
+       class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 hover:bg-blue-100 transition flex items-center justify-between shadow-sm relative z-10"
+       title="Lihat Detail Properti">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-200 text-blue-700 flex items-center justify-center">
+                <i class="fas fa-home text-[13px]"></i>
+            </div>
+            <div>
+                <p class="text-[13px] font-bold text-blue-900 leading-tight" th:text="${room.hunian.namaHunian}">Nama Hunian</p>
+                <p class="text-[10px] text-blue-700 flex items-center gap-1 mt-0.5"><i class="fas fa-map-marker-alt"></i> <span th:text="${room.hunian.lokasi}">Lokasi</span></p>
+            </div>
+        </div>
+        <div class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-md border border-blue-200 flex items-center gap-1">
+            Lihat Detail <i class="fas fa-chevron-right text-[8px]"></i>
+        </div>
+    </a>
 
     <!-- Messages Area -->
     <div class="messages-area" id="messagesArea">
@@ -157,7 +213,7 @@
                 <i class="fas fa-comment-dots text-3xl text-purple-400"></i>
             </div>
             <p class="font-semibold text-gray-600 mb-1">Belum ada pesan</p>
-            <p class="text-gray-400 text-sm">Mulai obrolan dengan <span th:text="${other.nama}">nama</span>!</p>
+            <p class="text-gray-400 text-sm">Mulai obrolan!</p>
         </div>
 
         <!-- Messages -->
@@ -169,9 +225,11 @@
             <!-- Their avatar (only on their side) -->
             <div th:unless="${isMine}"
                  class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
-                 th:text="${other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+                 th:text="${msg.sender.nama != null && !msg.sender.nama.isEmpty() ? msg.sender.nama.substring(0,1).toUpperCase() : '?'}">A</div>
 
             <div class="flex flex-col gap-0.5 max-w-[72%]" th:classappend="${isMine} ? ' items-end' : ' items-start'">
+                <!-- Show sender name in group chats -->
+                <span th:if="${isGroupChat && !isMine}" class="sender-name" th:text="${msg.sender.nama}">Nama</span>
                 <div class="bubble" th:classappend="${isMine} ? ' mine' : ' theirs'"
                      th:text="${msg.isiPesan}">pesan</div>
                 <span class="bubble-time"

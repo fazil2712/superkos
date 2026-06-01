@@ -89,19 +89,28 @@
         </div>
 
         <div th:each="chat : ${chats}" class="row-item">
-            <div th:with="other=${chat.participant1.id == loggedInUser.id ? chat.participant2 : chat.participant1}">
+            <div th:with="
+                isGroup=${chat.participants.size() > 2},
+                otherUser=${!isGroup && chat.participants.size() == 2
+                    ? (chat.participants[0].id == loggedInUser.id ? chat.participants[1] : chat.participants[0])
+                    : null},
+                displayName=${isGroup && chat.hunian != null ? chat.hunian.namaHunian : (otherUser != null ? otherUser.nama : 'Chat')},
+                initial=${displayName != null && !displayName.isEmpty() ? displayName.substring(0,1).toUpperCase() : '?'}">
                 <div class="flex items-center gap-3 w-full">
-                    <div class="mini-avatar" style="background: linear-gradient(135deg,#10b981,#3b82f6);"
-                         th:text="${other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+                    <div class="mini-avatar"
+                         th:style="${isGroup ? 'background: linear-gradient(135deg,#a855f7,#3b82f6);' : 'background: linear-gradient(135deg,#10b981,#3b82f6);'}"
+                         th:text="${initial}">A</div>
                     <div class="flex-1">
                         <div class="flex items-center gap-2">
-                            <p class="font-semibold text-gray-900 text-sm" th:text="${other.nama}">Nama</p>
+                            <p class="font-semibold text-gray-900 text-sm" th:text="${displayName}">Nama</p>
+                            <span th:if="${isGroup}" class="text-[9px] font-bold text-purple-600 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-full">GRUP</span>
                             <span th:with="unreadMsgCount=${chat.getUnreadCount(loggedInUser)}"
                                   th:if="${unreadMsgCount > 0}"
                                   class="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full"
                                   th:text="${unreadMsgCount}">1</span>
                         </div>
-                        <p class="text-xs text-gray-400" th:text="${other.lokasi ?: 'Lokasi tidak diisi'}">Lokasi</p>
+                        <p class="text-xs text-gray-400"
+                           th:text="${isGroup ? (chat.participants.size() + ' anggota') : (otherUser != null ? (otherUser.lokasi ?: 'Lokasi tidak diisi') : '')}">Info</p>
                     </div>
                     <a th:href="@{'/chat/' + ${chat.idChat}}"
                        class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-100 transition flex items-center gap-1.5">

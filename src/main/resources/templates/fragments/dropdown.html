@@ -256,6 +256,20 @@
 
           <!-- PemilikProperti only -->
           <a
+            href="/pemilik/reservasi"
+            class="dropdown-item"
+            th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}"
+          >
+            <i class="fas fa-file-signature" style="color: #10b981"></i>
+            Permintaan Sewa
+            <span
+              th:if="${pemilikPendingCount > 0}"
+              class="inbox-badge"
+              th:text="${pemilikPendingCount > 99 ? '99+' : pemilikPendingCount}"
+              >0</span
+            >
+          </a>
+          <a
             href="/pemilik/properti"
             class="dropdown-item"
             th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}"

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permintaan Sewa - Superkos</title>
+    <meta name="description" content="Kelola permintaan sewa hunian Anda di Superkos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .rainbow-text { background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientFlow 5s linear infinite; }
+        .rainbow-bg { background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444); background-size: 200% auto; animation: gradientFlow 5s linear infinite; color: white; }
+
+        .section-card { background: white; border-radius: 20px; border: 1.5px solid #f3f4f6; box-shadow: 0 2px 16px rgba(0,0,0,0.05); overflow: hidden; }
+        .section-header { padding: 16px 20px; border-bottom: 1px solid #f9fafb; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+        .section-header:hover { background: #faf5ff; }
+        .section-header .chevron { transition: transform .2s; color: #9ca3af; font-size: .7rem; margin-left: auto; }
+        .section-header .chevron.open { transform: rotate(180deg); }
+        .section-badge { min-width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 800; padding: 0 6px; }
+
+        .row-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid #f9fafb; transition: background .12s; }
+        .row-item:last-child { border-bottom: none; }
+        .row-item:hover { background: #faf5ff; }
+        .row-item.unread { background: #fffbeb; }
+        .row-item.unread:hover { background: #fef3c7; }
+
+        .mini-avatar { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; flex-shrink: 0; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.3s ease both; }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i><span class="rainbow-text">Superkos</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-4xl mx-auto px-4 py-10 fade-up">
+
+    <!-- Page Header -->
+    <div class="mb-8 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
+            <i class="fas fa-file-signature text-green-600 text-xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-gray-900">Permintaan Sewa</h1>
+            <p class="text-gray-500 text-sm mt-0.5">Kelola permintaan sewa dari pencari hunian</p>
+        </div>
+        <a href="/pemilik/dashboard"
+           class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
+            <i class="fas fa-arrow-left text-[10px]"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- Success notification -->
+    <div th:if="${param.rejected}" class="bg-red-50 text-red-600 p-3 rounded-xl mb-5 text-sm font-semibold text-center border border-red-200">
+        <i class="fas fa-times-circle mr-1"></i> Permintaan sewa berhasil ditolak.
+    </div>
+
+    <!-- ═══ PENDING SECTION ═══ -->
+    <div class="section-card mb-5">
+        <div class="section-header" onclick="toggle('pendingBody','pendingChevron')">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                <i class="fas fa-clock text-amber-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800 text-sm">Permintaan Masuk</h2>
+            <span th:if="${totalPending > 0}" class="section-badge bg-amber-100 text-amber-700 border border-amber-200" th:text="${totalPending}">0</span>
+            <i class="fas fa-chevron-down chevron open" id="pendingChevron"></i>
+        </div>
+        <div id="pendingBody">
+            <div th:if="${pending.empty}" class="p-6 text-center text-gray-400 text-sm">
+                <i class="fas fa-check-circle text-2xl mb-2 block text-gray-300"></i>
+                Tidak ada permintaan baru
+            </div>
+            <a th:each="r : ${pending}"
+               th:href="@{'/pemilik/reservasi/' + ${r.idReservasi}}"
+               class="row-item"
+               th:classappend="${!r.pemilikRead} ? ' unread' : ''">
+                <div class="mini-avatar" style="background: linear-gradient(135deg,#f59e0b,#ef4444);">
+                    <span th:text="${r.pencariHunian != null && r.pencariHunian.nama != null && !r.pencariHunian.nama.isEmpty() ? r.pencariHunian.nama.substring(0,1).toUpperCase() : '?'}">?</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <p class="font-semibold text-gray-900 text-sm truncate" th:text="${r.pencariHunian != null ? r.pencariHunian.nama : 'Nama tidak tersedia'}">Nama</p>
+                        <span th:unless="${r.pemilikRead}" class="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0"></span>
+                    </div>
+                    <p class="text-xs text-gray-500 truncate">
+                        <i class="fas fa-home text-gray-400 mr-1"></i>
+                        <span th:text="${r.hunian.namaHunian}">Hunian</span>
+                    </p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <p class="text-[10px] text-gray-400 font-semibold" th:text="${r.tanggalPengajuan != null ? #dates.format(r.tanggalPengajuan, 'dd MMM yyyy') : '-'}">Tanggal</p>
+                    <span class="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">PENDING</span>
+                </div>
+                <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- ═══ ACCEPTED SECTION ═══ -->
+    <div class="section-card mb-5">
+        <div class="section-header" onclick="toggle('acceptedBody','acceptedChevron')">
+            <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                <i class="fas fa-check-circle text-green-600 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800 text-sm">Diterima</h2>
+            <span th:if="${accepted.size() > 0}" class="section-badge bg-green-100 text-green-700 border border-green-200" th:text="${accepted.size()}">0</span>
+            <i class="fas fa-chevron-down chevron open" id="acceptedChevron"></i>
+        </div>
+        <div id="acceptedBody">
+            <div th:if="${accepted.empty}" class="p-6 text-center text-gray-400 text-sm">
+                Belum ada yang diterima
+            </div>
+            <div th:each="r : ${accepted}" class="row-item">
+                <div class="mini-avatar" style="background: linear-gradient(135deg,#10b981,#3b82f6);">
+                    <span th:text="${r.pencariHunian?.nama != null && !r.pencariHunian.nama.isEmpty() ? r.pencariHunian.nama.substring(0,1).toUpperCase() : '?'}">?</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-900 text-sm truncate" th:text="${r.pencariHunian?.nama ?: 'Nama tidak tersedia'}">Nama</p>
+                    <p class="text-xs text-gray-500 truncate">
+                        <i class="fas fa-home text-gray-400 mr-1"></i>
+                        <span th:text="${r.hunian?.namaHunian ?: 'Hunian tidak tersedia'}">Hunian</span>
+                    </p>
+                </div>
+                <a th:if="${r.chatRoom != null}"
+                   th:href="@{'/chat/' + ${r.chatRoom.idChat}}"
+                   class="text-xs font-bold text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 flex-shrink-0"
+                   style="background: linear-gradient(135deg,#a855f7,#3b82f6);">
+                    <i class="fas fa-comment-dots text-[10px]"></i> Chat
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ REJECTED SECTION ═══ -->
+    <div class="section-card">
+        <div class="section-header" onclick="toggle('rejectedBody','rejectedChevron')">
+            <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                <i class="fas fa-times-circle text-red-500 text-sm"></i>
+            </div>
+            <h2 class="font-bold text-gray-800 text-sm">Ditolak</h2>
+            <span th:if="${rejected.size() > 0}" class="section-badge bg-red-100 text-red-600 border border-red-200" th:text="${rejected.size()}">0</span>
+            <i class="fas fa-chevron-down chevron" id="rejectedChevron"></i>
+        </div>
+        <div id="rejectedBody" style="display:none;">
+            <div th:if="${rejected.empty}" class="p-6 text-center text-gray-400 text-sm">
+                Tidak ada yang ditolak
+            </div>
+            <div th:each="r : ${rejected}" class="row-item">
+                <div class="mini-avatar" style="background: linear-gradient(135deg,#ef4444,#f59e0b);">
+                    <span th:text="${r.pencariHunian?.nama != null && !r.pencariHunian.nama.isEmpty() ? r.pencariHunian.nama.substring(0,1).toUpperCase() : '?'}">?</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-900 text-sm truncate" th:text="${r.pencariHunian?.nama ?: 'Nama tidak tersedia'}">Nama</p>
+                    <p class="text-xs text-gray-500 truncate">
+                        <i class="fas fa-home text-gray-400 mr-1"></i>
+                        <span th:text="${r.hunian?.namaHunian ?: 'Hunian tidak tersedia'}">Hunian</span>
+                    </p>
+                    <p th:if="${r.alasanPenolakan != null && !r.alasanPenolakan.isEmpty()}" class="text-xs text-red-400 mt-0.5 truncate">
+                        <i class="fas fa-quote-left text-[8px]"></i>
+                        <span th:text="${r.alasanPenolakan}">Alasan</span>
+                    </p>
+                </div>
+                <span class="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full flex-shrink-0">DITOLAK</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+<script>
+function toggle(bodyId, chevronId) {
+    const body = document.getElementById(bodyId);
+    const chevron = document.getElementById(chevronId);
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        chevron.classList.add('open');
+    } else {
+        body.style.display = 'none';
+        chevron.classList.remove('open');
+    }
+}
+</script>
+</body>
+</html>

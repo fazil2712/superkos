@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Permintaan dari ' + ${pencari.nama} + ' - Superkos'">Detail Permintaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .rainbow-text { background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientFlow 5s linear infinite; }
+        .rainbow-bg { background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444); background-size: 200% auto; animation: gradientFlow 5s linear infinite; color: white; }
+
+        .section-card { background: white; border-radius: 20px; border: 1.5px solid #f3f4f6; box-shadow: 0 2px 16px rgba(0,0,0,0.05); overflow: hidden; }
+        .avatar-ring { background: linear-gradient(135deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7); background-size: 300% 300%; animation: gradientFlow 4s ease infinite; padding: 3px; border-radius: 50%; }
+        .avatar-inner { background: white; border-radius: 50%; padding: 3px; }
+        .avatar-initials { background: linear-gradient(135deg,#6366f1,#a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; letter-spacing: 0.05em; }
+
+        .info-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f9fafb; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: .75rem; font-weight: 600; color: #9ca3af; min-width: 90px; display: flex; align-items: center; gap: 6px; }
+        .info-value { font-size: .875rem; color: #111827; font-weight: 500; }
+
+        .input-field { width: 100%; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 16px; outline: none; font-size: .9rem; color: #111827; transition: border-color .2s, box-shadow .2s; background: white; font-family: 'Inter', sans-serif; resize: vertical; min-height: 80px; }
+        .input-field:focus { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168,85,247,.12); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.3s ease both; }
+    </style>
+    <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                <i class="fas fa-home rainbow-text"></i><span class="rainbow-text">Superkos</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-5xl mx-auto px-4 py-10 fade-up">
+
+    <!-- Page Header -->
+    <div class="mb-8 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
+            <i class="fas fa-file-signature text-green-600 text-xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-black text-gray-900">Detail Permintaan Sewa</h1>
+            <p class="text-gray-500 text-sm mt-0.5">
+                Diajukan <span th:text="${#dates.format(reservasi.tanggalPengajuan, 'dd MMMM yyyy, HH:mm')}">Tanggal</span>
+            </p>
+        </div>
+        <a href="/pemilik/reservasi"
+           class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
+            <i class="fas fa-arrow-left text-[10px]"></i> Kembali
+        </a>
+    </div>
+
+    <!-- Success notification -->
+    <div th:if="${param.accepted}" class="bg-green-50 text-green-700 p-4 rounded-xl mb-6 text-sm font-semibold text-center border border-green-200">
+        <i class="fas fa-check-circle mr-1"></i> Permintaan sewa berhasil diterima! Chat room sudah dibuat.
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+        <!-- LEFT: Pencari Profile (3/5) -->
+        <div class="lg:col-span-3 space-y-6">
+            <div class="section-card">
+                <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                        <i class="fas fa-user text-purple-600 text-sm"></i>
+                    </div>
+                    <h2 class="font-bold text-gray-800 text-sm">Profil Pemohon</h2>
+                </div>
+                <div class="p-5">
+                    <!-- Avatar + Name -->
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="avatar-ring">
+                            <div class="avatar-inner">
+                                <div class="avatar-initials" style="width:56px;height:56px;font-size:1.3rem;"
+                                     th:text="${pencari.nama != null && !pencari.nama.isEmpty() ? pencari.nama.substring(0,1).toUpperCase() : '?'}">?</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold text-gray-900" th:text="${pencari.nama}">Nama</p>
+                            <p class="text-xs text-gray-400" th:text="${pencari.email}">email</p>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-venus-mars text-gray-400"></i> Gender</span>
+                            <span class="info-value" th:text="${pencari.gender ?: '-'}">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-birthday-cake text-gray-400"></i> Umur</span>
+                            <span class="info-value" th:text="${pencari.umur != null ? pencari.umur + ' tahun' : '-'}">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-map-marker-alt text-gray-400"></i> Lokasi</span>
+                            <span class="info-value" th:text="${pencari.lokasi ?: '-'}">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-briefcase text-gray-400"></i> Pekerjaan</span>
+                            <span class="info-value" th:text="${pencari.pekerjaan ?: '-'}">-</span>
+                        </div>
+                        <div class="info-row" style="grid-column: span 2;">
+                            <span class="info-label"><i class="fas fa-phone text-gray-400"></i> Kontak</span>
+                            <span class="info-value" th:text="${pencari.kontak ?: '-'}">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div th:if="${pencari.biodata != null && !pencari.biodata.isEmpty()}" class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs font-semibold text-gray-400 mb-2"><i class="fas fa-quote-left mr-1"></i> Biodata</p>
+                        <p class="text-sm text-gray-700 leading-relaxed" th:text="${pencari.biodata}">Bio</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Hunian + Actions (2/5) -->
+        <div class="lg:col-span-2 space-y-5">
+
+            <!-- Hunian Card -->
+            <div class="section-card">
+                <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-home text-blue-600 text-sm"></i>
+                    </div>
+                    <h2 class="font-bold text-gray-800 text-sm">Properti Diminta</h2>
+                </div>
+                <div class="p-5">
+                    <p class="font-bold text-gray-900 text-base" th:text="${hunian.namaHunian}">Nama</p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${hunian.lokasi ?: '-'}">Lokasi</span>
+                    </p>
+                    <div class="mt-3 space-y-1.5 text-xs text-gray-500">
+                        <p class="flex items-center gap-2">
+                            <i class="fas fa-tag text-gray-400 w-4"></i>
+                            <span class="font-semibold text-gray-800" th:text="'Rp' + ${#numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')} + '/bulan'">Rp0</span>
+                        </p>
+                        <p class="flex items-center gap-2" th:if="${hunian.tipeGender != null}">
+                            <i class="fas fa-venus-mars text-gray-400 w-4"></i>
+                            <span th:text="${hunian.tipeGender}">Campur</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fas fa-bed text-gray-400 w-4"></i>
+                            <span th:text="${hunian.jumlahKamar} + ' orang/kamar'">1</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Card: PENDING -->
+            <div th:if="${reservasi.status == 'PENDING'}" class="section-card">
+                <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                        <i class="fas fa-gavel text-amber-600 text-sm"></i>
+                    </div>
+                    <h2 class="font-bold text-gray-800 text-sm">Tindakan</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <!-- Accept -->
+                    <form th:action="@{'/pemilik/reservasi/' + ${reservasi.idReservasi} + '/accept'}" method="post">
+                        <button type="submit"
+                                class="w-full rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm"
+                                onclick="return confirm('Terima permintaan sewa ini? Chat room akan dibuat.')">
+                            <i class="fas fa-check-circle mr-1"></i> Terima Permintaan
+                        </button>
+                    </form>
+
+                    <div style="height:1px; background:#f3f4f6;"></div>
+
+                    <!-- Reject -->
+                    <form th:action="@{'/pemilik/reservasi/' + ${reservasi.idReservasi} + '/reject'}" method="post">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1.5">Alasan Penolakan (opsional)</label>
+                        <textarea name="alasan" class="input-field" placeholder="Contoh: Kamar sudah penuh untuk bulan ini..." rows="3"></textarea>
+                        <button type="submit"
+                                class="w-full mt-3 border-2 border-red-300 text-red-600 font-bold py-2.5 rounded-xl text-sm hover:bg-red-50 transition"
+                                onclick="return confirm('Tolak permintaan sewa ini?')">
+                            <i class="fas fa-times-circle mr-1"></i> Tolak Permintaan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Status Card: ACCEPTED -->
+            <div th:if="${reservasi.status == 'ACCEPTED'}" class="section-card" style="border-color: #bbf7d0;">
+                <div class="p-5 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                    </div>
+                    <p class="font-bold text-green-700 mb-1">Permintaan Diterima</p>
+                    <p class="text-xs text-gray-400 mb-4">Chat room sudah tersedia untuk berkomunikasi.</p>
+                    <a th:if="${reservasi.chatRoom != null}"
+                       th:href="@{'/chat/' + ${reservasi.chatRoom.idChat}}"
+                       class="inline-flex items-center gap-2 text-sm font-bold text-white px-6 py-2.5 rounded-xl shadow"
+                       style="background: linear-gradient(135deg,#a855f7,#3b82f6);">
+                        <i class="fas fa-comment-dots"></i> Buka Chat
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status Card: REJECTED -->
+            <div th:if="${reservasi.status == 'REJECTED'}" class="section-card" style="border-color: #fecaca;">
+                <div class="p-5 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-times-circle text-red-500 text-2xl"></i>
+                    </div>
+                    <p class="font-bold text-red-600 mb-1">Permintaan Ditolak</p>
+                    <p th:if="${reservasi.alasanPenolakan != null && !reservasi.alasanPenolakan.isEmpty()}"
+                       class="text-xs text-gray-500 italic" th:text="'&quot;' + ${reservasi.alasanPenolakan} + '&quot;'">Alasan</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+</body>
+</html>
