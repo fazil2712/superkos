@@ -4,6 +4,8 @@ import com.superkos.app.model.PencariHunian;
 import com.superkos.app.model.PemilikProperti;
 import com.superkos.app.model.User;
 import com.superkos.app.repository.UserRepository;
+import com.superkos.app.repository.PemilikPropertiRepository;
+import com.superkos.app.repository.PencariHunianRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,12 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PemilikPropertiRepository pemilikPropertiRepository;
+
+    @Autowired
+    private PencariHunianRepository pencariHunianRepository;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -93,9 +101,15 @@ public class AuthController {
         }
 
         try {
-            newUser.registrasi(userRepository);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
+            if (newUser instanceof PemilikProperti) {
+                pemilikPropertiRepository.save((PemilikProperti) newUser);
+            } else if (newUser instanceof PencariHunian) {
+                pencariHunianRepository.save((PencariHunian) newUser);
+            } else {
+                newUser.registrasi(userRepository);
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Gagal registrasi: " + e.getMessage());
             return "register";
         }
         session.setAttribute("loggedInUser", newUser);

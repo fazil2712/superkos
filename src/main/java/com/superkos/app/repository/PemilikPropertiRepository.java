@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PemilikPropertiRepository extends JpaRepository<PemilikProperti, Integer> {
+    PemilikProperti findByEmail(String email);
 }
