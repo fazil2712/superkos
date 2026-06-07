@@ -2,3 +2,7 @@ target/
 .vscode/
 *.log
 *.class
+.agents/
+.continue/
+.github/
+graphify-out/
