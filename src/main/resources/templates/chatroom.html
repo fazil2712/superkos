@@ -271,6 +271,14 @@
             document.getElementById('chatForm').submit();
         }
     });
+
+    // Auto-refresh every 30 seconds ONLY if not typing
+    setInterval(function() {
+        var input = document.getElementById('msgInput');
+        if (input && input.value.trim() === "") {
+            window.location.reload();
+        }
+    }, 30000);
 </script>
 
 </body>
