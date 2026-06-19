@@ -13,6 +13,7 @@ public class MatchResult {
     private final String pekerjaan;
     private final String biodata;
     private final Integer umur;
+    private final String fotoProfil;
 
     
     private final double overallScore;    
@@ -25,7 +26,7 @@ public class MatchResult {
 
     public MatchResult(
             int candidateId, String nama, String email, String kontak,
-            String lokasi, String gender, String pekerjaan, String biodata, Integer umur,
+            String lokasi, String gender, String pekerjaan, String biodata, Integer umur, String fotoProfil,
             double overallScore, double socialScore, double cleanScore, double sleepScore,
             String fuzzyLabel) {
 
@@ -38,6 +39,7 @@ public class MatchResult {
         this.pekerjaan    = pekerjaan;
         this.biodata      = biodata;
         this.umur         = umur;
+        this.fotoProfil   = fotoProfil;
         this.overallScore = round1(overallScore);
         this.socialScore  = round1(socialScore);
         this.cleanScore   = round1(cleanScore);
@@ -56,6 +58,7 @@ public class MatchResult {
     public String getPekerjaan()    { return pekerjaan;    }
     public String getBiodata()      { return biodata;      }
     public Integer getUmur()        { return umur;         }
+    public String getFotoProfil()   { return fotoProfil;   }
     public double getOverallScore() { return overallScore; }
     public double getSocialScore()  { return socialScore;  }
     public double getCleanScore()   { return cleanScore;   }

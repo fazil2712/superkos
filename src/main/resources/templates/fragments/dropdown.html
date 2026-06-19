@@ -124,7 +124,10 @@
     >
       <div class="avatar-ring" title="Profil Saya" style="position: relative">
         <div class="avatar-inner">
-          <div
+          <img th:if="${loggedInUser.fotoProfil != null && !loggedInUser.fotoProfil.isEmpty()}" 
+               th:src="${loggedInUser.fotoProfil}" 
+               style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block;" alt="Avatar" />
+          <div th:unless="${loggedInUser.fotoProfil != null && !loggedInUser.fotoProfil.isEmpty()}"
             class="avatar-initials"
             style="
               background: linear-gradient(135deg, #6366f1, #a855f7);

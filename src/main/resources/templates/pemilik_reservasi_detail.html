@@ -87,7 +87,11 @@
                     <div class="flex items-center gap-4 mb-5">
                         <div class="avatar-ring">
                             <div class="avatar-inner">
-                                <div class="avatar-initials" style="width:56px;height:56px;font-size:1.3rem;"
+                                <img th:if="${pencari.fotoProfil != null && !pencari.fotoProfil.isEmpty()}" 
+                                     th:src="${pencari.fotoProfil}" 
+                                     style="width:56px;height:56px;border-radius:50%;object-fit:cover;" alt="Avatar" />
+                                <div th:unless="${pencari.fotoProfil != null && !pencari.fotoProfil.isEmpty()}" 
+                                     class="avatar-initials" style="width:56px;height:56px;font-size:1.3rem;"
                                      th:text="${pencari.nama != null && !pencari.nama.isEmpty() ? pencari.nama.substring(0,1).toUpperCase() : '?'}">?</div>
                             </div>
                         </div>

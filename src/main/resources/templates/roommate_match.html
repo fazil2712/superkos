@@ -179,7 +179,13 @@
                         <div class="flex items-center gap-3 flex-shrink-0">
                             <div class="text-2xl font-black text-gray-200 w-6 text-center select-none"
                                  th:text="'#' + (${currentPage} * 10 + ${iterStat.index + 1})">#1</div>
-                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0"
+                            
+                            <img th:if="${r.fotoProfil != null && !r.fotoProfil.isEmpty()}" 
+                                 th:src="${r.fotoProfil}" 
+                                 class="w-12 h-12 rounded-2xl flex-shrink-0 object-cover" alt="Avatar" />
+                                 
+                            <div th:unless="${r.fotoProfil != null && !r.fotoProfil.isEmpty()}" 
+                                 class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0"
                                  style="background: linear-gradient(135deg, #a855f7, #3b82f6);"
                                  th:text="${r.initial}">A</div>
                         </div>

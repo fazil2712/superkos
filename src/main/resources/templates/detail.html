@@ -302,7 +302,12 @@
             <div
               class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden border border-gray-300"
             >
-              <img
+              <img th:if="${hunian.pemilik != null && hunian.pemilik.fotoProfil != null && !hunian.pemilik.fotoProfil.isEmpty()}"
+                th:src="${hunian.pemilik.fotoProfil}"
+                class="w-full h-full object-cover"
+                alt="Host Avatar"
+              />
+              <img th:unless="${hunian.pemilik != null && hunian.pemilik.fotoProfil != null && !hunian.pemilik.fotoProfil.isEmpty()}"
                 th:src="${hunian.pemilik != null ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + hunian.pemilik.nama : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'}"
                 alt="Host Avatar"
               />

@@ -73,6 +73,7 @@ public class RoommateMatchController {
                             candidate.getPekerjaan(),
                             candidate.getBiodata(),
                             candidate.getUmur(),
+                            candidate.getFotoProfil(),
                             overall,
                             breakdown[0],   
                             breakdown[1],   

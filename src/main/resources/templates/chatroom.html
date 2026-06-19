@@ -154,10 +154,12 @@
         
         <div th:if="${isGroupChat}" class="flex items-center gap-3 flex-1">
             <div class="participant-avatars">
-                <div th:each="p : ${otherParticipants}"
-                     class="chat-av"
-                     th:style="'background: linear-gradient(135deg,#a855f7,#3b82f6);'"
-                     th:text="${p.nama != null && !p.nama.isEmpty() ? p.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+                <div th:each="p : ${otherParticipants}">
+                     <img th:if="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" th:src="${p.fotoProfil}" class="chat-av object-cover" alt="Avatar" />
+                     <div th:unless="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" class="chat-av"
+                          th:style="'background: linear-gradient(135deg,#a855f7,#3b82f6);'"
+                          th:text="${p.nama != null && !p.nama.isEmpty() ? p.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+                </div>
             </div>
             <div class="flex-1">
                 <p class="font-bold text-gray-900 text-sm" th:text="${chatTitle}">Group Chat</p>
@@ -176,7 +178,8 @@
 
         
         <div th:unless="${isGroupChat}" class="flex items-center gap-3">
-            <div class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
+            <img th:if="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}" th:src="${other.fotoProfil}" class="chat-av object-cover" alt="Avatar" />
+            <div th:unless="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}" class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
                  th:text="${other != null && other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
             <div>
                 <p class="font-bold text-gray-900 text-sm" th:text="${other != null ? other.nama : 'Chat'}">Nama</p>
@@ -226,7 +229,8 @@
              th:classappend="${isMine} ? ' mine' : ''">
 
             
-            <div th:unless="${isMine}"
+            <img th:unless="${isMine}" th:if="${msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty()}" th:src="${msg.sender.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
+            <div th:unless="${isMine || (msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty())}"
                  class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
                  th:text="${msg.sender.nama != null && !msg.sender.nama.isEmpty() ? msg.sender.nama.substring(0,1).toUpperCase() : '?'}">A</div>
 
@@ -240,7 +244,8 @@
             </div>
 
             
-            <div th:if="${isMine}"
+            <img th:if="${isMine && loggedInUser.fotoProfil != null && !loggedInUser.fotoProfil.isEmpty()}" th:src="${loggedInUser.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
+            <div th:if="${isMine && (loggedInUser.fotoProfil == null || loggedInUser.fotoProfil.isEmpty())}"
                  class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#6366f1,#a855f7);"
                  th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">A</div>
         </div>

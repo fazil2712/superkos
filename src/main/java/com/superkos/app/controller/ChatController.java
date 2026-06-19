@@ -64,7 +64,7 @@ public class ChatController {
             matchResult = new MatchResult(
                     candidate.getId(), candidate.getNama(), candidate.getEmail(),
                     candidate.getKontak(), candidate.getLokasi(), candidate.getGender(),
-                    candidate.getPekerjaan(), candidate.getBiodata(), candidate.getUmur(),
+                    candidate.getPekerjaan(), candidate.getBiodata(), candidate.getUmur(), candidate.getFotoProfil(),
                     overall, breakdown[0], breakdown[1], breakdown[2],
                     RoommateSurvey.fuzzyLabel(overall));
         }

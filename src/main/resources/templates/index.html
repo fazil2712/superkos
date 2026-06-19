@@ -280,7 +280,8 @@
                 <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
                     
                     <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
-                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <img th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" th:src="${hunian.fotoHunian[0]}" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <img th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
                         
                         <div th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}">

@@ -118,7 +118,11 @@
         <div th:each="rm : ${acceptedRoommates}" class="row-item">
             <div class="avatar-ring">
                 <div class="avatar-inner">
-                    <div class="avatar-initials" style="width:40px;height:40px;font-size:.95rem;" th:text="${rm['initial']}">?</div>
+                    <img th:if="${rm['user'].fotoProfil != null && !rm['user'].fotoProfil.isEmpty()}" 
+                         th:src="${rm['user'].fotoProfil}" 
+                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="Avatar" />
+                    <div th:unless="${rm['user'].fotoProfil != null && !rm['user'].fotoProfil.isEmpty()}" 
+                         class="avatar-initials" style="width:40px;height:40px;font-size:.95rem;" th:text="${rm['initial']}">?</div>
                 </div>
             </div>
             <div class="flex-1 min-w-0">
@@ -159,7 +163,11 @@
         <div th:each="rm : ${recommended}" class="row-item">
             <div class="avatar-ring">
                 <div class="avatar-inner">
-                    <div class="avatar-initials" style="width:40px;height:40px;font-size:.95rem;" th:text="${rm['initial']}">?</div>
+                    <img th:if="${rm['user'].fotoProfil != null && !rm['user'].fotoProfil.isEmpty()}" 
+                         th:src="${rm['user'].fotoProfil}" 
+                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="Avatar" />
+                    <div th:unless="${rm['user'].fotoProfil != null && !rm['user'].fotoProfil.isEmpty()}" 
+                         class="avatar-initials" style="width:40px;height:40px;font-size:.95rem;" th:text="${rm['initial']}">?</div>
                 </div>
             </div>
             <div class="flex-1 min-w-0">
