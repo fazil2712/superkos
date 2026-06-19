@@ -1,23 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Superkos - Cari Hunian & Roommate</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
 
         @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .rainbow-text {
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background: linear-gradient(90deg,
+                    #ef4444,
+                    #f59e0b,
+                    #10b981,
+                    #3b82f6,
+                    #a855f7,
+                    #ef4444);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -25,14 +43,25 @@
         }
 
         .rainbow-bg {
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background: linear-gradient(90deg,
+                    #ef4444,
+                    #f59e0b,
+                    #10b981,
+                    #3b82f6,
+                    #a855f7,
+                    #ef4444);
             background-size: 200% auto;
             animation: gradientFlow 5s linear infinite;
             color: white !important;
         }
-        
+
         .rainbow-border-focus:focus-within {
-            border-image: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7) 1;
+            border-image: linear-gradient(90deg,
+                    #ef4444,
+                    #f59e0b,
+                    #10b981,
+                    #3b82f6,
+                    #a855f7) 1;
         }
 
         /* Wishlist navbar icon */
@@ -41,204 +70,331 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 42px; height: 42px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             border: 1.5px solid #f3f4f6;
             background: white;
             color: #6b7280;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            transition:
+                background 0.15s,
+                color 0.15s,
+                border-color 0.15s,
+                transform 0.15s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
             flex-shrink: 0;
         }
+
         .wishlist-nav-btn:hover {
             background: #fff1f2;
             border-color: #fca5a5;
             color: #ef4444;
             transform: scale(1.07);
         }
+
         .wishlist-nav-btn .wl-badge {
             position: absolute;
-            top: -7px; right: -7px;
-            min-width: 20px; height: 20px;
+            top: -7px;
+            right: -7px;
+            min-width: 20px;
+            height: 20px;
             background: #ef4444;
             color: white;
             font-size: 0.65rem;
             font-weight: 800;
             border-radius: 999px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 0 4px;
             border: 2px solid white;
-            box-shadow: 0 1px 4px rgba(239,68,68,0.4);
+            box-shadow: 0 1px 4px rgba(239, 68, 68, 0.4);
         }
+
         @keyframes badgePop {
-            0%   { transform: scale(1); }
-            40%  { transform: scale(1.35); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            40% {
+                transform: scale(1.35);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
-        .wl-badge-anim { animation: badgePop 0.4s ease; }
+
+        .wl-badge-anim {
+            animation: badgePop 0.4s ease;
+        }
     </style>
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
+
 <body class="bg-white text-gray-800">
-<!-- #adam(SearchEngine) -->
+    <!-- #adam(SearchEngine) -->
 
-
-
-    
-    <div class="border-b border-gray-200 hidden md:block">
-        <div class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6">
-            <a href="#" class="hover:text-purple-600 flex items-center gap-2"><i class="far fa-calendar-check"></i> Sewa Kos</a>
-        </div>
-    </div>
-
-    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
-            
             <div class="flex items-center gap-3">
                 <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
                 <a href="/" class="flex items-center gap-2 text-2xl font-bold">
-                    <i class="fas fa-home rainbow-text"></i> <span class="rainbow-text">Superkos</span>
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
                 </a>
             </div>
 
-            
             <div class="flex-1 max-w-4xl flex items-center gap-3">
-                <div class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
+                <div
+                    class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
                     <div class="pl-4 text-gray-400">
                         <i class="fas fa-search"></i>
                     </div>
-                    <input form="filterForm" type="text" name="keyword" th:value="${keyword}" placeholder="Masukkan nama lokasi/area/alamat" class="w-full py-3 px-3 outline-none text-gray-700">
-                    <button form="filterForm" type="submit" class="rainbow-bg text-white px-8 py-3 font-medium transition">
+                    <input form="filterForm" type="text" name="keyword" th:value="${keyword}"
+                        placeholder="Masukkan nama lokasi/area/alamat"
+                        class="w-full py-3 px-3 outline-none text-gray-700" />
+                    <button form="filterForm" type="submit"
+                        class="rainbow-bg text-white px-8 py-3 font-medium transition">
                         Cari
                     </button>
                 </div>
 
-                
-                <a href="/wishlist"
-                   th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
-                   class="wishlist-nav-btn"
-                   th:title="${wishlistCount > 0 ? wishlistCount + ' hunian tersimpan' : 'Wishlist Saya'}">
-                    <i class="fas fa-heart" style="font-size:1.05rem;"></i>
-                    
-                    <span th:if="${wishlistCount > 0}"
-                          class="wl-badge wl-badge-anim"
-                          th:text="${wishlistCount > 99 ? '99+' : wishlistCount}">0</span>
+                <a href="/wishlist" th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
+                    class="wishlist-nav-btn"
+                    th:title="${wishlistCount > 0 ? wishlistCount + ' hunian tersimpan' : 'Wishlist Saya'}">
+                    <i class="fas fa-heart" style="font-size: 1.05rem"></i>
+
+                    <span th:if="${wishlistCount > 0}" class="wl-badge wl-badge-anim"
+                        th:text="${wishlistCount > 99 ? '99+' : wishlistCount}">0</span>
                 </a>
             </div>
 
-            
             <div class="hidden md:flex items-center gap-4 ml-auto">
                 <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
                     <a href="/login" class="text-gray-600 hover:text-purple-600 font-medium transition">Masuk</a>
-                    <a href="/register" class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition">Daftar</a>
+                    <a href="/register"
+                        class="rainbow-bg text-white px-4 py-2 rounded-lg font-medium transition">Daftar</a>
                 </div>
             </div>
         </div>
     </header>
+    <!-- ====== TOP SECTION INJECTION (HERO) ====== -->
+    <section class="max-w-7xl mx-auto px-4 pt-8 pb-4 fade-up" th:if="${loggedInUser == null}">
+        <!-- Frame luar untuk efek border gradient -->
+        <div class=" relative rounded-[2rem] overflow-hidden rainbow-bg p-[2px] shadow-2xl">
+        <!-- Container dalam dengan efek glassmorphism/blur -->
+        <div
+            class="bg-white/95 backdrop-blur-xl rounded-[30px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 relative z-10">
+            <!-- Teks Kiri -->
+            <div class="flex-1 text-center md:text-left">
+                <span
+                    class="inline-block py-1.5 px-4 rounded-full bg-purple-100 text-purple-700 text-[10px] sm:text-xs font-bold mb-5 tracking-widest uppercase">
+                    #AntiSoloSoloClub 🚀
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 mb-4 leading-tight tracking-tight">
+                    Cari Kos Pewe + <br />
+                    <span class="rainbow-text">Roommate Se-Vibe!</span>
+                </h1>
+                <p class="text-gray-600 mb-8 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
+                    Ngekos sendirian kemahalan? Cari temen sekamar takut
+                    zonk? Chill aja! Algoritma Superkos bakal nyariin lo
+                    roommate yang sefrekuensi (Sosial, Kebersihan & Jam
+                    Tidur). Patungan kos jadi lebih hemat & <b><i>no drama</i> !</b>
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                    <a href="#filterForm"
+                        class="rainbow-bg text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2">
+                        <i class="fas fa-rocket text-sm"></i> Gas Cari
+                        Kos
+                    </a>
+                    <a href="/quiz/setup"
+                        class="bg-purple-50 text-purple-700 font-bold px-8 py-3.5 rounded-xl border border-purple-200 shadow-sm transition hover:bg-purple-100 flex items-center justify-center gap-2">
+                        <i class="fas fa-magic text-sm"></i> Vibe Check
+                        Kuis
+                    </a>
+                </div>
+            </div>
 
-    
+            <!-- Ilustrasi Kanan (Glassmorphism UI Card) -->
+            <div class="flex-1 w-full relative hidden md:block">
+                <!-- Elemen dekoratif blur di belakang -->
+                <div
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-blue-400 blur-[70px] rounded-full opacity-40">
+                </div>
+
+                <div
+                    class="bg-white/50 backdrop-blur-md border border-white/60 shadow-xl rounded-3xl p-6 relative transform rotate-3 translate-x-4 max-w-sm mx-auto">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                            Z
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm">
+                                Roommate Match Found!
+                            </h3>
+                            <p class="text-xs text-green-600 font-black tracking-wide">
+                                ✨ 98% SEFREKUENSI
+                            </p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-[10px] font-bold text-gray-500 mb-1">
+                                <span>Kecocokan Gaya Hidup</span>
+                                <span>Perfect Match</span>
+                            </div>
+                            <div class="h-2 bg-gray-200/50 rounded-full overflow-hidden">
+                                <div class="h-full rainbow-bg w-[98%] rounded-full"></div>
+                            </div>
+                        </div>
+                        <div class="bg-white/70 rounded-xl p-3 border border-white/50">
+                            <p class="text-[11px] text-gray-600 italic font-medium">
+                                "Sama-sama seneng ngoding malem & anti
+                                piring numpuk di wastafel cucian!" 💻✨
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- ====== END TOP SECTION ====== -->
+
     <form id="filterForm" action="/" method="GET" class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        
-        
         <aside class="w-full lg:w-1/4 flex flex-col gap-6">
             <h2 class="text-xl font-bold text-gray-800">Filter</h2>
 
-            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <button type="button" onclick="toggleSection('genderContent', 'genderIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                <button type="button" onclick="toggleSection('genderContent', 'genderIcon')"
+                    class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Tipe Kost</span>
                     <i id="genderIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
                 </button>
                 <div id="genderContent" class="hidden p-4 border-t border-gray-200 bg-white">
                     <div class="flex flex-col gap-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="tipeGender" value="" th:checked="${tipeGender == null || tipeGender == ''}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <input type="radio" name="tipeGender" value=""
+                                th:checked="${tipeGender == null || tipeGender == ''}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
                             <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Semua Tipe</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="tipeGender" value="Putra" th:checked="${tipeGender == 'Putra'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus Putra</span>
+                            <input type="radio" name="tipeGender" value="Putra" th:checked="${tipeGender == 'Putra'}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus
+                                Putra</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="tipeGender" value="Putri" th:checked="${tipeGender == 'Putri'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus Putri</span>
+                            <input type="radio" name="tipeGender" value="Putri" th:checked="${tipeGender == 'Putri'}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Khusus
+                                Putri</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="tipeGender" value="Campur" th:checked="${tipeGender == 'Campur'}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
+                            <input type="radio" name="tipeGender" value="Campur" th:checked="${tipeGender == 'Campur'}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
                             <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Campur</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <button type="button" onclick="toggleSection('kategoriContent', 'kategoriIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                <button type="button" onclick="
+                            toggleSection('kategoriContent', 'kategoriIcon')
+                        " class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Kategori Sewa</span>
-                    <i id="kategoriIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    <i id="kategoriIcon"
+                        class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
                 </button>
                 <div id="kategoriContent" class="hidden p-4 border-t border-gray-200 bg-white">
                     <div class="flex flex-col gap-3">
-                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }" class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="kategoriSewa" th:value="${opt}" th:checked="${kategoriSewa != null && kategoriSewa.contains(opt)}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition" th:text="${opt}">Opsi</span>
+                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
+                            class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="kategoriSewa" th:value="${opt}"
+                                th:checked="${kategoriSewa != null && kategoriSewa.contains(opt)}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition"
+                                th:text="${opt}">Opsi</span>
                         </label>
                     </div>
                 </div>
             </div>
-            
-            
+
             <div class="border-b border-gray-200 pb-6">
-                <h3 class="font-bold text-gray-800 mb-4 text-sm">Tanggal Sewa</h3>
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">
+                    Tanggal Sewa
+                </h3>
                 <div class="flex flex-col gap-3">
                     <div class="border border-gray-300 rounded overflow-hidden">
-                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">Mulai Kos</div>
-                        <input type="date" name="startDate" th:value="${startDate != null ? #dates.format(startDate, 'yyyy-MM-dd') : ''}" class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()">
+                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">
+                            Mulai Kos
+                        </div>
+                        <input type="date" name="startDate"
+                            th:value="${startDate != null ? #dates.format(startDate, 'yyyy-MM-dd') : ''}"
+                            class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()" />
                     </div>
                     <div class="border border-gray-300 rounded overflow-hidden">
-                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">Selesai Kos</div>
-                        <input type="date" name="endDate" th:value="${endDate != null ? #dates.format(endDate, 'yyyy-MM-dd') : ''}" class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()">
+                        <div class="bg-gray-50 px-3 py-1 text-xs text-gray-500 border-b border-gray-200">
+                            Selesai Kos
+                        </div>
+                        <input type="date" name="endDate"
+                            th:value="${endDate != null ? #dates.format(endDate, 'yyyy-MM-dd') : ''}"
+                            class="w-full px-3 py-2 text-sm outline-none text-gray-700" onchange="this.form.submit()" />
                     </div>
                 </div>
             </div>
 
-            
             <div class="border-b border-gray-200 pb-6">
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">Harga</h3>
                 <div class="flex flex-col gap-3">
                     <div class="flex items-center border border-gray-300 rounded overflow-hidden">
                         <span class="bg-gray-100 px-3 py-2 text-gray-500 text-sm font-medium">Rp</span>
-                        <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Harga Minimum" class="w-full px-2 py-2 text-sm outline-none text-gray-700">
+                        <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Harga Minimum"
+                            class="w-full px-2 py-2 text-sm outline-none text-gray-700" />
                     </div>
                     <div class="flex items-center border border-gray-300 rounded overflow-hidden">
                         <span class="bg-gray-100 px-3 py-2 text-gray-500 text-sm font-medium">Rp</span>
-                        <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Harga Maksimum" class="w-full px-2 py-2 text-sm outline-none text-gray-700">
+                        <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Harga Maksimum"
+                            class="w-full px-2 py-2 text-sm outline-none text-gray-700" />
                     </div>
                 </div>
             </div>
 
-            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <button type="button" onclick="toggleSection('roommateContent', 'roommateIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
+                <button type="button" onclick="
+                            toggleSection('roommateContent', 'roommateIcon')
+                        " class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Kondisi Roommate</span>
-                    <i id="roommateIcon" class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    <i id="roommateIcon"
+                        class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
                 </button>
                 <div id="roommateContent" class="hidden p-4 border-t border-gray-200 bg-white">
                     <div class="flex flex-col gap-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="roommate" value="" th:checked="${roommate == null}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Semua Kondisi</span>
+                            <input type="radio" name="roommate" value="" th:checked="${roommate == null}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Semua
+                                Kondisi</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="roommate" value="true" th:checked="${roommate != null and roommate}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Bisa Roommate (>1 Kamar)</span>
+                            <input type="radio" name="roommate" value="true"
+                                th:checked="${roommate != null and roommate}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Bisa Roommate (>1
+                                Kamar)</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="roommate" value="false" th:checked="${roommate != null and !roommate}" class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()">
-                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Tidak Bisa Roommate</span>
+                            <input type="radio" name="roommate" value="false"
+                                th:checked="${roommate != null and !roommate}"
+                                class="w-4 h-4 accent-purple-600 border-gray-300" onchange="this.form.submit()" />
+                            <span class="text-sm text-gray-700 group-hover:text-purple-600 transition">Tidak Bisa
+                                Roommate</span>
                         </label>
                     </div>
                 </div>
@@ -249,95 +405,156 @@
             </button>
         </aside>
 
-        
         <div class="flex-1 w-full lg:w-3/4">
-            
-            
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
-                <p class="text-gray-600 text-sm font-medium">Menampilkan kos-kosan dari Database MySQL</p>
-                
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
+                <p class="text-gray-600 text-sm font-medium">
+
+                </p>
+
                 <div class="flex items-center gap-3">
                     <label class="text-sm font-bold text-gray-700">Urutkan:</label>
-                    <select name="sortBy" class="border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none text-gray-700 bg-white shadow-sm cursor-pointer" onchange="this.form.submit()">
-                        <option value="" th:selected="${sortBy == null || sortBy == ''}">Paling Sesuai</option>
-                        <option value="price_asc" th:selected="${sortBy == 'price_asc'}">Harga: Terendah</option>
-                        <option value="price_desc" th:selected="${sortBy == 'price_desc'}">Harga: Tertinggi</option>
-                        <option value="capacity_desc" th:selected="${sortBy == 'capacity_desc'}">Kapasitas: Terbanyak</option>
-                        <option value="capacity_asc" th:selected="${sortBy == 'capacity_asc'}">Kapasitas: Sedikit</option>
+                    <select name="sortBy"
+                        class="border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none text-gray-700 bg-white shadow-sm cursor-pointer"
+                        onchange="this.form.submit()">
+                        <option value="" th:selected="${sortBy == null || sortBy == ''}">
+                            Paling Sesuai
+                        </option>
+                        <option value="price_asc" th:selected="${sortBy == 'price_asc'}">
+                            Harga: Terendah
+                        </option>
+                        <option value="price_desc" th:selected="${sortBy == 'price_desc'}">
+                            Harga: Tertinggi
+                        </option>
+                        <option value="capacity_desc" th:selected="${sortBy == 'capacity_desc'}">
+                            Kapasitas: Terbanyak
+                        </option>
+                        <option value="capacity_asc" th:selected="${sortBy == 'capacity_asc'}">
+                            Kapasitas: Sedikit
+                        </option>
                     </select>
                 </div>
             </div>
 
-            
             <div class="space-y-6">
-                
-                <div th:if="${daftarHunian.empty}" class="p-8 text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
+                <div th:if="${daftarHunian.empty}"
+                    class="p-8 text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
                     <i class="fas fa-search-minus text-4xl mb-3 text-gray-300"></i>
-                    <p class="font-medium">Tidak ada hunian yang sesuai dengan filter.</p>
+                    <p class="font-medium">
+                        Tidak ada hunian yang sesuai dengan filter.
+                    </p>
                 </div>
 
-                
-                <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
-                    
+                <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}"
+                    class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
                     <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
-                        <img th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" th:src="${hunian.fotoHunian[0]}" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <img th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
-                        
+                        <img th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}"
+                            th:src="${hunian.fotoHunian[0]}" alt="Kost Room"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                        <img th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}"
+                            src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
+                            alt="Kost Room"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                        <div
+                            class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold">
+                            <i class="fas fa-bolt"></i> PROMO
+                        </div>
+
                         <div th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}">
-                            <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post"
-                                  style="position:absolute;top:8px;right:8px;"
-                                  onclick="event.stopPropagation();">
-                                <input type="hidden" name="returnUrl" value="/">
+                            <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post" style="
+                                        position: absolute;
+                                        top: 8px;
+                                        right: 8px;
+                                    " onclick="event.stopPropagation()">
+                                <input type="hidden" name="returnUrl" value="/" />
                                 <button type="submit"
-                                        th:title="${wishlistIds.contains(hunian.idHunian) ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}"
-                                        style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:transform 0.15s;"
-                                        onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+                                    th:title="${wishlistIds.contains(hunian.idHunian) ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}"
+                                    style="
+                                            width: 34px;
+                                            height: 34px;
+                                            border-radius: 50%;
+                                            background: rgba(
+                                                255,
+                                                255,
+                                                255,
+                                                0.9
+                                            );
+                                            border: none;
+                                            cursor: pointer;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            box-shadow: 0 2px 8px
+                                                rgba(0, 0, 0, 0.18);
+                                            transition: transform 0.15s;
+                                        " onmouseover="
+                                            this.style.transform = 'scale(1.15)'
+                                        " onmouseout="
+                                            this.style.transform = 'scale(1)'
+                                        ">
                                     <i th:class="${wishlistIds.contains(hunian.idHunian) ? 'fas fa-heart' : 'far fa-heart'}"
-                                       th:style="${wishlistIds.contains(hunian.idHunian) ? 'color:#ef4444;font-size:0.9rem;' : 'color:#9ca3af;font-size:0.9rem;'}"></i>
+                                        th:style="${wishlistIds.contains(hunian.idHunian) ? 'color:#ef4444;font-size:0.9rem;' : 'color:#9ca3af;font-size:0.9rem;'}"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
-                    
+
                     <div class="flex flex-col flex-1 py-1">
                         <div class="flex flex-wrap gap-2 mb-2 items-center">
-                            
-                            <span class="border border-gray-300 text-gray-600 text-xs px-2 py-1 rounded font-medium" th:text="${hunian.tipeGender}">Tipe</span>
-                            
-                            
-                            <span th:if="${hunian.jumlahKamar > 1}" class="bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded font-semibold flex items-center gap-1">
-                                <i class="fas fa-user-friends"></i> Bisa untuk Roommate
+                            <span class="border border-gray-300 text-gray-600 text-xs px-2 py-1 rounded font-medium"
+                                th:text="${hunian.tipeGender}">Tipe</span>
+
+                            <span th:if="${hunian.jumlahKamar > 1}"
+                                class="bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded font-semibold flex items-center gap-1">
+                                <i class="fas fa-user-friends"></i> Bisa
+                                untuk Roommate
                             </span>
-                            <span th:unless="${hunian.jumlahKamar > 1}" class="text-red-500 text-xs font-medium bg-red-50 px-2 py-0.5 rounded flex items-center gap-1">
-                                <i class="fas fa-user-slash w-4 text-red-400"></i> Tidak bisa Roommate
+                            <span th:unless="${hunian.jumlahKamar > 1}"
+                                class="text-red-500 text-xs font-medium bg-red-50 px-2 py-0.5 rounded flex items-center gap-1">
+                                <i class="fas fa-user-slash w-4 text-red-400"></i>
+                                Tidak bisa Roommate
                             </span>
                         </div>
-                        
-                        
-                        <h2 class="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition" th:text="${hunian.namaHunian}">Nama Kost</h2>
-                        <p class="text-gray-500 text-sm mb-3"><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i> <span th:text="${hunian.lokasi}">Lokasi</span></p>
-                        
-                        
+
+                        <h2 class="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition"
+                            th:text="${hunian.namaHunian}">
+                            Nama Kost
+                        </h2>
+                        <p class="text-gray-500 text-sm mb-3">
+                            <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+                            <span th:text="${hunian.lokasi}">Lokasi</span>
+                        </p>
+
                         <div class="text-sm text-gray-600 space-y-1 mt-2">
                             <p class="flex items-center gap-2">
-                                <i class="fas fa-bed w-4 text-gray-400"></i> Kapasitas Kamar: <span class="font-medium text-gray-800" th:text="${hunian.jumlahKamar + ' Orang/Kamar'}">1</span>
+                                <i class="fas fa-bed w-4 text-gray-400"></i>
+                                Kapasitas Kamar:
+                                <span class="font-medium text-gray-800"
+                                    th:text="${hunian.jumlahKamar + ' Orang/Kamar'}">1</span>
                             </p>
                             <p class="flex items-center gap-2">
-                                <i class="far fa-calendar-alt w-4 text-gray-400"></i> Tersedia: <span class="font-medium text-gray-800" th:text="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'dd MMM yyyy') : 'Segera'} + ' - ' + ${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'dd MMM yyyy') : 'Seterusnya'}">Tanggal</span>
+                                <i class="far fa-calendar-alt w-4 text-gray-400"></i>
+                                Tersedia:
+                                <span class="font-medium text-gray-800"
+                                    th:text="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'dd MMM yyyy') : 'Segera'} + ' - ' + ${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'dd MMM yyyy') : 'Seterusnya'}">Tanggal</span>
                             </p>
                             <p class="flex items-center gap-2">
-                                <i class="fas fa-history w-4 text-gray-400"></i> Pilihan Sewa: <span class="font-medium text-gray-800" th:each="kat, iterStat : ${hunian.kategoriSewa}" th:text="${kat} + ${!iterStat.last ? ', ' : ''}">Harian</span>
+                                <i class="fas fa-history w-4 text-gray-400"></i>
+                                Pilihan Sewa:
+                                <span class="font-medium text-gray-800" th:each="kat, iterStat : ${hunian.kategoriSewa}"
+                                    th:text="${kat} + ${!iterStat.last ? ', ' : ''}">Harian</span>
                             </p>
                             <p class="flex items-center gap-2 text-gray-600 font-medium text-xs mt-1">
-                                <i class="fas fa-check-circle"></i> K. Mandi Dalam · WiFi · Kasur
+                                <i class="fas fa-check-circle"></i> K. Mandi
+                                Dalam · WiFi · Kasur
                             </p>
                         </div>
-                        
-                        
+
                         <div class="mt-auto flex justify-end items-end pt-4">
                             <div class="text-right">
-                                <span class="text-xl font-bold text-gray-900" th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span><span class="text-gray-500 text-sm">/bulan</span>
+                                <span class="text-xl font-bold text-gray-900"
+                                    th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span><span
+                                    class="text-gray-500 text-sm">/bulan</span>
                             </div>
                         </div>
                     </div>
@@ -345,44 +562,167 @@
             </div>
         </div>
     </form>
+    <!-- ====== BOTTOM SECTION INJECTION (HOW IT WORKS & CTA) ====== -->
+    <section class="bg-gray-50/50 border-t border-gray-100 mt-12 pt-16 pb-20" th:if="${loggedInUser == null}">
+        <div class=" max-w-7xl mx-auto px-4">
+        <!-- Judul Tata Cara -->
+        <div class="text-center max-w-2xl mx-auto mb-12 fade-up">
+            <h2 class="text-3xl font-black text-gray-900 mb-3 tracking-tight">
+                Gimana Sih Cara Mainnya? 🤔
+            </h2>
+            <p class="text-gray-500 text-sm md:text-base">
+                Superkos beda dari web cari kos <b><i>BASIC</i></b>. Gini alur
+                simpel dapet kos pewe + bestie baru buat patungan!
+            </p>
+        </div>
+
+        <!-- 3 Steps Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 fade-up" style="animation-delay: 100ms">
+            <!-- Step 1 -->
+            <div
+                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                </div>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                    1️⃣
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 mb-2">
+                    Lirik Kos Inceran
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    Pakai filter canggih di atas buat cari kos idaman
+                    lo. Pastiin cari yang ada tag
+                    <span class="font-semibold text-blue-600">"Bisa untuk Roommate"</span>
+                    ya!
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div
+                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                </div>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                    2️⃣
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 mb-2">
+                    Ikut Vibe Check Kuis
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    Jawab 20 pertanyaan kuis preferensi santai. Kita
+                    butuh tau gaya hidup lo (kebersihan, tingkat
+                    tongkrongan, sampe jam tidur).
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div
+                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                </div>
+                <div
+                    class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                    3️⃣
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 mb-2">
+                    Match & Patungan!
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    Liat list kandidat yang skor kecocokannya ijo semua.
+                    Kalo srek, langsung kirim request, chat, dan gas
+                    patungan sewa!
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Banner / CTA -->
+        <div class="mt-16 bg-gray-900 rounded-[2.5rem] p-10 md:p-14 text-center relative overflow-hidden fade-up"
+            style="animation-delay: 200ms">
+            <!-- Glow background untuk kesan minimalis-futuristik -->
+            <div
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600 to-blue-600 blur-[100px] rounded-full opacity-30 pointer-events-none">
+            </div>
+
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-4xl font-black text-white mb-5 tracking-tight">
+                    Udah Siap Ngekos Bebas Drama? 🌟
+                </h2>
+                <p class="text-gray-300 mb-8 max-w-lg mx-auto text-sm md:text-base">
+                    Gabung sama ribuan Gen Z lainnya yang udah nemuin
+                    kos pewe dan roommate se-vibe di platform kita.
+                </p>
+                <div th:if="${loggedInUser == null}">
+                    <a href="/register"
+                        class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
+                        <i class="fas fa-user-plus"></i> Buat Akun
+                        Sekarang (Gratis)
+                    </a>
+                </div>
+                <div th:if="${loggedInUser != null}">
+                    <a href="/roommate/match"
+                        class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
+                        <i class="fas fa-search"></i> Cari Jodoh Kosanmu
+                        Sekarang!
+                    </a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- ====== END BOTTOM SECTION ====== -->
 
     <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
-    <script>        function toggleSection(contentId, iconId) {
+    <script>
+        function toggleSection(contentId, iconId) {
             const content = document.getElementById(contentId);
             const icon = document.getElementById(iconId);
-            const isHidden = content.classList.contains('hidden');
-            
-            content.classList.toggle('hidden');
-            icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+            const isHidden = content.classList.contains("hidden");
+
+            content.classList.toggle("hidden");
+            icon.style.transform = isHidden
+                ? "rotate(180deg)"
+                : "rotate(0deg)";
         }
 
         // Auto-expand jika filter sedang aktif saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', function() {
-            const genderRadios = document.querySelectorAll('input[name="tipeGender"]');
-            genderRadios.forEach(radio => {
+        document.addEventListener("DOMContentLoaded", function () {
+            const genderRadios = document.querySelectorAll(
+                'input[name="tipeGender"]',
+            );
+            genderRadios.forEach((radio) => {
                 if (radio.checked && radio.value !== "") {
-                    toggleSection('genderContent', 'genderIcon');
+                    toggleSection("genderContent", "genderIcon");
                 }
             });
 
-            const roommateRadios = document.querySelectorAll('input[name="roommate"]');
-            roommateRadios.forEach(radio => {
+            const roommateRadios = document.querySelectorAll(
+                'input[name="roommate"]',
+            );
+            roommateRadios.forEach((radio) => {
                 if (radio.checked && radio.value !== "") {
-                    toggleSection('roommateContent', 'roommateIcon');
+                    toggleSection("roommateContent", "roommateIcon");
                 }
             });
 
-            const kategoriChecks = document.querySelectorAll('input[name="kategoriSewa"]');
+            const kategoriChecks = document.querySelectorAll(
+                'input[name="kategoriSewa"]',
+            );
             let kategoriActive = false;
-            kategoriChecks.forEach(check => {
+            kategoriChecks.forEach((check) => {
                 if (check.checked) kategoriActive = true;
             });
             if (kategoriActive) {
-                toggleSection('kategoriContent', 'kategoriIcon');
+                toggleSection("kategoriContent", "kategoriIcon");
             }
         });
     </script>
 
-<!-- #/adam(SearchEngine) -->
+    <!-- #/adam(SearchEngine) -->
 </body>
+
 </html>
