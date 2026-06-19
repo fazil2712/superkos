@@ -283,9 +283,8 @@
                    class="text-xs font-bold text-purple-600 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg hover:bg-purple-100 transition flex items-center gap-1">
                     <i class="fas fa-pen text-[10px]"></i> Edit
                 </a>
-                <form th:action="@{'/pemilik/properti/' + ${h.idHunian} + '/delete'}" method="post"
-                      onsubmit="return confirm('Yakin ingin menghapus properti ini?');">
-                    <button type="submit"
+                <form th:id="'deletePropForm-' + ${h.idHunian}" th:action="@{'/pemilik/properti/' + ${h.idHunian} + '/delete'}" method="post">
+                    <button type="button" th:onclick="'showDeletePropPopup(' + ${h.idHunian} + ')'"
                             class="text-xs font-bold text-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-100 transition flex items-center gap-1">
                         <i class="fas fa-trash text-[10px]"></i> Hapus
                     </button>
@@ -330,6 +329,45 @@ function validatePhotos() {
     return true;
 }
 </script>
+
+    <!-- Popup Hapus Properti -->
+    <div id="deletePropPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
+            <div class="text-5xl mb-4">🗑️</div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Hapus Properti</h2>
+            <p class="text-gray-600 mb-6 text-sm text-center">
+                Apakah Anda yakin ingin menghapus properti ini? Tindakan ini tidak bisa dibatalkan.
+            </p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeletePropPopup()" class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                    Batal
+                </button>
+                <button type="button" onclick="submitDeletePropForm()" class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let propIdToDelete = null;
+
+        function showDeletePropPopup(id) {
+            propIdToDelete = id;
+            document.getElementById('deletePropPopup').classList.remove('hidden');
+        }
+
+        function closeDeletePropPopup() {
+            document.getElementById('deletePropPopup').classList.add('hidden');
+            propIdToDelete = null;
+        }
+
+        function submitDeletePropForm() {
+            if (propIdToDelete !== null) {
+                document.getElementById('deletePropForm-' + propIdToDelete).submit();
+            }
+        }
+    </script>
 
 <!-- #/yury(PemilikProperti) -->
 </body>

@@ -12,7 +12,7 @@ public class Admin extends User {
 
     public void kelolaUser(User targetUser, String action, com.superkos.app.repository.UserRepository repo) {
         if ("DELETE".equalsIgnoreCase(action)) {
-            repo.delete(targetUser);
+            repo.deleteUserCascade(targetUser.getId());
         }
     }
 

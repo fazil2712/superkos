@@ -135,11 +135,10 @@
                     <span class="text-[10px] text-gray-400" th:text="${rm['label']}">Label</span>
                 </div>
             </div>
-            <form th:action="@{'/reservasi/' + ${reservasi.idReservasi} + '/invite-roommate/' + ${rm['user'].id}}" method="post">
-                <button type="submit"
+            <form th:id="'inviteForm-connected-' + ${rm['user'].id}" th:action="@{'/reservasi/' + ${reservasi.idReservasi} + '/invite-roommate/' + ${rm['user'].id}}" method="post">
+                <button type="button" th:onclick="|showInvitePopup('inviteForm-connected-${rm['user'].id}', false)|"
                         class="text-xs font-bold text-white px-4 py-1.5 rounded-lg transition flex items-center gap-1.5 flex-shrink-0"
-                        style="background: linear-gradient(135deg,#10b981,#3b82f6); box-shadow: 0 2px 8px rgba(16,185,129,.25);"
-                        onclick="return confirm('Undang roommate ini ke group chat?')">
+                        style="background: linear-gradient(135deg,#10b981,#3b82f6); box-shadow: 0 2px 8px rgba(16,185,129,.25);">
                     <i class="fas fa-plus text-[10px]"></i> Undang
                 </button>
             </form>
@@ -186,11 +185,10 @@
                     <i class="fas fa-info-circle mr-0.5"></i> Undang = otomatis kirim permintaan roommate
                 </p>
             </div>
-            <form th:action="@{'/reservasi/' + ${reservasi.idReservasi} + '/invite-roommate/' + ${rm['user'].id}}" method="post">
-                <button type="submit"
+            <form th:id="'inviteForm-recommended-' + ${rm['user'].id}" th:action="@{'/reservasi/' + ${reservasi.idReservasi} + '/invite-roommate/' + ${rm['user'].id}}" method="post">
+                <button type="button" th:onclick="|showInvitePopup('inviteForm-recommended-${rm['user'].id}', true)|"
                         class="text-xs font-bold text-white px-4 py-1.5 rounded-lg transition flex items-center gap-1.5 flex-shrink-0"
-                        style="background: linear-gradient(135deg,#f59e0b,#ef4444); box-shadow: 0 2px 8px rgba(245,158,11,.25);"
-                        onclick="return confirm('Undang dan kirim permintaan roommate?')">
+                        style="background: linear-gradient(135deg,#f59e0b,#ef4444); box-shadow: 0 2px 8px rgba(245,158,11,.25);">
                     <i class="fas fa-user-plus text-[10px]"></i> Undang
                 </button>
             </form>
@@ -198,6 +196,51 @@
     </div>
 
 </div>
+
+    <!-- Popup Undang Roommate -->
+    <div id="invitePopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
+            <div class="text-5xl mb-4">👥</div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Undang Roommate</h2>
+            <p id="invitePopupMessage" class="text-gray-600 mb-6 text-sm text-center">
+                Apakah Anda yakin ingin mengundang roommate ini ke group chat?
+            </p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeInvitePopup()" class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                    Batal
+                </button>
+                <button type="button" onclick="submitInviteForm()" class="flex-1 rainbow-bg py-3 rounded-lg text-white font-bold text-center hover:opacity-90 transition">
+                    Ya, Undang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let inviteFormIdToSubmit = null;
+
+        function showInvitePopup(formId, isRecommendation) {
+            inviteFormIdToSubmit = formId;
+            const msgEl = document.getElementById('invitePopupMessage');
+            if (isRecommendation) {
+                msgEl.textContent = 'Apakah Anda yakin ingin mengundang dan mengirim permintaan roommate?';
+            } else {
+                msgEl.textContent = 'Apakah Anda yakin ingin mengundang roommate ini ke group chat?';
+            }
+            document.getElementById('invitePopup').classList.remove('hidden');
+        }
+
+        function closeInvitePopup() {
+            document.getElementById('invitePopup').classList.add('hidden');
+            inviteFormIdToSubmit = null;
+        }
+
+        function submitInviteForm() {
+            if (inviteFormIdToSubmit !== null) {
+                document.getElementById(inviteFormIdToSubmit).submit();
+            }
+        }
+    </script>
 
 <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
 
