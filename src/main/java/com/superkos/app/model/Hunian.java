@@ -22,6 +22,9 @@ public class Hunian {
     protected Date availableDateStart;
     protected Date availableDateEnd;
 
+    @Column(columnDefinition = "TEXT")
+    protected String deskripsi;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "hunian_kategori", joinColumns = @JoinColumn(name = "hunian_id"))
     @Column(name = "kategori")
@@ -36,14 +39,7 @@ public class Hunian {
     @JoinColumn(name = "pemilik_id")
     private PemilikProperti pemilik;
 
-    @OneToMany(mappedBy = "hunian", cascade = CascadeType.ALL)
-    private List<LaporanReview> laporanReviews = new ArrayList<>();
 
-    public String tampilkanDetail() {
-        return String.format("%s (%s) di %s - Rp %,.2f per bulan (%s)", 
-                this.namaHunian, this.tipeHunian, this.lokasi, this.harga, 
-                this.statusTersedia ? "Tersedia" : "Tidak Tersedia");
-    }
 
     
     public int getIdHunian() { return idHunian; }
@@ -77,11 +73,12 @@ public class Hunian {
      public Date getAvailableDateEnd() { return availableDateEnd; }
      public void setAvailableDateEnd(Date availableDateEnd) { this.availableDateEnd = availableDateEnd; }
 
+    public String getDeskripsi() { return deskripsi; }
+    public void setDeskripsi(String deskripsi) { this.deskripsi = deskripsi; }
+
     public PemilikProperti getPemilik() { return pemilik; }
     public void setPemilik(PemilikProperti pemilik) { this.pemilik = pemilik; }
 
-    public List<LaporanReview> getLaporanReviews() { return laporanReviews; }
-    public void setLaporanReviews(List<LaporanReview> laporanReviews) { this.laporanReviews = laporanReviews; }
 
     public List<String> getKategoriSewa() { return kategoriSewa; }
     public void setKategoriSewa(List<String> kategoriSewa) { this.kategoriSewa = kategoriSewa; }

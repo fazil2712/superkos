@@ -1,5 +1,6 @@
 package com.superkos.app.controller;
 
+import com.superkos.app.model.Admin;
 import com.superkos.app.model.PencariHunian;
 import com.superkos.app.model.PemilikProperti;
 import com.superkos.app.model.User;
@@ -34,6 +35,20 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
                         HttpSession session, Model model) {
+        // Intercept admin login
+        if ("admin".equals(email) && "admin12345".equals(password)) {
+            User adminUser = userRepository.findByEmail("admin");
+            if (adminUser == null || !(adminUser instanceof Admin)) {
+                Admin newAdmin = new Admin();
+                newAdmin.setEmail("admin");
+                newAdmin.setPassword("admin12345");
+                newAdmin.setNama("Administrator");
+                adminUser = userRepository.save(newAdmin);
+            }
+            session.setAttribute("loggedInUser", adminUser);
+            return "redirect:/admin/dashboard";
+        }
+
         User user = null;
         try {
             user = userRepository.findByEmail(email);

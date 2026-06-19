@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.ArrayList;
 import com.superkos.app.repository.HunianRepository;
 import com.superkos.app.repository.RoommateRequestRepository;
-import com.superkos.app.repository.LaporanReviewRepository;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
@@ -33,8 +32,6 @@ public class PencariHunian extends User {
     @OneToMany(mappedBy = "targetPencari", cascade = CascadeType.ALL)
     private List<RoommateRequest> receivedRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pencariHunian", cascade = CascadeType.ALL)
-    private List<LaporanReview> laporanReviews = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -50,24 +47,20 @@ public class PencariHunian extends User {
     public List<RoommateRequest> getReceivedRequests() { return receivedRequests; }
     public void setReceivedRequests(List<RoommateRequest> receivedRequests) { this.receivedRequests = receivedRequests; }
 
-    @Override
-    public Map<String, Object> dashboard() {
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("wishlistCount", (long) this.wishlist.size());
-        long pendingCount = this.receivedRequests.stream()
-                .filter(r -> "PENDING".equalsIgnoreCase(r.getStatus()))
-                .count();
-        stats.put("pendingRequestsCount", pendingCount);
-        return stats;
-    }
-    
-    public List<Hunian> cariHunian(HunianRepository repository, String lokasi) {
-        if (lokasi == null || lokasi.trim().isEmpty()) {
-            return repository.findAll();
+    // Returns notification messages for pending roommate requests (used by GlobalModelAdvice)
+    public List<String> popnotif(RoommateRequestRepository reqRepo) {
+        List<String> notifications = new ArrayList<>();
+        long pendingCount = reqRepo.countByTargetPencariAndStatus(this, "PENDING");
+        if (pendingCount > 0) {
+            notifications.add("Anda memiliki " + pendingCount + " permintaan roommate baru.");
         }
-        return repository.findByLokasiContainingIgnoreCase(lokasi);
+        long acceptedCount = reqRepo.countByPencariHunianAndStatusAndSenderRead(this, "ACCEPTED", false);
+        if (acceptedCount > 0) {
+            notifications.add(acceptedCount + " permintaan roommate Anda telah diterima!");
+        }
+        return notifications;
     }
-    
+
     public void kirimRoommateRequest(PencariHunian target, RoommateRequestRepository repo) {
         RoommateRequest request = new RoommateRequest();
         request.setPencariHunian(this);
@@ -75,17 +68,7 @@ public class PencariHunian extends User {
         request.setStatus("PENDING");
         repo.save(request);
     }
-    
-    public void buatLaporanReview(Hunian hunian, String reviewText, int rating, LaporanReviewRepository repo) {
-        LaporanReview review = new LaporanReview();
-        review.setPencariHunian(this);
-        review.setHunian(hunian);
-        review.setIsiText(reviewText);
-        review.setRating(rating);
-        review.setTanggal(new Date());
-        repo.save(review);
-    }
-    
+
     public void tambahKeWishlist(Hunian h) {
         if (!wishlist.contains(h)) {
             wishlist.add(h);

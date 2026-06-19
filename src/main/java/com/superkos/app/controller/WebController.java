@@ -63,6 +63,9 @@ public class WebController {
         if (loggedInUser instanceof PemilikProperti) {
             return "redirect:/pemilik/dashboard";
         }
+        if (loggedInUser instanceof Admin) {
+            return "redirect:/admin/dashboard";
+        }
 
         Sort sort = Sort.unsorted();
         if (sortBy != null && !sortBy.isEmpty()) {

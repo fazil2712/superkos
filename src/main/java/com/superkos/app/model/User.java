@@ -30,19 +30,12 @@ class User {
     
     protected String fotoProfil;
 
-    
-    public java.util.Map<String, Object> dashboard() {
-        return new java.util.HashMap<>();
-    }
-
+    // Checks if input password matches stored password (used by AuthController login)
     public boolean login(String inputPassword) {
         return this.password != null && this.password.equals(inputPassword);
     }
 
-    public void logout() {
-        System.out.println("User " + this.email + " logged out.");
-    }
-
+    // Registers a new user via the repository (used by AuthController register fallback)
     public void registrasi(UserRepository repository) {
         if (repository.findByEmail(this.email) != null) {
             throw new IllegalArgumentException("Email sudah terdaftar!");
@@ -50,11 +43,6 @@ class User {
         repository.save(this);
     }
 
-    public java.util.List<String> popnotif(RoommateRequestRepository reqRepo) {
-        return new java.util.ArrayList<>();
-    }
-
-    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

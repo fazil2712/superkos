@@ -397,7 +397,12 @@
             <h2 class="text-xl font-bold text-gray-900 mb-4">
               Cerita Pemilik Tentang Kos Ini
             </h2>
-            <p class="text-gray-600 leading-relaxed text-sm text-justify">
+            <p th:if="${hunian.deskripsi != null && !hunian.deskripsi.isEmpty()}" 
+               class="text-gray-600 leading-relaxed text-sm text-justify whitespace-pre-wrap"
+               th:text="${hunian.deskripsi}">
+            </p>
+            <p th:unless="${hunian.deskripsi != null && !hunian.deskripsi.isEmpty()}" 
+               class="text-gray-600 leading-relaxed text-sm text-justify">
               Selamat datang di
               <span th:text="${hunian.namaHunian}" class="font-bold">Kost</span
               >. Bangunan baru dengan konsep modern minimalis yang memberikan

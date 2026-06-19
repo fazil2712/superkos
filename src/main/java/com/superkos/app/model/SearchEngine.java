@@ -37,10 +37,5 @@ public class SearchEngine implements ISearchFilter, ISortStrategy {
                 .filter(h -> (availableDateEnd == null || (h.getAvailableDateEnd() != null && !h.getAvailableDateEnd().before(availableDateEnd))))
                 .collect(Collectors.toList());
     }
-
-    public List<Hunian> search(List<Hunian> data) {
-        
-        return null;
-    }
 }
 // #/adam(SearchEngine)

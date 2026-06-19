@@ -14,7 +14,6 @@ public class PemilikProperti extends User {
     @OneToMany(mappedBy = "pemilik", cascade = CascadeType.ALL)
     private List<Hunian> daftarHunian = new ArrayList<>();
 
-    @Override
     public java.util.Map<String, Object> dashboard() {
         java.util.Map<String, Object> stats = new java.util.HashMap<>();
         stats.put("totalProperties", (long) this.daftarHunian.size());
@@ -26,10 +25,6 @@ public class PemilikProperti extends User {
     public void tambahHunian(Hunian hunian) {
         daftarHunian.add(hunian);
         hunian.setPemilik(this);
-    }
-
-    public java.util.List<User> kelolaPenyewa() {
-        return new java.util.ArrayList<>();
     }
 }
 // #/yury(PemilikProperti)
