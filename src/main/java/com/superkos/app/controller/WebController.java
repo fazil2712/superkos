@@ -17,7 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -36,9 +42,7 @@ public class WebController {
     @Autowired private UserRepository          userRepository;
     @Autowired private PencariHunianRepository pencariHunianRepository;
     @Autowired private ReservasiRepository     reservasiRepository;
-
-    // ── Home ─────────────────────────────────────────────────────────────────
-
+    // #adam(SearchEngine)
     @GetMapping("/")
     public String index(
             @RequestParam(required = false) String keyword,
@@ -55,7 +59,7 @@ public class WebController {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         model.addAttribute("loggedInUser", loggedInUser);
 
-        // PemilikProperti gets their own dashboard
+        
         if (loggedInUser instanceof PemilikProperti) {
             return "redirect:/pemilik/dashboard";
         }
@@ -86,7 +90,7 @@ public class WebController {
         model.addAttribute("kategoriSewa",  kategoriSewa);
         model.addAttribute("sortBy",        sortBy);
 
-        // Pass wishlist IDs so templates can show filled hearts
+        
         Set<Integer> wishlistIds = new HashSet<>();
         int wishlistCount = 0;
         if (loggedInUser instanceof PencariHunian pencari) {
@@ -101,9 +105,8 @@ public class WebController {
 
         return "index";
     }
-
-    // ── Hunian Detail ─────────────────────────────────────────────────────────
-
+    // #/adam(SearchEngine)
+    // #fazil(Daftar Reservasi)
     @GetMapping("/hunian/{id}")
     public String detailHunian(@PathVariable int id, HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -113,7 +116,7 @@ public class WebController {
         if (hunianOpt.isPresent()) {
             model.addAttribute("hunian", hunianOpt.get());
 
-            // Is this hunian in the user's wishlist?
+            
             boolean inWishlist = false;
             if (loggedInUser instanceof PencariHunian pencari) {
                 PencariHunian fresh = pencariHunianRepository.findById(pencari.getId()).orElse(null);
@@ -127,9 +130,11 @@ public class WebController {
         }
         return "redirect:/";
     }
+    // #/fazil(Daftar Reservasi)
 
-    // ── Wishlist ──────────────────────────────────────────────────────────────
+    
 
+    // #fazil(Wishlist)
     @GetMapping("/wishlist")
     public String showWishlist(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -169,14 +174,13 @@ public class WebController {
         }
 
         pencariHunianRepository.save(pencari);
-        // Refresh session
+        
         session.setAttribute("loggedInUser", pencariHunianRepository.findById(loggedInUser.getId()).orElse(pencari));
 
         return "redirect:" + returnUrl;
     }
-
-    // ── Reservasi Saya ──────────────────────────────────────────────
-
+    // #/fazil(Wishlist)
+    // #fazil(Daftar Reservasi)
     @GetMapping("/reservasi-saya")
     public String reservasiSaya(
             HttpSession session,
@@ -219,9 +223,8 @@ public class WebController {
 
         return "reservasi-saya";
     }
-
-    // ── Profile ───────────────────────────────────────────────────────────────
-
+    // #/fazil(Daftar Reservasi)
+    // #naufal(User)
     @GetMapping("/profile")
     public String showProfile(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -263,17 +266,47 @@ public class WebController {
         return "redirect:/profile?success=true";
     }
 
-    // ── Quiz: Initial Setup (after registration) ──────────────────────────────
+    
 
+    @PostMapping("/profile/photo")
+    public String uploadProfilePhoto(
+            @RequestParam("foto") MultipartFile foto,
+            HttpSession session) throws IOException {
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) return "redirect:/login";
+        if (foto.isEmpty()) return "redirect:/profile";
+
+        User userToUpdate = userRepository.findById(loggedInUser.getId()).orElse(null);
+        if (userToUpdate == null) return "redirect:/login";
+
+        
+        String originalName = foto.getOriginalFilename() != null ? foto.getOriginalFilename() : "foto.jpg";
+        String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.')) : ".jpg";
+
+        
+        Path uploadDir = Paths.get("uploads", "profiles");
+        Files.createDirectories(uploadDir);
+        String fileName = userToUpdate.getId() + "_foto" + ext;
+        Path filePath = uploadDir.resolve(fileName);
+        Files.copy(foto.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        userToUpdate.setFotoProfil("/uploads/profiles/" + fileName);
+        userRepository.save(userToUpdate);
+        session.setAttribute("loggedInUser", userToUpdate);
+        return "redirect:/profile?photoSaved=true";
+    }
+    // #/naufal(User)
+    // #nadia(Roommate Survey)
     @GetMapping("/quiz/setup")
     public String showQuizSetup(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) return "redirect:/login";
 
-        // Only PencariHunian can take the quiz
+        
         if (!(loggedInUser instanceof PencariHunian pencari)) return "redirect:/";
 
-        // Already done — send to settings
+        
         if (pencari.getRoommateSurvey() != null && pencari.getRoommateSurvey().getLastQuizTaken() != null)
             return "redirect:/settings";
 
@@ -322,9 +355,8 @@ public class WebController {
         session.removeAttribute("pendingQuizSetup");
         return "redirect:/";
     }
-
-    // ── Settings ──────────────────────────────────────────────────────────────
-
+    // #/nadia(Roommate Survey)
+    // #nadia(Roommate Survey)
     @GetMapping("/settings")
     public String showSettings(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -342,7 +374,7 @@ public class WebController {
                 : null;
         model.addAttribute("survey", survey);
 
-        // Compute cooldown
+        
         boolean canRetake   = true;
         long remainingHours = 0;
         long daysElapsed    = 0;
@@ -364,9 +396,8 @@ public class WebController {
 
         return "settings";
     }
-
-    // ── Quiz: Retake (from Settings) ──────────────────────────────────────────
-
+    // #/nadia(Roommate Survey)
+    // #nadia(Roommate Survey)
     @GetMapping("/settings/quiz")
     public String showQuizRetake(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -406,7 +437,7 @@ public class WebController {
         if (loggedInUser == null) return "redirect:/login";
         if (!(loggedInUser instanceof PencariHunian)) return "redirect:/settings";
 
-        // Enforce cooldown server-side (survives direct POST bypass attempts)
+        
         PencariHunian pencari = (PencariHunian) loggedInUser;
         RoommateSurvey existing = pencari.getRoommateSurvey();
         if (existing != null && existing.getLastQuizTaken() != null) {
@@ -436,23 +467,20 @@ public class WebController {
         return "redirect:/settings?success=true";
     }
 
-    // ── Private Helpers ───────────────────────────────────────────────────────
+    
 
-    /**
-     * Delegates quiz saving entirely to the domain object.
-     * RoommateSurvey.isiSurvey() owns: validation, averaging, and timestamping.
-     */
+    
     private void saveAnswersToSurvey(PencariHunian pencari, List<Integer> answers) {
         RoommateSurvey survey = pencari.getRoommateSurvey();
         if (survey == null) survey = new RoommateSurvey();
 
-        survey.isiSurvey(answers); // Throws IllegalArgumentException on bad input
+        survey.isiSurvey(answers); 
         pencari.setRoommateSurvey(survey);
 
-        userRepository.save(pencari); // CascadeType.ALL persists the survey
+        userRepository.save(pencari); 
     }
 
-    /** Assembles the ordered 20-element answer list from the 20 request params. */
+    
     private List<Integer> buildAnswerList(
             Integer s1, Integer s2, Integer s3, Integer s4, Integer s5, Integer s6, Integer s7,
             Integer c1, Integer c2, Integer c3, Integer c4, Integer c5, Integer c6, Integer c7,
@@ -462,4 +490,5 @@ public class WebController {
                 c1, c2, c3, c4, c5, c6, c7,
                 p1, p2, p3, p4, p5, p6));
     }
+    // #/nadia(Roommate Survey)
 }

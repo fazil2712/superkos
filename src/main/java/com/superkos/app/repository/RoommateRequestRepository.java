@@ -11,17 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+// #babas(RoommateRequest)
 @Repository
 public interface RoommateRequestRepository extends JpaRepository<RoommateRequest, Integer> {
 
-    /** All requests received by a user (the inbox). */
+    
     List<RoommateRequest> findByTargetPencariOrderByIdRequestDesc(PencariHunian target);
 
-    /** All requests sent by a user. */
+    
     List<RoommateRequest> findByPencariHunianOrderByIdRequestDesc(PencariHunian sender);
 
-    /** Check if a PENDING request already exists between two users (either direction). */
+    
     @Query("""
             SELECT r FROM RoommateRequest r
             WHERE r.status = 'PENDING'
@@ -32,7 +32,7 @@ public interface RoommateRequestRepository extends JpaRepository<RoommateRequest
             @Param("a") PencariHunian a,
             @Param("b") PencariHunian b);
 
-    /** Check if an ACCEPTED request (= active chat) exists between two users (either direction). */
+    
     @Query("""
             SELECT r FROM RoommateRequest r
             WHERE r.status = 'ACCEPTED'
@@ -43,13 +43,13 @@ public interface RoommateRequestRepository extends JpaRepository<RoommateRequest
             @Param("a") PencariHunian a,
             @Param("b") PencariHunian b);
 
-    /** Count pending requests received by a user (for inbox badge). */
+    
     long countByTargetPencariAndStatus(PencariHunian target, String status);
 
-    /** Count accepted requests sent by a user that they haven't read yet. */
+    
     long countByPencariHunianAndStatusAndSenderRead(PencariHunian sender, String status, boolean senderRead);
 
-    /** Mark all accepted requests sent by a user as read in the database. */
+    
     @Modifying
     @Transactional
     @Query("""
@@ -58,3 +58,4 @@ public interface RoommateRequestRepository extends JpaRepository<RoommateRequest
     """)
     void markAcceptedRequestsAsRead(@Param("sender") PencariHunian sender);
 }
+// #/babas(RoommateRequest)

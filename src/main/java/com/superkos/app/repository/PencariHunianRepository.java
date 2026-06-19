@@ -7,14 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+// #yury(PencariHunian)
 @Repository
 public interface PencariHunianRepository extends JpaRepository<PencariHunian, Integer> {
 
-    /**
-     * Fetches all PencariHunian who have a completed survey (all 3 scores non-null),
-     * excluding the currently logged-in user. Uses JOIN FETCH to prevent N+1 on surveys.
-     */
+    
     @Query("""
             SELECT p FROM PencariHunian p
             JOIN FETCH p.roommateSurvey s
@@ -25,3 +22,4 @@ public interface PencariHunianRepository extends JpaRepository<PencariHunian, In
             """)
     Page<PencariHunian> findCandidates(@Param("currentUserId") int currentUserId, Pageable pageable);
 }
+// #/yury(PencariHunian)

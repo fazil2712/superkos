@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kotak Masuk - Superkos</title>
-    <!-- Auto-refresh every 30 seconds to check for new messages -->
+    
     <meta http-equiv="refresh" content="30">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -41,8 +41,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #naufal(ChatRoom & Message) -->
 
-<!-- Navbar -->
+
+
+
 <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -64,13 +67,13 @@
             <h1 class="text-2xl font-black text-gray-900">Kotak Masuk</h1>
             <p class="text-gray-500 text-sm mt-0.5">Permintaan chat &amp; obrolan aktifmu</p>
         </div>
-        <!-- Pending badge -->
+        
         <span th:if="${pendingCount > 0}"
               class="ml-auto text-xs font-black bg-red-500 text-white px-3 py-1 rounded-full"
               th:text="${pendingCount} + ' permintaan baru'">1 permintaan baru</span>
     </div>
 
-    <!-- ── Active Chats ──────────────────────────────────────────────── -->
+    
     <div class="section-card mb-6">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
             <div class="relative w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
@@ -123,7 +126,7 @@
         </div>
     </div>
 
-    <!-- ── Incoming Requests ─────────────────────────────────────────── -->
+    
     <div class="section-card mb-6">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
             <div class="relative w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -153,7 +156,7 @@
                 <p class="text-xs" th:classappend="${req.status == 'PENDING'} ? 'text-amber-600 font-semibold' : (${req.status == 'ACCEPTED'} ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold')"
                    th:text="${req.status == 'PENDING'} ? 'Menunggu responmu' : (${req.status == 'ACCEPTED'} ? '✓ Diterima' : '✗ Ditolak')">Status</p>
             </div>
-            <!-- Actions for PENDING only -->
+            
             <div th:if="${req.status == 'PENDING'}" class="flex gap-2">
                 <form th:action="@{'/roommate/request/' + ${req.idRequest} + '/accept'}" method="post">
                     <button type="submit"
@@ -168,7 +171,7 @@
                     </button>
                 </form>
             </div>
-            <!-- Open chat for ACCEPTED -->
+            
             <div th:if="${req.status == 'ACCEPTED' && req.chatRoom != null}">
                 <a th:href="@{'/chat/' + ${req.chatRoom.idChat}}"
                    class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-100 transition flex items-center gap-1">
@@ -178,7 +181,7 @@
         </div>
     </div>
 
-    <!-- ── Sent Requests ──────────────────────────────────────────────── -->
+    
     <div class="section-card">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
             <div class="relative w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -225,5 +228,7 @@
 </div>
 
 <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+
+<!-- #/naufal(ChatRoom & Message) -->
 </body>
 </html>

@@ -23,7 +23,7 @@ public class ReservasiController {
 
     @Autowired
     private PencariHunianRepository pencariHunianRepository;
-
+    // #adam(ajukansewa)
     @PostMapping("/reservasi/ajukan/{hunianId}")
     public String ajukanSewa(
             @PathVariable int hunianId,
@@ -33,12 +33,12 @@ public class ReservasiController {
         User loggedInUser =
                 (User) session.getAttribute("loggedInUser");
 
-        // BELUM LOGIN
+        
         if (loggedInUser == null) {
             return "redirect:/login";
         }
 
-        // HARUS PENCARI HUNIAN
+        
         if (!(loggedInUser instanceof PencariHunian)) {
             return "redirect:/?error=only-pencari";
         }
@@ -52,7 +52,7 @@ public class ReservasiController {
             return "redirect:/?error=user-not-found";
         }
 
-        // AMBIL HUNIAN
+        
         Optional<Hunian> hunianOpt =
                 hunianRepository.findById(hunianId);
 
@@ -62,7 +62,7 @@ public class ReservasiController {
 
         Hunian hunian = hunianOpt.get();
 
-        // VALIDASI PROFILE
+        
         if (
                 pencari.getGender() == null ||
                 pencari.getGender().trim().isEmpty() ||
@@ -75,9 +75,9 @@ public class ReservasiController {
 
             return "redirect:/profile?error=lengkapi-profile";
         }
-        // =========================
-        // CEK RESERVASI SEBELUMNYA
-        // =========================
+        
+        
+        
 
         var reservasiLama =
                 reservasiRepository.findByPencariHunianAndHunian(
@@ -104,17 +104,17 @@ public class ReservasiController {
         
         }
         
-        /// =========================
-        // DEBUG
-        // =========================
+        
+        
+        
         System.out.println("=== DEBUG GENDER ===");
         System.out.println("User Gender   : " + pencari.getGender());
         System.out.println("Hunian Gender : " + hunian.getTipeGender());
         System.out.println("====================");
 
-        // =========================
-        // VALIDASI GENDER
-        // =========================
+        
+        
+        
         String genderUser =
         pencari.getGender() == null
                 ? ""
@@ -127,12 +127,12 @@ public class ReservasiController {
 
         boolean cocok = false;
 
-        // CAMPUR
+        
         if (genderHunian.equals("campur")) {
         cocok = true;
         }
 
-        // PUTRI
+        
         else if (
                 genderHunian.equals("putri") ||
                 genderHunian.equals("wanita") ||
@@ -144,7 +144,7 @@ public class ReservasiController {
                 genderUser.equals("perempuan");
         }
 
-        // PUTRA
+        
         else if (
                 genderHunian.equals("putra") ||
                 genderHunian.equals("pria") ||
@@ -156,7 +156,7 @@ public class ReservasiController {
                 genderUser.equals("laki-laki");
         }
 
-        // DEFAULT
+        
         else {
         cocok =
                 genderHunian.equalsIgnoreCase(genderUser);
@@ -169,7 +169,7 @@ public class ReservasiController {
                 + "?error=gender-tidak-cocok";
         }
 
-        // BUAT RESERVASI
+        
         Reservasi reservasi = new Reservasi();
 
         reservasi.setPencariHunian(pencari);
@@ -188,4 +188,5 @@ public class ReservasiController {
                 hunianId +
                 "?success=reservasi-berhasil";
     }
+    // #/adam(ajukansewa)
 }

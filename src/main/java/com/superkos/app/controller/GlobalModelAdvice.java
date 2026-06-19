@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
+// #babas(Notifikasi Sistem)
 @ControllerAdvice
 public class GlobalModelAdvice {
 
@@ -42,7 +42,7 @@ public class GlobalModelAdvice {
                 long totalInboxNotifications = pendingRequests + acceptedUnread + unreadMessages;
                 model.addAttribute("inboxNotificationCount", totalInboxNotifications);
                 
-                // Retrieve actual notification messages using popnotif model method
+                
                 java.util.List<String> notificationsList = fresh.popnotif(requestRepository);
                 model.addAttribute("notificationsList", notificationsList);
             } else {
@@ -76,3 +76,4 @@ public class GlobalModelAdvice {
         }
     }
 }
+// #/babas(Notifikasi Sistem)

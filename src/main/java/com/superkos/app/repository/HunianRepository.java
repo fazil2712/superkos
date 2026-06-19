@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Sort;
 import java.util.Date;
 import java.util.List;
-
+// #fazil(Hunian)
 @Repository
 public interface HunianRepository extends JpaRepository<Hunian, Integer> {
 
-    /** All properties owned by a specific pemilik, newest first. */
+    
     List<Hunian> findByPemilikOrderByIdHunianDesc(PemilikProperti pemilik);
 
     List<Hunian> findByLokasiContainingIgnoreCase(String lokasi);
@@ -40,3 +40,4 @@ public interface HunianRepository extends JpaRepository<Hunian, Integer> {
         Sort sort
     );
 }
+// #/fazil(Hunian)

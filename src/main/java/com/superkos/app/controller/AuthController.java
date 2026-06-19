@@ -25,7 +25,7 @@ public class AuthController {
 
     @Autowired
     private PencariHunianRepository pencariHunianRepository;
-
+    // #naufal(User)
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
@@ -50,7 +50,8 @@ public class AuthController {
         model.addAttribute("error", "Email atau password salah!");
         return "login";
     }
-
+    // #/naufal(User)
+    // #fazil(Registrasi)
     @GetMapping("/register")
     public String showRegisterForm() {
         return "register";
@@ -66,12 +67,12 @@ public class AuthController {
             HttpSession session,
             Model model) {
 
-        // Check if email already exists — wrapped in try-catch for orphaned DB records
+        
         User existingUser = null;
         try {
             existingUser = userRepository.findByEmail(email);
         } catch (Exception e) {
-            // Orphaned user row — delete it so registration can proceed cleanly
+            
             userRepository.deleteOrphanedByEmail(email);
         }
 
@@ -80,7 +81,7 @@ public class AuthController {
             return "register";
         }
 
-        // Validate kontak is required for PemilikProperti
+        
         if ("PEMILIK".equals(role) && (kontak == null || kontak.trim().isEmpty())) {
             model.addAttribute("error", "Kontak wajib diisi untuk Pemilik Properti!");
             return "register";
@@ -114,19 +115,21 @@ public class AuthController {
         }
         session.setAttribute("loggedInUser", newUser);
 
-        // Only PencariHunian needs to complete the preference quiz
+        
         if (newUser instanceof PencariHunian) {
             session.setAttribute("pendingQuizSetup", true);
             return "redirect:/quiz/setup";
         }
 
-        // PemilikProperti goes directly to the dashboard
+        
         return "redirect:/";
     }
-
+    // #/fazil(Registrasi)
+    // #naufal(User)
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
     }
+    // #/naufal(User)
 }

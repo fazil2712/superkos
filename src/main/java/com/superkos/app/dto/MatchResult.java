@@ -1,12 +1,9 @@
 package com.superkos.app.dto;
 
-/**
- * Immutable data-transfer object carrying a single roommate match result.
- * Produced by RoommateMatchController and consumed by roommate_match.html.
- */
+
 public class MatchResult {
 
-    // ── Candidate profile ─────────────────────────────────────────────────────
+    
     private final int    candidateId;
     private final String nama;
     private final String email;
@@ -17,14 +14,14 @@ public class MatchResult {
     private final String biodata;
     private final Integer umur;
 
-    // ── Match scores (all 0–100, rounded to 1 decimal) ───────────────────────
-    private final double overallScore;    // overall compatibility %
-    private final double socialScore;     // social category %
-    private final double cleanScore;      // cleanliness category %
-    private final double sleepScore;      // sleep category %
+    
+    private final double overallScore;    
+    private final double socialScore;     
+    private final double cleanScore;      
+    private final double sleepScore;      
 
-    // ── Fuzzy label ───────────────────────────────────────────────────────────
-    private final String fuzzyLabel;      // e.g. "Sangat Cocok"
+    
+    private final String fuzzyLabel;      
 
     public MatchResult(
             int candidateId, String nama, String email, String kontak,
@@ -48,7 +45,7 @@ public class MatchResult {
         this.fuzzyLabel   = fuzzyLabel;
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
+    
 
     public int    getCandidateId()  { return candidateId;  }
     public String getNama()         { return nama;         }
@@ -65,7 +62,7 @@ public class MatchResult {
     public double getSleepScore()   { return sleepScore;   }
     public String getFuzzyLabel()   { return fuzzyLabel;   }
 
-    /** Returns the initial character (upper-case) of the candidate's name. */
+    
     public String getInitial() {
         return (nama != null && !nama.isEmpty())
                 ? String.valueOf(nama.charAt(0)).toUpperCase()

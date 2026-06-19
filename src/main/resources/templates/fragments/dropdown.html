@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <!-- CSS for Dropdown -->
+<!-- #babas(Notifikasi Sistem) -->
+
+
+    
     <style th:fragment="dropdown-css">
       .avatar-btn {
         cursor: pointer;
@@ -111,7 +114,7 @@
       }
     </style>
 
-    <!-- HTML for Dropdown -->
+    
     <div
       th:fragment="dropdown-html"
       th:if="${loggedInUser != null}"
@@ -141,7 +144,7 @@
             ?
           </div>
         </div>
-        <!-- Dot notification badge on the avatar itself -->
+        
         <span
           th:if="${inboxNotificationCount > 0}"
           style="
@@ -162,9 +165,9 @@
         id="avatarChevron"
       ></i>
 
-      <!-- Dropdown Panel -->
+      
       <div class="dropdown-menu" id="dropdownMenu">
-        <!-- User Header -->
+        
         <div class="dropdown-header">
           <p
             class="font-bold text-gray-900 text-sm"
@@ -186,9 +189,9 @@
             >Pemilik Properti</span
           >
         </div>
-        <!-- Menu Items -->
+        
         <div class="py-1">
-          <!-- Common: Beranda — different link depending on role -->
+          
           <a
             th:if="${loggedInUser.class.simpleName == 'PencariHunian'}"
             href="/"
@@ -204,12 +207,12 @@
             <i class="fas fa-home"></i> Beranda
           </a>
 
-          <!-- Common: Edit Profil -->
+          
           <a href="/profile" class="dropdown-item">
             <i class="fas fa-user-edit"></i> Edit Profil
           </a>
 
-          <!-- PencariHunian only -->
+          
           <a
             href="/settings"
             class="dropdown-item"
@@ -254,7 +257,7 @@
             >
           </a>
 
-          <!-- PemilikProperti only -->
+          
           <a
             href="/pemilik/reservasi"
             class="dropdown-item"
@@ -286,7 +289,7 @@
       </div>
     </div>
 
-    <!-- JS for Dropdown -->
+    
     <script th:fragment="dropdown-js">
       const avatarBtn = document.getElementById("avatarBtn");
       const dropdownMenu = document.getElementById("dropdownMenu");
@@ -310,5 +313,7 @@
         });
       }
     </script>
-  </body>
+
+<!-- #/babas(Notifikasi Sistem) -->
+</body>
 </html>

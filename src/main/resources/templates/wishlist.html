@@ -70,8 +70,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #fazil(Wishlist) -->
 
-    <!-- Navbar -->
+
+
+    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -86,7 +89,7 @@
 
     <div class="max-w-6xl mx-auto px-4 py-10 fade-up">
 
-        <!-- Page Header -->
+        
         <div class="mb-8 flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center">
                 <i class="fas fa-heart text-red-500 text-xl"></i>
@@ -99,7 +102,7 @@
             </div>
         </div>
 
-        <!-- Empty State -->
+        
         <div th:if="${wishlist.empty}" class="text-center py-24">
             <div class="w-24 h-24 rounded-3xl bg-red-50 flex items-center justify-center mx-auto mb-5">
                 <i class="far fa-heart text-5xl text-red-300"></i>
@@ -111,31 +114,31 @@
             </a>
         </div>
 
-        <!-- Wishlist Grid -->
+        
         <div th:unless="${wishlist.empty}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div th:each="hunian : ${wishlist}" class="card group">
 
-                <!-- Image -->
+                
                 <div class="relative h-48 overflow-hidden">
                     <a th:href="@{'/hunian/' + ${hunian.idHunian}}">
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"
                              alt="Hunian" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     </a>
-                    <!-- Remove from wishlist -->
+                    
                     <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post">
                         <input type="hidden" name="returnUrl" value="/wishlist">
                         <button type="submit" class="heart-btn" title="Hapus dari Wishlist">
                             <i class="fas fa-heart" style="color:#ef4444;font-size:0.9rem;"></i>
                         </button>
                     </form>
-                    <!-- Gender badge -->
+                    
                     <div class="absolute bottom-3 left-3">
                         <span class="bg-white text-gray-700 text-xs font-semibold px-2 py-1 rounded-lg shadow"
                               th:text="${hunian.tipeGender}">Tipe</span>
                     </div>
                 </div>
 
-                <!-- Info -->
+                
                 <div class="p-4">
                     <a th:href="@{'/hunian/' + ${hunian.idHunian}}">
                         <h2 class="font-bold text-gray-900 text-base group-hover:text-purple-600 transition mb-1 truncate"
@@ -146,7 +149,7 @@
                         <span th:text="${hunian.lokasi}">Lokasi</span>
                     </p>
 
-                    <!-- Tags -->
+                    
                     <div class="flex flex-wrap gap-1.5 mb-3">
                         <span th:if="${hunian.jumlahKamar > 1}"
                               class="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -157,7 +160,7 @@
                               th:text="${kat}">Bulanan</span>
                     </div>
 
-                    <!-- Price + CTA -->
+                    
                     <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
                         <div>
                             <span class="text-lg font-black text-gray-900"
@@ -177,5 +180,7 @@
     </div>
 
     <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+
+<!-- #/fazil(Wishlist) -->
 </body>
 </html>

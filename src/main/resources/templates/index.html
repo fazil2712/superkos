@@ -82,18 +82,21 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-white text-gray-800">
+<!-- #adam(SearchEngine) -->
 
-    <!-- Top Mini Navbar -->
+
+
+    
     <div class="border-b border-gray-200 hidden md:block">
         <div class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6">
             <a href="#" class="hover:text-purple-600 flex items-center gap-2"><i class="far fa-calendar-check"></i> Sewa Kos</a>
         </div>
     </div>
 
-    <!-- Main Navbar -->
+    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
-            <!-- Logo + Avatar Dropdown (when logged in) -->
+            
             <div class="flex items-center gap-3">
                 <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
                 <a href="/" class="flex items-center gap-2 text-2xl font-bold">
@@ -101,7 +104,7 @@
                 </a>
             </div>
 
-            <!-- Search Bar + Wishlist Button -->
+            
             <div class="flex-1 max-w-4xl flex items-center gap-3">
                 <div class="flex-1 flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-400 transition shadow-sm bg-white">
                     <div class="pl-4 text-gray-400">
@@ -113,20 +116,20 @@
                     </button>
                 </div>
 
-                <!-- Wishlist Icon Button (only for logged-in PencariHunian) -->
+                
                 <a href="/wishlist"
                    th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
                    class="wishlist-nav-btn"
                    th:title="${wishlistCount > 0 ? wishlistCount + ' hunian tersimpan' : 'Wishlist Saya'}">
                     <i class="fas fa-heart" style="font-size:1.05rem;"></i>
-                    <!-- Badge: shown whenever count > 0 -->
+                    
                     <span th:if="${wishlistCount > 0}"
                           class="wl-badge wl-badge-anim"
                           th:text="${wishlistCount > 99 ? '99+' : wishlistCount}">0</span>
                 </a>
             </div>
 
-            <!-- Right Actions (only shown when NOT logged in) -->
+            
             <div class="hidden md:flex items-center gap-4 ml-auto">
                 <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
                     <a href="/login" class="text-gray-600 hover:text-purple-600 font-medium transition">Masuk</a>
@@ -136,14 +139,14 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    
     <form id="filterForm" action="/" method="GET" class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         
-        <!-- Left Sidebar (Filters) -->
+        
         <aside class="w-full lg:w-1/4 flex flex-col gap-6">
             <h2 class="text-xl font-bold text-gray-800">Filter</h2>
 
-            <!-- Expandable Filter Cell: Tipe Kost -->
+            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                 <button type="button" onclick="toggleSection('genderContent', 'genderIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Tipe Kost</span>
@@ -171,7 +174,7 @@
                 </div>
             </div>
 
-            <!-- Expandable Filter Cell: Kategori Sewa -->
+            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                 <button type="button" onclick="toggleSection('kategoriContent', 'kategoriIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Kategori Sewa</span>
@@ -187,7 +190,7 @@
                 </div>
             </div>
             
-            <!-- Filter: Durasi/Tanggal -->
+            
             <div class="border-b border-gray-200 pb-6">
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">Tanggal Sewa</h3>
                 <div class="flex flex-col gap-3">
@@ -202,7 +205,7 @@
                 </div>
             </div>
 
-            <!-- Filter: Harga -->
+            
             <div class="border-b border-gray-200 pb-6">
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">Harga</h3>
                 <div class="flex flex-col gap-3">
@@ -217,7 +220,7 @@
                 </div>
             </div>
 
-            <!-- Expandable Filter Cell: Roommate -->
+            
             <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                 <button type="button" onclick="toggleSection('roommateContent', 'roommateIcon')" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition">
                     <span class="font-bold text-sm text-gray-800">Kondisi Roommate</span>
@@ -246,10 +249,10 @@
             </button>
         </aside>
 
-        <!-- Right Content (Listings) -->
+        
         <div class="flex-1 w-full lg:w-3/4">
             
-            <!-- Sort & Info Header -->
+            
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
                 <p class="text-gray-600 text-sm font-medium">Menampilkan kos-kosan dari Database MySQL</p>
                 
@@ -265,21 +268,21 @@
                 </div>
             </div>
 
-            <!-- Dynamic Listing Cards Loop -->
+            
             <div class="space-y-6">
-                <!-- If database is empty -->
+                
                 <div th:if="${daftarHunian.empty}" class="p-8 text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
                     <i class="fas fa-search-minus text-4xl mb-3 text-gray-300"></i>
                     <p class="font-medium">Tidak ada hunian yang sesuai dengan filter.</p>
                 </div>
 
-                <!-- Loop through database rows -->
+                
                 <a th:href="@{'/hunian/' + ${hunian.idHunian}}" th:each="hunian : ${daftarHunian}" class="flex flex-col md:flex-row gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 transition rounded-lg group cursor-pointer p-2 block">
-                    <!-- Placeholder Image -->
+                    
                     <div class="relative w-full md:w-64 h-48 rounded-xl overflow-hidden flex-shrink-0">
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" alt="Kost Room" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded shadow font-bold"><i class="fas fa-bolt"></i> PROMO</div>
-                        <!-- Wishlist Heart Button -->
+                        
                         <div th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}">
                             <form th:action="@{'/wishlist/toggle/' + ${hunian.idHunian}}" method="post"
                                   style="position:absolute;top:8px;right:8px;"
@@ -298,10 +301,10 @@
                     
                     <div class="flex flex-col flex-1 py-1">
                         <div class="flex flex-wrap gap-2 mb-2 items-center">
-                            <!-- Gender Type dynamically from DB -->
+                            
                             <span class="border border-gray-300 text-gray-600 text-xs px-2 py-1 rounded font-medium" th:text="${hunian.tipeGender}">Tipe</span>
                             
-                            <!-- Dynamic Roommate Suitability Logic -->
+                            
                             <span th:if="${hunian.jumlahKamar > 1}" class="bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded font-semibold flex items-center gap-1">
                                 <i class="fas fa-user-friends"></i> Bisa untuk Roommate
                             </span>
@@ -310,11 +313,11 @@
                             </span>
                         </div>
                         
-                        <!-- Name & Location from DB -->
+                        
                         <h2 class="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition" th:text="${hunian.namaHunian}">Nama Kost</h2>
                         <p class="text-gray-500 text-sm mb-3"><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i> <span th:text="${hunian.lokasi}">Lokasi</span></p>
                         
-                        <!-- Capacity from DB -->
+                        
                         <div class="text-sm text-gray-600 space-y-1 mt-2">
                             <p class="flex items-center gap-2">
                                 <i class="fas fa-bed w-4 text-gray-400"></i> Kapasitas Kamar: <span class="font-medium text-gray-800" th:text="${hunian.jumlahKamar + ' Orang/Kamar'}">1</span>
@@ -330,7 +333,7 @@
                             </p>
                         </div>
                         
-                        <!-- Price formatting from DB -->
+                        
                         <div class="mt-auto flex justify-end items-end pt-4">
                             <div class="text-right">
                                 <span class="text-xl font-bold text-gray-900" th:text="${'Rp' + #numbers.formatDecimal(hunian.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span><span class="text-gray-500 text-sm">/bulan</span>
@@ -379,5 +382,6 @@
         });
     </script>
 
+<!-- #/adam(SearchEngine) -->
 </body>
 </html>

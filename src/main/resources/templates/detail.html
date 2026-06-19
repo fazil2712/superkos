@@ -60,7 +60,10 @@
     </style>
   </head>
   <body class="bg-white text-gray-800">
-    <!-- Top Mini Navbar -->
+<!-- #fazil(Daftar Reservasi) -->
+
+
+    
     <div class="border-b border-gray-200 hidden md:block">
       <div
         class="max-w-7xl mx-auto px-4 flex items-center h-10 text-sm text-gray-600 gap-6"
@@ -71,7 +74,7 @@
       </div>
     </div>
 
-    <!-- Main Navbar -->
+    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
       <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-8">
         <a
@@ -81,7 +84,7 @@
           <i class="fas fa-arrow-left"></i> Superkos
         </a>
 
-        <!-- Right Actions (Dynamic based on Auth) -->
+        
         <div class="hidden md:flex items-center gap-4 ml-auto">
           <div th:if="${loggedInUser == null}" class="flex gap-4 items-center">
             <a
@@ -114,9 +117,9 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
+    
     <main class="max-w-7xl mx-auto px-4 py-8">
-      <!-- SUCCESS ALERT -->
+      
       <div
         th:if="${param.info != null and param.info[0] == 'sudah-diterima'}"
         class="mb-6 p-4 rounded-xl bg-green-100 border border-green-300 text-green-800 shadow"
@@ -135,7 +138,7 @@
         </div>
       </div>
 
-      <!-- WARNING ALERT -->
+      
       <div
         th:if="${param.warning != null and param.warning[0] == 'masih-pending'}"
         class="mb-6 p-4 rounded-xl bg-yellow-100 border border-yellow-300 text-yellow-800 shadow"
@@ -154,7 +157,7 @@
         </div>
       </div>
 
-      <!-- ERROR ALERT -->
+      
       <div
         th:if="${param.error != null}"
         class="mb-6 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800 shadow"
@@ -199,13 +202,13 @@
           </div>
         </div>
       </div>
-      <!-- Breadcrumbs -->
+      
       <nav class="text-sm text-gray-500 mb-6">
         <a href="/" class="hover:underline">Home</a> &gt;
         <span th:text="${hunian.namaHunian}">Nama Kost</span>
       </nav>
 
-      <!-- Title Section -->
+      
       <h1
         class="text-3xl font-bold text-gray-900 mb-2"
         th:text="${hunian.namaHunian}"
@@ -230,57 +233,59 @@
         >
       </div>
 
-      <!-- Photo Grid (Airbnb Style) -->
-      <div
-        class="grid grid-cols-1 md:grid-cols-4 gap-2 h-96 mb-8 rounded-xl overflow-hidden"
-      >
-        <div class="col-span-1 md:col-span-2 row-span-2">
-          <img
-            src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
-            alt="Main Photo"
-            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
-          />
-        </div>
-        <div class="col-span-1">
-          <img
-            src="https://images.unsplash.com/photo-1502672260266-1c1c2c49e59b?auto=format&fit=crop&w=400&q=80"
-            alt="Photo 2"
-            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
-          />
-        </div>
-        <div class="col-span-1">
-          <img
-            src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80"
-            alt="Photo 3"
-            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
-          />
-        </div>
-        <div class="col-span-1">
-          <img
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80"
-            alt="Photo 4"
-            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
-          />
-        </div>
-        <div class="col-span-1 relative">
-          <img
-            src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=400&q=80"
-            alt="Photo 5"
-            class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"
-          />
-          <div
-            class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg font-medium text-sm shadow cursor-pointer border border-black hover:bg-gray-50"
-          >
-            <i class="fas fa-th"></i> Tampilkan semua foto
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-2 h-96 mb-8 rounded-xl overflow-hidden">
+
+        
+        <th:block th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}">
+          
+          <div class="col-span-1 md:col-span-2 row-span-2">
+            <img th:src="${hunian.fotoHunian[0]}"
+                 alt="Foto Utama"
+                 class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"/>
           </div>
+          
+          <th:block th:each="i : ${#numbers.sequence(1, 4)}">
+            <div class="col-span-1" th:if="${i == 4}" style="position:relative;">
+              <img th:if="${hunian.fotoHunian.size() > i}"
+                   th:src="${hunian.fotoHunian[i]}"
+                   th:alt="'Foto ' + ${i+1}"
+                   class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"/>
+              <div th:unless="${hunian.fotoHunian.size() > i}"
+                   class="w-full h-full bg-gray-100 flex items-center justify-center">
+                <i class="fas fa-image text-gray-300 text-3xl"></i>
+              </div>
+              <div class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg font-medium text-sm shadow cursor-pointer border border-black hover:bg-gray-50">
+                <i class="fas fa-th"></i> <span th:text="${hunian.fotoHunian.size()} + ' foto'">Lihat semua</span>
+              </div>
+            </div>
+            <div class="col-span-1" th:unless="${i == 4}">
+              <img th:if="${hunian.fotoHunian.size() > i}"
+                   th:src="${hunian.fotoHunian[i]}"
+                   th:alt="'Foto ' + ${i+1}"
+                   class="w-full h-full object-cover hover:opacity-90 transition cursor-pointer"/>
+              <div th:unless="${hunian.fotoHunian.size() > i}"
+                   class="w-full h-full bg-gray-100 flex items-center justify-center">
+                <i class="fas fa-image text-gray-300 text-3xl"></i>
+              </div>
+            </div>
+          </th:block>
+        </th:block>
+
+        
+        <div th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}"
+             class="col-span-4 row-span-2 bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col items-center justify-center gap-3">
+          <i class="fas fa-camera text-5xl text-purple-300"></i>
+          <p class="text-gray-400 font-medium">Foto hunian belum tersedia</p>
         </div>
+
       </div>
 
-      <!-- 2-Column Layout -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Left Side: Information -->
+        
         <div class="col-span-1 lg:col-span-2 space-y-8">
-          <!-- Host Info -->
+          
           <div
             class="flex items-center justify-between border-b border-gray-200 pb-6"
           >
@@ -304,7 +309,7 @@
             </div>
           </div>
 
-          <!-- Room Capacity & Match Highlight -->
+          
           <div class="border-b border-gray-200 pb-6 space-y-4">
             <div class="flex items-start gap-4">
               <i class="fas fa-bed text-2xl text-gray-600 mt-1"></i>
@@ -382,7 +387,7 @@
             </div>
           </div>
 
-          <!-- Description -->
+          
           <div class="border-b border-gray-200 pb-6">
             <h2 class="text-xl font-bold text-gray-900 mb-4">
               Cerita Pemilik Tentang Kos Ini
@@ -401,7 +406,7 @@
             </p>
           </div>
 
-          <!-- Amenities -->
+          
           <div class="border-b border-gray-200 pb-6">
             <h2 class="text-xl font-bold text-gray-900 mb-4">
               Fasilitas yang ditawarkan
@@ -434,12 +439,12 @@
           </div>
         </div>
 
-        <!-- Right Side: Booking / Contact Card -->
+        
         <div class="col-span-1 relative">
           <div
             class="sticky top-28 border border-gray-200 rounded-2xl p-6 shadow-xl bg-white"
           >
-            <!-- Price Tag -->
+            
             <div class="mb-6">
               <p class="text-sm text-red-500 font-bold mb-1">
                 <i class="fas fa-bolt"></i> Diskon Tersedia
@@ -454,7 +459,7 @@
               </div>
             </div>
 
-            <!-- Input Selectors -->
+            
             <div class="border border-gray-300 rounded-lg overflow-hidden mb-4">
               <div class="flex border-b border-gray-300">
                 <div
@@ -484,10 +489,10 @@
               </div>
             </div>
 
-            <!-- Tanya Pemilik -->
-            <!-- Action Buttons -->
+            
+            
             <div class="space-y-3">
-              <!-- Tanya Pemilik -->
+              
               <button
                 class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
               >
@@ -495,7 +500,8 @@
                 Tanya Pemilik
               </button>
 
-              <!-- USER SUDAH LOGIN -->
+              
+              <!-- #adam(ajukansewa) -->
               <div th:if="${loggedInUser != null}">
                 <form
                   th:action="@{'/reservasi/ajukan/' + ${hunian.idHunian}}"
@@ -510,7 +516,7 @@
                 </form>
               </div>
 
-              <!-- USER BELUM LOGIN -->
+              
               <div th:if="${loggedInUser == null}">
                 <button
                   onclick="showLoginPopup()"
@@ -520,8 +526,9 @@
                   Ajukan Sewa
                 </button>
               </div>
+              <!-- #/adam(ajukansewa) -->
 
-              <!-- Wishlist -->
+              
               <div
                 th:if="${loggedInUser != null && loggedInUser.class.simpleName == 'PencariHunian'}"
               >
@@ -566,7 +573,7 @@
         </div>
       </div>
     </main>
-    <!-- LOGIN REQUIRED MODAL -->
+    
     <div
       id="loginPopup"
       class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
@@ -617,5 +624,7 @@
         document.getElementById("loginPopup").classList.add("hidden");
       }
     </script>
-  </body>
+
+<!-- #/fazil(Daftar Reservasi) -->
+</body>
 </html>

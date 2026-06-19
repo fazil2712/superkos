@@ -79,8 +79,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #yury(PemilikProperti) -->
 
-<!-- Navbar -->
+
+
+
 <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -95,7 +98,7 @@
 
 <div class="max-w-4xl mx-auto px-4 py-10 fade-up">
 
-    <!-- Page Header -->
+    
     <div class="mb-8 flex items-center gap-4">
         <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
             <i class="fas fa-building text-blue-600 text-xl"></i>
@@ -110,7 +113,7 @@
         </a>
     </div>
 
-    <!-- Success Notifications -->
+    
     <div th:if="${param.added}" class="bg-green-50 text-green-700 p-3 rounded-xl mb-5 text-sm font-semibold text-center border border-green-200 fade-up">
         <i class="fas fa-check-circle mr-1"></i> Properti baru berhasil ditambahkan!
     </div>
@@ -121,7 +124,7 @@
         <i class="fas fa-trash-alt mr-1"></i> Properti berhasil dihapus.
     </div>
 
-    <!-- ── Add New Property Form ────────────────────────────────────────── -->
+    
     <div class="section-card mb-8">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
@@ -130,8 +133,8 @@
             <h2 class="font-bold text-gray-800">Tambah Properti Baru</h2>
         </div>
 
-        <form action="/pemilik/properti" method="post" class="p-5 space-y-5">
-            <!-- Row 1: Nama + Tipe -->
+        <form action="/pemilik/properti" method="post" enctype="multipart/form-data" class="p-5 space-y-5" id="addPropForm" onsubmit="return validatePhotos()">
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
@@ -147,7 +150,7 @@
                 </div>
             </div>
 
-            <!-- Row 2: Harga + Lokasi -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
@@ -159,7 +162,7 @@
                 </div>
             </div>
 
-            <!-- Row 3: Tipe Gender + Jumlah Kamar + Tipe Unit -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
@@ -179,7 +182,7 @@
                 </div>
             </div>
 
-            <!-- Row 4: Dates -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
@@ -191,7 +194,118 @@
                 </div>
             </div>
 
-            <!-- Row 5: Kategori Sewa + Status -->
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
+                    <div class="flex flex-wrap gap-3">
+                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
+                               class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="kategoriSewa" th:value="${opt}" class="w-4 h-4 accent-purple-600">
+                            <span class="text-sm text-gray-700" th:text="${opt}">Opsi</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="true" checked class="accent-green-500">
+                            <span class="text-sm font-medium text-green-700">Tersedia</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="statusTersedia" value="false" class="accent-red-500">
+                            <span class="text-sm font-medium text-red-600">Penuh / Tidak Tersedia</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">
+                    <i class="fas fa-images text-purple-400 mr-1"></i>
+                    Foto Hunian <span class="text-red-500">*</span>
+                    <span class="text-xs font-normal text-gray-400 ml-1">(Minimum 3 foto)</span>
+                </label>
+                <label for="fotoHunianInput"
+                       class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-purple-300 rounded-xl cursor-pointer bg-purple-50 hover:bg-purple-100 transition mb-3">
+                    <i class="fas fa-cloud-upload-alt text-2xl text-purple-400 mb-1"></i>
+                    <span class="text-sm text-purple-600 font-semibold">Klik untuk pilih foto</span>
+                    <span class="text-xs text-gray-400 mt-0.5">JPG, PNG, WebP — maks 10MB per file</span>
+                    <input type="file" id="fotoHunianInput" name="fotoHunian" multiple accept="image/*" class="hidden" onchange="previewHunianPhotos(event, 'addPhotoGrid', 'addPhotoCount')">
+                </label>
+                <div id="addPhotoGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
+                <p id="addPhotoCount" class="text-xs text-gray-400 mt-1">0 foto dipilih</p>
+                <p id="addPhotoError" class="text-xs text-red-500 mt-1 hidden"><i class="fas fa-exclamation-triangle mr-1"></i>Harap upload minimal 3 foto hunian.</p>
+            </div>
+
+            <button type="submit"
+                    class="w-full rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm">
+                <i class="fas fa-plus-circle mr-1"></i> Tambah Properti
+            </button>
+        </form>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
+                    <input type="text" name="namaHunian" required class="input-field" placeholder="Contoh: Kost Melati Indah">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Hunian</label>
+                    <select name="tipeHunian" class="input-field">
+                        <option value="Kost">Kost</option>
+                        <option value="Kontrakan">Kontrakan</option>
+                        <option value="Apartemen">Apartemen</option>
+                    </select>
+                </div>
+            </div>
+
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
+                    <input type="number" name="harga" required min="0" class="input-field" placeholder="Contoh: 1500000">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span class="text-red-500">*</span></label>
+                    <input type="text" name="lokasi" required class="input-field" placeholder="Contoh: Depok, Jawa Barat">
+                </div>
+            </div>
+
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
+                    <select name="tipeGender" class="input-field">
+                        <option value="Campur">Campur</option>
+                        <option value="Putra">Putra</option>
+                        <option value="Putri">Putri</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
+                    <input type="number" name="jumlahKamar" value="1" min="1" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Unit</label>
+                    <input type="text" name="tipeUnit" class="input-field" placeholder="Contoh: Kamar Biasa">
+                </div>
+            </div>
+
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
+                    <input type="date" name="availableDateStart" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Akhir Tersedia</label>
+                    <input type="date" name="availableDateEnd" class="input-field">
+                </div>
+            </div>
+
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
@@ -223,17 +337,8 @@
                 <i class="fas fa-plus-circle mr-1"></i> Tambah Properti
             </button>
         </form>
-    </div>
-
-    <!-- ── Existing Properties List ─────────────────────────────────────── -->
+    
     <div class="section-card">
-        <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                <i class="fas fa-list text-purple-600 text-sm"></i>
-            </div>
-            <h2 class="font-bold text-gray-800">Properti Anda</h2>
-            <span class="ml-auto text-xs text-gray-400 font-semibold" th:text="${properties.size()} + ' properti'">0 properti</span>
-        </div>
 
         <div th:if="${properties.empty}" class="p-8 text-center text-gray-400">
             <i class="fas fa-building text-3xl mb-2 block"></i>
@@ -241,8 +346,13 @@
         </div>
 
         <div th:each="h : ${properties}" class="row-item">
-            <div class="mini-avatar" style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
-                <i class="fas fa-home text-sm"></i>
+            
+            <div class="mini-avatar overflow-hidden" style="background: linear-gradient(135deg, #a855f7, #3b82f6);">
+                <img th:if="${h.fotoHunian != null && !h.fotoHunian.isEmpty()}"
+                     th:src="${h.fotoHunian[0]}"
+                     alt="foto"
+                     class="w-full h-full object-cover">
+                <i th:unless="${h.fotoHunian != null && !h.fotoHunian.isEmpty()}" class="fas fa-home text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
@@ -274,5 +384,40 @@
 </div>
 
 <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+<script>
+function previewHunianPhotos(event, gridId, countId) {
+    const files = event.target.files;
+    const grid = document.getElementById(gridId);
+    const count = document.getElementById(countId);
+    grid.innerHTML = '';
+    count.textContent = files.length + ' foto dipilih';
+    Array.from(files).forEach(function(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'relative rounded-lg overflow-hidden aspect-square bg-gray-100';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'w-full h-full object-cover';
+            div.appendChild(img);
+            grid.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function validatePhotos() {
+    const input = document.getElementById('fotoHunianInput');
+    const errEl = document.getElementById('addPhotoError');
+    if (!input || !input.files || input.files.length < 3) {
+        if (errEl) { errEl.classList.remove('hidden'); }
+        return false;
+    }
+    if (errEl) { errEl.classList.add('hidden'); }
+    return true;
+}
+</script>
+
+<!-- #/yury(PemilikProperti) -->
 </body>
 </html>

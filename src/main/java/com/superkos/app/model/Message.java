@@ -2,7 +2,7 @@ package com.superkos.app.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
-
+// #naufal(ChatRoom & Message)
 @Entity
 public class Message {
     @Id
@@ -42,3 +42,4 @@ public class Message {
     public boolean isRead() { return isRead; }
     public void setRead(boolean read) { isRead = read; }
 }
+// #/naufal(ChatRoom & Message)

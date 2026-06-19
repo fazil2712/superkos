@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+// #naufal(ChatRoom & Message)
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
 
-    /** Find all chat rooms where the user is a participant. */
+    
     @Query("""
             SELECT DISTINCT c FROM ChatRoom c
             JOIN c.participants p
@@ -23,7 +23,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
             """)
     List<ChatRoom> findByParticipant(@Param("user") User user);
 
-    /** Find the specific 1-on-1 room between two users (either direction). */
+    
     @Query("""
             SELECT c FROM ChatRoom c
             JOIN c.participants p1
@@ -33,7 +33,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
             """)
     Optional<ChatRoom> findBetween(@Param("a") User a, @Param("b") User b);
 
-    /** Find a RESERVASI-type chat room for a specific hunian that the user is in. */
+    
     @Query("""
             SELECT c FROM ChatRoom c
             JOIN c.participants p
@@ -41,7 +41,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
             """)
     Optional<ChatRoom> findReservasiRoom(@Param("hunian") Hunian hunian, @Param("user") User user);
 
-    /** Find all RESERVASI chat rooms for a user. */
+    
     @Query("""
             SELECT DISTINCT c FROM ChatRoom c
             JOIN c.participants p
@@ -50,3 +50,4 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer> {
             """)
     List<ChatRoom> findReservasiRoomsByParticipant(@Param("user") User user);
 }
+// #/naufal(ChatRoom & Message)

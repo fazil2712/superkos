@@ -8,24 +8,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Handles PemilikProperti-specific routes:
- *  GET  /pemilik/dashboard             — owner dashboard showing their properties
- *  GET  /pemilik/properti              — property management (list + add form)
- *  POST /pemilik/properti              — create a new hunian
- *  GET  /pemilik/properti/{id}/edit    — edit form for a specific hunian
- *  POST /pemilik/properti/{id}/edit    — save edits
- *  POST /pemilik/properti/{id}/delete  — delete a hunian
- *  GET  /pemilik/reservasi             — reservasi inbox (pending/accepted/rejected)
- *  GET  /pemilik/reservasi/{id}        — single reservasi detail with pencari profile
- *  POST /pemilik/reservasi/{id}/accept — accept a reservasi (creates group chat)
- *  POST /pemilik/reservasi/{id}/reject — reject a reservasi
- */
 @Controller
 @RequestMapping("/pemilik")
 public class PemilikController {
@@ -36,15 +30,37 @@ public class PemilikController {
     @Autowired private ChatRoomRepository chatRoomRepository;
     @Autowired private MessageRepository messageRepository;
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
+    
+    // #yury(PemilikProperti)
     private PemilikProperti getMe(HttpSession session) {
         User u = (User) session.getAttribute("loggedInUser");
         if (u == null || !(u instanceof PemilikProperti)) return null;
         return pemilikRepository.findById(u.getId()).orElse(null);
     }
 
-    // ── Dashboard ─────────────────────────────────────────────────────────────
+    
+    private List<String> saveHunianPhotos(List<MultipartFile> files, int hunianId, List<String> existing) {
+        List<String> paths = new ArrayList<>(existing != null ? existing : new ArrayList<>());
+        if (files == null || files.isEmpty()) return paths;
+        try {
+            Path dir = Paths.get("uploads", "hunian", String.valueOf(hunianId));
+            Files.createDirectories(dir);
+            for (MultipartFile file : files) {
+                if (file == null || file.isEmpty()) continue;
+                String original = file.getOriginalFilename() != null ? file.getOriginalFilename() : "foto.jpg";
+                String ext = original.contains(".") ? original.substring(original.lastIndexOf('.')) : ".jpg";
+                String fileName = System.currentTimeMillis() + ext;
+                Path dest = dir.resolve(fileName);
+                Files.copy(file.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
+                paths.add("/uploads/hunian/" + hunianId + "/" + fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return paths;
+    }
+
+    
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
@@ -64,7 +80,7 @@ public class PemilikController {
         return "pemilik_dashboard";
     }
 
-    // ── Property Management (List + Add) ──────────────────────────────────────
+    
 
     @GetMapping("/properti")
     public String manageProperties(HttpSession session, Model model) {
@@ -91,6 +107,7 @@ public class PemilikController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateEnd,
             @RequestParam(required = false) List<String> kategoriSewa,
+            @RequestParam(required = false) List<MultipartFile> fotoHunian,
             HttpSession session) {
 
         PemilikProperti me = getMe(session);
@@ -110,11 +127,14 @@ public class PemilikController {
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());
         hunian.setPemilik(me);
 
+        
+        hunian = hunianRepository.save(hunian);
+        hunian.setFotoHunian(saveHunianPhotos(fotoHunian, hunian.getIdHunian(), null));
         hunianRepository.save(hunian);
         return "redirect:/pemilik/properti?added=true";
     }
 
-    // ── Edit Property ─────────────────────────────────────────────────────────
+    
 
     @GetMapping("/properti/{id}/edit")
     public String showEditForm(@PathVariable int id, HttpSession session, Model model) {
@@ -145,6 +165,7 @@ public class PemilikController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateEnd,
             @RequestParam(required = false) List<String> kategoriSewa,
+            @RequestParam(required = false) List<MultipartFile> fotoHunian,
             HttpSession session) {
 
         PemilikProperti me = getMe(session);
@@ -166,12 +187,33 @@ public class PemilikController {
         hunian.setAvailableDateStart(availableDateStart);
         hunian.setAvailableDateEnd(availableDateEnd);
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());
+        
+        hunian.setFotoHunian(saveHunianPhotos(fotoHunian, hunian.getIdHunian(), hunian.getFotoHunian()));
 
         hunianRepository.save(hunian);
         return "redirect:/pemilik/properti?saved=true";
     }
 
-    // ── Delete Property ───────────────────────────────────────────────────────
+    
+
+    @PostMapping("/properti/{id}/foto/delete/{idx}")
+    public String deleteHunianPhoto(@PathVariable int id, @PathVariable int idx, HttpSession session) {
+        PemilikProperti me = getMe(session);
+        if (me == null) return "redirect:/login";
+
+        Hunian hunian = hunianRepository.findById(id).orElse(null);
+        if (hunian == null || hunian.getPemilik().getId() != me.getId()) return "redirect:/pemilik/properti";
+
+        List<String> photos = new ArrayList<>(hunian.getFotoHunian());
+        if (idx >= 0 && idx < photos.size()) {
+            photos.remove(idx);
+            hunian.setFotoHunian(photos);
+            hunianRepository.save(hunian);
+        }
+        return "redirect:/pemilik/properti/" + id + "/edit";
+    }
+
+    
 
     @PostMapping("/properti/{id}/delete")
     public String deleteProperty(@PathVariable int id, HttpSession session) {
@@ -186,11 +228,11 @@ public class PemilikController {
         return "redirect:/pemilik/properti?deleted=true";
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    //  RESERVASI (RENT REQUEST) MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════════════
+    
+    
+    
 
-    /** Reservasi inbox: lists all rent requests for the owner. */
+    
     @GetMapping("/reservasi")
     public String reservasiInbox(HttpSession session, Model model) {
         PemilikProperti me = getMe(session);
@@ -203,7 +245,7 @@ public class PemilikController {
         List<Reservasi> rejected = new ArrayList<>();
         for (Reservasi r : all) {
             String status = r.getStatus();
-            if (status == null) status = "PENDING"; // Default to pending if null
+            if (status == null) status = "PENDING"; 
 
             switch (status) {
                 case "PENDING"  -> pending.add(r);
@@ -220,7 +262,7 @@ public class PemilikController {
         return "pemilik_reservasi";
     }
 
-    /** Reservasi detail: shows full PencariHunian profile + hunian info. */
+    
     @GetMapping("/reservasi/{id}")
     public String reservasiDetail(@PathVariable int id, HttpSession session, Model model) {
         PemilikProperti me = getMe(session);
@@ -231,7 +273,7 @@ public class PemilikController {
             return "redirect:/pemilik/reservasi";
         }
 
-        // Mark as read
+        
         if (!reservasi.isPemilikRead()) {
             reservasi.setPemilikRead(true);
             reservasiRepository.save(reservasi);
@@ -244,7 +286,9 @@ public class PemilikController {
         return "pemilik_reservasi_detail";
     }
 
-    /** Accept a reservasi — creates a RESERVASI-type group ChatRoom. */
+    // #/yury(PemilikProperti)
+
+    // #fazil(Daftar Reservasi)
     @PostMapping("/reservasi/{id}/accept")
     public String acceptReservasi(@PathVariable int id, HttpSession session) {
         PemilikProperti me = getMe(session);
@@ -258,7 +302,7 @@ public class PemilikController {
             return "redirect:/pemilik/reservasi/" + id;
         }
 
-        // Create group ChatRoom for this rental
+        
         ChatRoom room = new ChatRoom();
         room.setChatType("RESERVASI");
         room.setHunian(reservasi.getHunian());
@@ -267,7 +311,7 @@ public class PemilikController {
         room.setCreatedAt(new Date());
         room = chatRoomRepository.save(room);
 
-        // Accept and link
+        
         reservasi.terima();
         reservasi.setChatRoom(room);
         reservasi.setPemilikRead(true);
@@ -276,7 +320,9 @@ public class PemilikController {
         return "redirect:/pemilik/reservasi/" + id + "?accepted=true";
     }
 
-    /** Reject a reservasi with an optional reason. */
+    // #/fazil(Daftar Reservasi)
+
+    // #adam(ajukansewa)
     @PostMapping("/reservasi/{id}/reject")
     public String rejectReservasi(@PathVariable int id,
                                   @RequestParam(required = false) String alasan,
@@ -296,3 +342,4 @@ public class PemilikController {
         return "redirect:/pemilik/reservasi?rejected=true";
     }
 }
+    // #/adam(ajukansewa)

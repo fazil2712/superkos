@@ -65,8 +65,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #yury(PemilikProperti) -->
 
-<!-- Navbar -->
+
+
+
 <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -81,7 +84,7 @@
 
 <div class="max-w-6xl mx-auto px-4 py-10">
 
-    <!-- Hero Header -->
+    
     <div class="mb-10 fade-up">
         <div class="flex items-center gap-4 mb-2">
             <div class="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center">
@@ -96,7 +99,7 @@
         </div>
     </div>
 
-    <!-- Stat Cards Row -->
+    
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10 fade-up" style="animation-delay: 80ms;">
         <div class="stat-card">
             <div class="flex items-center gap-3 mb-3">
@@ -127,7 +130,7 @@
         </div>
     </div>
 
-    <!-- Section Header -->
+    
     <div class="flex items-center justify-between mb-6 fade-up" style="animation-delay: 140ms;">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -142,7 +145,7 @@
         </a>
     </div>
 
-    <!-- Empty State -->
+    
     <div th:if="${properties.empty}" class="text-center py-24 fade-up" style="animation-delay: 200ms;">
         <div class="w-24 h-24 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-5">
             <i class="fas fa-building text-5xl text-gray-300"></i>
@@ -155,13 +158,13 @@
         </a>
     </div>
 
-    <!-- Property Cards Grid -->
+    
     <div th:unless="${properties.empty}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div th:each="h, iterStat : ${properties}"
              class="property-card fade-up"
              th:style="'animation-delay:' + ${200 + iterStat.index * 60} + 'ms'">
             <div class="p-5">
-                <!-- Header -->
+                
                 <div class="flex items-start justify-between mb-3">
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
@@ -182,7 +185,7 @@
                     </div>
                 </div>
 
-                <!-- Details Row -->
+                
                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3">
                     <span class="flex items-center gap-1" th:if="${h.tipeGender != null}">
                         <i class="fas fa-venus-mars text-gray-400"></i>
@@ -198,7 +201,7 @@
                     </span>
                 </div>
 
-                <!-- Price -->
+                
                 <div class="flex items-end justify-between">
                     <p class="text-lg font-black text-gray-900">
                         <span th:text="'Rp' + ${#numbers.formatDecimal(h.harga, 0, 'COMMA', 0, 'POINT')}">Rp0</span>
@@ -216,5 +219,7 @@
 </div>
 
 <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+
+<!-- #/yury(PemilikProperti) -->
 </body>
 </html>

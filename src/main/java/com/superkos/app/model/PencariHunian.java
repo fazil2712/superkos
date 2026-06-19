@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.stream.Collectors;
-
+// #yury(PencariHunian)
 @Entity
 @Getter
 @Setter
@@ -96,3 +96,4 @@ public class PencariHunian extends User {
         wishlist.remove(h);
     }
 }
+// #/yury(PencariHunian)

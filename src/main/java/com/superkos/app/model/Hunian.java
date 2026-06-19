@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
-
+// #fazil(Hunian)
 @Entity
 public class Hunian {
     @Id
@@ -27,6 +27,11 @@ public class Hunian {
     @Column(name = "kategori")
     private List<String> kategoriSewa = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "hunian_foto", joinColumns = @JoinColumn(name = "hunian_id"))
+    @Column(name = "foto_url")
+    private List<String> fotoHunian = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "pemilik_id")
     private PemilikProperti pemilik;
@@ -40,7 +45,7 @@ public class Hunian {
                 this.statusTersedia ? "Tersedia" : "Tidak Tersedia");
     }
 
-    // Getters and Setters
+    
     public int getIdHunian() { return idHunian; }
     public void setIdHunian(int idHunian) { this.idHunian = idHunian; }
 
@@ -80,4 +85,8 @@ public class Hunian {
 
     public List<String> getKategoriSewa() { return kategoriSewa; }
     public void setKategoriSewa(List<String> kategoriSewa) { this.kategoriSewa = kategoriSewa; }
+
+    public List<String> getFotoHunian() { return fotoHunian; }
+    public void setFotoHunian(List<String> fotoHunian) { this.fotoHunian = fotoHunian; }
 }
+// #/fazil(Hunian)

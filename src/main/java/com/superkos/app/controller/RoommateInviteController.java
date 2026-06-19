@@ -13,14 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-/**
- * Handles the roommate invite flow for accepted reservasi.
- *
- * Routes:
- *  GET  /reservasi/{id}/invite-roommate       — show roommate invite page
- *  POST /reservasi/{id}/invite-roommate/{uid}  — invite a roommate (adds to group chat)
- */
+// #babas(RoommateRequest)
 @Controller
 public class RoommateInviteController {
 
@@ -35,10 +28,7 @@ public class RoommateInviteController {
         return pencariHunianRepository.findById(u.getId()).orElse(null);
     }
 
-    /**
-     * Show the roommate invite page.
-     * Lists: (1) accepted roommates, (2) recommended candidates (70%+ compatibility).
-     */
+    
     @GetMapping("/reservasi/{id}/invite-roommate")
     public String showInvitePage(@PathVariable int id, HttpSession session, Model model) {
         PencariHunian me = getMe(session);
@@ -59,8 +49,8 @@ public class RoommateInviteController {
 
         RoommateSurvey mySurvey = me.getRoommateSurvey();
 
-        // ── 1. Accepted Roommates ─────────────────────────────────────────────
-        // Find all users who have an ACCEPTED roommate request with me
+        
+        
         List<RoommateRequest> sentAccepted = requestRepository.findByPencariHunianOrderByIdRequestDesc(me);
         List<RoommateRequest> receivedAccepted = requestRepository.findByTargetPencariOrderByIdRequestDesc(me);
 
@@ -88,7 +78,7 @@ public class RoommateInviteController {
             }
         }
 
-        // ── 2. Recommended Candidates (70%+) ─────────────────────────────────
+        
         List<Map<String, Object>> recommended = new ArrayList<>();
 
         if (mySurvey != null && mySurvey.isQuizComplete()) {
@@ -96,7 +86,7 @@ public class RoommateInviteController {
                     me.getId(), PageRequest.of(0, 200));
 
             for (PencariHunian candidate : candidates) {
-                // Skip if already in chat, already accepted roommate, or is me
+                
                 if (existingParticipantIds.contains(candidate.getId())
                         || acceptedIds.contains(candidate.getId())
                         || candidate.getId() == me.getId()) {
@@ -113,7 +103,7 @@ public class RoommateInviteController {
                 }
             }
 
-            // Sort by score descending
+            
             recommended.sort((a, b) -> Double.compare(
                     (double) b.get("score"), (double) a.get("score")));
         }
@@ -127,10 +117,7 @@ public class RoommateInviteController {
         return "invite_roommate";
     }
 
-    /**
-     * Invite a roommate to the group chat.
-     * For recommended (non-accepted) users, also auto-send a roommate request.
-     */
+    
     @PostMapping("/reservasi/{reservasiId}/invite-roommate/{userId}")
     public String inviteRoommate(@PathVariable int reservasiId,
                                   @PathVariable int userId,
@@ -154,11 +141,11 @@ public class RoommateInviteController {
         ChatRoom room = chatRoomRepository.findById(reservasi.getChatRoom().getIdChat()).orElse(null);
         if (room == null) return "redirect:/";
 
-        // Add to group chat
+        
         room.addParticipant(target);
         chatRoomRepository.save(room);
 
-        // Auto-send roommate request if not already connected
+        
         Optional<RoommateRequest> pendingOpt = requestRepository.findPendingBetween(me, target);
         Optional<RoommateRequest> acceptedOpt = requestRepository.findAcceptedBetween(me, target);
         if (pendingOpt.isEmpty() && acceptedOpt.isEmpty()) {
@@ -168,7 +155,7 @@ public class RoommateInviteController {
         return "redirect:/reservasi/" + reservasiId + "/invite-roommate?invited=" + target.getNama();
     }
 
-    // ── Helper ────────────────────────────────────────────────────────────────
+    
 
     private Map<String, Object> buildRoommateEntry(PencariHunian me, PencariHunian other, RoommateSurvey mySurvey) {
         Map<String, Object> entry = new HashMap<>();
@@ -190,3 +177,4 @@ public class RoommateInviteController {
         return entry;
     }
 }
+// #/babas(RoommateRequest)

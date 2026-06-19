@@ -13,19 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-/**
- * Handles the profile view, roommate requests, and chat rooms.
- *
- * Routes:
- *  GET  /roommate/profile/{id}         — candidate's detailed profile (from match list)
- *  POST /roommate/request/{targetId}   — send a chat request
- *  GET  /roommate/inbox                — view received requests + accepted chats
- *  POST /roommate/request/{id}/accept  — accept a pending request (creates ChatRoom)
- *  POST /roommate/request/{id}/reject  — reject a pending request
- *  GET  /chat/{chatId}                 — open the chat room (supports group chat)
- *  POST /chat/{chatId}/send            — send a message
- */
+// #naufal(ChatRoom & Message)
 @Controller
 public class ChatController {
 
@@ -36,7 +24,7 @@ public class ChatController {
     @Autowired private ReservasiRepository reservasiRepository;
     @Autowired private UserRepository userRepository;
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    
 
     private PencariHunian getMe(HttpSession session) {
         User u = (User) session.getAttribute("loggedInUser");
@@ -55,7 +43,7 @@ public class ChatController {
                 ? String.valueOf(nama.charAt(0)).toUpperCase() : "?";
     }
 
-    // ── Candidate Profile View ────────────────────────────────────────────────
+    
 
     @GetMapping("/roommate/profile/{id}")
     public String candidateProfile(@PathVariable int id, HttpSession session, Model model) {
@@ -65,7 +53,7 @@ public class ChatController {
         PencariHunian candidate = pencariHunianRepository.findById(id).orElse(null);
         if (candidate == null || candidate.getId() == me.getId()) return "redirect:/roommate/match";
 
-        // Build MatchResult for score display (if both have surveys)
+        
         MatchResult matchResult = null;
         RoommateSurvey mySurvey   = me.getRoommateSurvey();
         RoommateSurvey theirSurvey = candidate.getRoommateSurvey();
@@ -81,11 +69,11 @@ public class ChatController {
                     RoommateSurvey.fuzzyLabel(overall));
         }
 
-        // Request / chat state
+        
         Optional<RoommateRequest> pendingOpt  = requestRepository.findPendingBetween(me, candidate);
         Optional<RoommateRequest> acceptedOpt = requestRepository.findAcceptedBetween(me, candidate);
 
-        String requestState; // NONE | PENDING_SENT | PENDING_RECEIVED | ACCEPTED
+        String requestState; 
         int    chatRoomId = -1;
         int    requestId  = -1;
 
@@ -95,7 +83,7 @@ public class ChatController {
             requestId = acc.getIdRequest();
             if (acc.getChatRoom() != null) chatRoomId = acc.getChatRoom().getIdChat();
 
-            // Mark as read if current user is the sender of this request
+            
             if (acc.getPencariHunian().getId() == me.getId() && !acc.isSenderRead()) {
                 acc.setSenderRead(true);
                 requestRepository.save(acc);
@@ -109,7 +97,7 @@ public class ChatController {
             requestState = "NONE";
         }
 
-        // Pending inbox count for badge
+        
         long pendingCount = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
 
         model.addAttribute("loggedInUser",   me);
@@ -123,7 +111,7 @@ public class ChatController {
         return "candidate_profile";
     }
 
-    // ── Send Request ──────────────────────────────────────────────────────────
+    
 
     @PostMapping("/roommate/request/{targetId}")
     public String sendRequest(@PathVariable int targetId, HttpSession session) {
@@ -133,7 +121,7 @@ public class ChatController {
         PencariHunian target = pencariHunianRepository.findById(targetId).orElse(null);
         if (target == null || target.getId() == me.getId()) return "redirect:/roommate/match";
 
-        // Idempotency: don't create if a PENDING or ACCEPTED already exists
+        
         if (requestRepository.findPendingBetween(me, target).isPresent()
                 || requestRepository.findAcceptedBetween(me, target).isPresent()) {
             return "redirect:/roommate/profile/" + targetId;
@@ -144,7 +132,7 @@ public class ChatController {
         return "redirect:/roommate/profile/" + targetId + "?sent=true";
     }
 
-    // ── Inbox ─────────────────────────────────────────────────────────────────
+    
 
     @GetMapping("/roommate/inbox")
     public String showInbox(HttpSession session, Model model) {
@@ -155,7 +143,7 @@ public class ChatController {
         List<RoommateRequest> sent     = requestRepository.findByPencariHunianOrderByIdRequestDesc(me);
         List<ChatRoom>        chats    = chatRoomRepository.findByParticipant(me);
 
-        // Compute counts before marking them as read in DB
+        
         long unreadChatsCount    = chats.stream().filter(c -> c.getUnreadCount(me) > 0).count();
         long unreadAcceptedCount = requestRepository.countByPencariHunianAndStatusAndSenderRead(me, "ACCEPTED", false);
         long pendingCount        = requestRepository.countByTargetPencariAndStatus(me, "PENDING");
@@ -170,7 +158,7 @@ public class ChatController {
         return "chat_inbox";
     }
 
-    // ── Accept Request ────────────────────────────────────────────────────────
+    
 
     @PostMapping("/roommate/request/{requestId}/accept")
     public String acceptRequest(@PathVariable int requestId, HttpSession session) {
@@ -181,7 +169,7 @@ public class ChatController {
         if (req == null || req.getTargetPencari().getId() != me.getId()) return "redirect:/roommate/inbox";
         if (!"PENDING".equals(req.getStatus())) return "redirect:/roommate/inbox";
 
-        // Create the ChatRoom with participants list
+        
         ChatRoom room = new ChatRoom();
         room.setChatType("ROOMMATE");
         room.addParticipant(req.getPencariHunian());
@@ -189,7 +177,7 @@ public class ChatController {
         room.setCreatedAt(new Date());
         room = chatRoomRepository.save(room);
 
-        // Accept and link
+        
         req.terima();
         req.setChatRoom(room);
         requestRepository.save(req);
@@ -197,7 +185,7 @@ public class ChatController {
         return "redirect:/chat/" + room.getIdChat();
     }
 
-    // ── Reject Request ────────────────────────────────────────────────────────
+    
 
     @PostMapping("/roommate/request/{requestId}/reject")
     public String rejectRequest(@PathVariable int requestId, HttpSession session) {
@@ -212,7 +200,7 @@ public class ChatController {
         return "redirect:/roommate/inbox";
     }
 
-    // ── Chat Room (supports both 1-on-1 and group) ───────────────────────────
+    
 
     @GetMapping("/chat/{chatId}")
     public String showChat(@PathVariable int chatId, HttpSession session, Model model) {
@@ -222,12 +210,12 @@ public class ChatController {
         ChatRoom room = chatRoomRepository.findById(chatId).orElse(null);
         if (room == null) return "redirect:/";
 
-        // Only participants may view the chat
+        
         if (!room.isParticipant(me)) return "redirect:/";
 
         List<Message> messages = messageRepository.findByChatRoomOrderByTimestampAsc(room);
 
-        // Mark messages from others as read
+        
         boolean msgUpdated = false;
         for (Message msg : messages) {
             if (msg.getSender().getId() != me.getId() && !msg.isRead()) {
@@ -239,7 +227,7 @@ public class ChatController {
             messageRepository.saveAll(messages);
         }
 
-        // For 1-on-1 chats, set 'other' for backward compatibility with chatroom.html
+        
         boolean isGroupChat = "RESERVASI".equals(room.getChatType()) || room.getParticipants().size() > 2;
         User other = null;
         if (!isGroupChat && room.getParticipants().size() == 2) {
@@ -247,7 +235,7 @@ public class ChatController {
                     ? room.getParticipants().get(1) : room.getParticipants().get(0);
         }
 
-        // Mark roommate request as read if applicable
+        
         if (me instanceof PencariHunian pencariMe && other instanceof PencariHunian otherPencari) {
             Optional<RoommateRequest> reqOpt = requestRepository.findAcceptedBetween(pencariMe, otherPencari);
             if (reqOpt.isPresent()) {
@@ -259,7 +247,7 @@ public class ChatController {
             }
         }
 
-        // Build participant names for group chat header
+        
         List<User> otherParticipants = room.getParticipants().stream()
                 .filter(p -> p.getId() != me.getId())
                 .collect(Collectors.toList());
@@ -273,7 +261,7 @@ public class ChatController {
             chatTitle = "Chat";
         }
 
-        // Find linked reservasi for "Invite Roommate" button
+        
         int inviteReservasiId = -1;
         if ("RESERVASI".equals(room.getChatType()) && me instanceof PencariHunian) {
             List<Reservasi> reservasiList = reservasiRepository.findByHunianAndStatus(room.getHunian(), "ACCEPTED");
@@ -297,7 +285,7 @@ public class ChatController {
         return "chatroom";
     }
 
-    // ── Send Message ──────────────────────────────────────────────────────────
+    
 
     @PostMapping("/chat/{chatId}/send")
     public String sendMessage(@PathVariable int chatId,
@@ -321,3 +309,4 @@ public class ChatController {
         return "redirect:/chat/" + chatId;
     }
 }
+// #/naufal(ChatRoom & Message)

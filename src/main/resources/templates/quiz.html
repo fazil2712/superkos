@@ -138,8 +138,11 @@
     </style>
 </head>
 <body class="min-h-screen" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 50%, #eff6ff 100%);">
+<!-- #nadia(Roommate Survey) -->
 
-    <!-- Navbar -->
+
+
+    
     <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
         <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 text-xl font-bold">
@@ -155,13 +158,13 @@
 
     <div class="max-w-3xl mx-auto px-4 py-8">
 
-        <!-- Error Banner -->
+        
         <div th:if="${error}" class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-medium flex items-center gap-3">
             <i class="fas fa-exclamation-circle text-lg"></i>
             <span th:text="${error}"></span>
         </div>
 
-        <!-- Header -->
+        
         <div class="text-center mb-8">
             <div class="inline-flex items-center gap-2 bg-white border border-purple-100 rounded-full px-4 py-1.5 text-xs font-semibold text-purple-600 mb-4 shadow-sm">
                 <i class="fas fa-magic"></i>
@@ -177,7 +180,7 @@
             </p>
         </div>
 
-        <!-- Step Indicator -->
+        
         <div class="flex items-center justify-center gap-3 mb-8" id="step-indicator">
             <div class="step-pill social active" id="pill-1">
                 <i class="fas fa-users text-xs"></i> Sosial
@@ -192,15 +195,15 @@
             </div>
         </div>
 
-        <!-- Progress Bar -->
+        
         <div class="progress-track mb-8">
             <div class="progress-fill" id="progress-fill" style="width: 33%"></div>
         </div>
 
-        <!-- ════════════════════════════════════════════ QUIZ FORM ══ -->
+        
         <form th:action="${formAction}" method="POST" id="quiz-form">
 
-            <!-- ── SECTION 1: SOCIAL (7 questions) ────────────── -->
+            
             <div class="quiz-section active" id="section-1">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
@@ -213,7 +216,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <!-- Q1 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 1/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa sering kamu ingin mengajak teman main atau nongkrong di kos/apartemen?</p>
@@ -231,7 +234,7 @@
                         </div>
                     </div>
 
-                    <!-- Q2 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 2/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana cara kamu bersantai setelah hari yang melelahkan?</p>
@@ -249,7 +252,7 @@
                         </div>
                     </div>
 
-                    <!-- Q3 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 3/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa malam minggu idealmu?</p>
@@ -267,7 +270,7 @@
                         </div>
                     </div>
 
-                    <!-- Q4 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 4/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana perasaanmu jika pasangan (pacar) teman sekamarmu datang berkunjung/menginap?</p>
@@ -285,7 +288,7 @@
                         </div>
                     </div>
 
-                    <!-- Q5 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 5/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jika kita berpapasan di dapur atau ruang tengah, apa ekspektasimu?</p>
@@ -303,7 +306,7 @@
                         </div>
                     </div>
 
-                    <!-- Q6 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 6/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa suasana lingkungan yang kamu sukai saat di kos?</p>
@@ -321,7 +324,7 @@
                         </div>
                     </div>
 
-                    <!-- Q7 -->
+                    
                     <div class="question-card social-card">
                         <div class="category-badge badge-social"><i class="fas fa-circle text-[6px]"></i> SOSIAL · 7/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Apa yang kamu harapkan dari seorang teman sekamar?</p>
@@ -341,7 +344,7 @@
                 </div>
             </div>
 
-            <!-- ── SECTION 2: CLEANLINESS (7 questions) ────────── -->
+            
             <div class="quiz-section" id="section-2">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
@@ -354,7 +357,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <!-- C1 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 1/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Berapa lama piring kotor boleh dibiarkan di wastafel cucian?</p>
@@ -372,7 +375,7 @@
                         </div>
                     </div>
 
-                    <!-- C2 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 2/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa sering kamar mandi atau lantai harus disikat/dibersihkan?</p>
@@ -390,7 +393,7 @@
                         </div>
                     </div>
 
-                    <!-- C3 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 3/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Kapan kamu biasanya membuang sampah ke luar?</p>
@@ -408,7 +411,7 @@
                         </div>
                     </div>
 
-                    <!-- C4 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 4/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seperti apa kondisi kamarmu pada hari-hari biasa?</p>
@@ -426,7 +429,7 @@
                         </div>
                     </div>
 
-                    <!-- C5 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 5/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana pendapatmu tentang jadwal piket kebersihan bersama?</p>
@@ -444,7 +447,7 @@
                         </div>
                     </div>
 
-                    <!-- C6 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 6/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa cepat kamu mengelap meja dapur/kompor setelah memasak?</p>
@@ -462,7 +465,7 @@
                         </div>
                     </div>
 
-                    <!-- C7 -->
+                    
                     <div class="question-card clean-card">
                         <div class="category-badge badge-clean"><i class="fas fa-circle text-[6px]"></i> KEBERSIHAN · 7/7</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Bagaimana caramu menangani barang pinjaman (panci, sapu, alat pel)?</p>
@@ -482,7 +485,7 @@
                 </div>
             </div>
 
-            <!-- ── SECTION 3: SLEEP (6 questions) ─────────────── -->
+            
             <div class="quiz-section" id="section-3">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -495,7 +498,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <!-- S1 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 1/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jam berapa kamu biasanya bangun di akhir pekan?</p>
@@ -513,7 +516,7 @@
                         </div>
                     </div>
 
-                    <!-- S2 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 2/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Jam berapa kamu biasanya mematikan lampu untuk tidur malam?</p>
@@ -531,7 +534,7 @@
                         </div>
                     </div>
 
-                    <!-- S3 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 3/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Kapan kamu merasa paling aktif dan bisa fokus mengerjakan tugas/kerjaan?</p>
@@ -549,7 +552,7 @@
                         </div>
                     </div>
 
-                    <!-- S4 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 4/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa hening suasana yang kamu butuhkan setelah jam 10 malam?</p>
@@ -567,7 +570,7 @@
                         </div>
                     </div>
 
-                    <!-- S5 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 5/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa awal alarm pagimu mulai berbunyi?</p>
@@ -585,7 +588,7 @@
                         </div>
                     </div>
 
-                    <!-- S6 -->
+                    
                     <div class="question-card sleep-card">
                         <div class="category-badge badge-sleep"><i class="fas fa-circle text-[6px]"></i> TIDUR · 6/6</div>
                         <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">Seberapa beda jadwal harianmu di hari kerja dibandingkan akhir pekan?</p>
@@ -605,7 +608,7 @@
                 </div>
             </div>
 
-            <!-- ── Navigation ─────────────────────────────────── -->
+            
             <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
                 <button type="button" class="nav-btn btn-prev" id="btn-prev" onclick="prevStep()" style="display:none;">
                     <i class="fas fa-arrow-left text-sm"></i> Sebelumnya
@@ -699,5 +702,6 @@
         }
     </script>
 
+<!-- #/nadia(Roommate Survey) -->
 </body>
 </html>

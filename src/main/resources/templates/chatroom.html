@@ -120,8 +120,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50">
+<!-- #naufal(ChatRoom & Message) -->
 
-<!-- Navbar -->
+
+
+
 <header class="border-b border-gray-200 sticky top-0 bg-white z-50" style="height:64px;">
     <div class="max-w-full px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -133,12 +136,12 @@
     </div>
 </header>
 
-<!-- Full-height Chat Layout -->
+
 <div class="chat-layout">
 
-    <!-- Chat Header -->
+    
     <div class="chat-header">
-        <!-- Back button: different targets based on user role -->
+        
         <a th:if="${loggedInUser.class.simpleName == 'PencariHunian'}"
            href="/roommate/inbox" class="text-gray-400 hover:text-gray-700 transition mr-1">
             <i class="fas fa-arrow-left"></i>
@@ -148,7 +151,7 @@
             <i class="fas fa-arrow-left"></i>
         </a>
 
-        <!-- Group chat header -->
+        
         <div th:if="${isGroupChat}" class="flex items-center gap-3 flex-1">
             <div class="participant-avatars">
                 <div th:each="p : ${otherParticipants}"
@@ -163,7 +166,7 @@
                     <span th:text="${room.participants.size()} + ' anggota'">3 anggota</span>
                 </p>
             </div>
-            <!-- Invite Roommate button (only for PencariHunian who owns the reservation) -->
+            
             <a th:if="${inviteReservasiId > 0}"
                th:href="@{'/reservasi/' + ${inviteReservasiId} + '/invite-roommate'}"
                class="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition flex items-center gap-1.5 flex-shrink-0">
@@ -171,7 +174,7 @@
             </a>
         </div>
 
-        <!-- 1-on-1 chat header -->
+        
         <div th:unless="${isGroupChat}" class="flex items-center gap-3">
             <div class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
                  th:text="${other != null && other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
@@ -185,7 +188,7 @@
         </div>
     </div>
 
-    <!-- Hunian Info Banner for Reservasi Chats -->
+    
     <a th:if="${room.chatType == 'RESERVASI' && room.hunian != null}"
        th:href="@{'/hunian/' + ${room.hunian.idHunian}}"
        class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 hover:bg-blue-100 transition flex items-center justify-between shadow-sm relative z-10"
@@ -204,10 +207,10 @@
         </div>
     </a>
 
-    <!-- Messages Area -->
+    
     <div class="messages-area" id="messagesArea">
 
-        <!-- Empty state -->
+        
         <div th:if="${messages.empty}" class="flex-1 flex flex-col items-center justify-center py-16 text-center">
             <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-4">
                 <i class="fas fa-comment-dots text-3xl text-purple-400"></i>
@@ -216,19 +219,19 @@
             <p class="text-gray-400 text-sm">Mulai obrolan!</p>
         </div>
 
-        <!-- Messages -->
+        
         <div th:each="msg : ${messages}"
              th:with="isMine=${msg.sender.id == loggedInUser.id}"
              class="bubble-wrap"
              th:classappend="${isMine} ? ' mine' : ''">
 
-            <!-- Their avatar (only on their side) -->
+            
             <div th:unless="${isMine}"
                  class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
                  th:text="${msg.sender.nama != null && !msg.sender.nama.isEmpty() ? msg.sender.nama.substring(0,1).toUpperCase() : '?'}">A</div>
 
             <div class="flex flex-col gap-0.5 max-w-[72%]" th:classappend="${isMine} ? ' items-end' : ' items-start'">
-                <!-- Show sender name in group chats -->
+                
                 <span th:if="${isGroupChat && !isMine}" class="sender-name" th:text="${msg.sender.nama}">Nama</span>
                 <div class="bubble" th:classappend="${isMine} ? ' mine' : ' theirs'"
                      th:text="${msg.isiPesan}">pesan</div>
@@ -236,14 +239,14 @@
                       th:text="${#dates.format(msg.timestamp, 'HH:mm')}">00:00</span>
             </div>
 
-            <!-- My avatar (only on my side) -->
+            
             <div th:if="${isMine}"
                  class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#6366f1,#a855f7);"
                  th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">A</div>
         </div>
     </div>
 
-    <!-- Input Bar -->
+    
     <div class="input-bar">
         <form th:action="@{'/chat/' + ${room.idChat} + '/send'}" method="post"
               class="flex gap-3 items-center w-full" id="chatForm">
@@ -281,5 +284,6 @@
     }, 30000);
 </script>
 
+<!-- #/naufal(ChatRoom & Message) -->
 </body>
 </html>

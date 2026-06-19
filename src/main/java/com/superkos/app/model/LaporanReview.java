@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
-
+// #nadia(Admin)
 @Entity
 @Getter
 @Setter
@@ -38,7 +38,7 @@ public class LaporanReview {
         this.statusPenyelesaian = status;
     }
 
-    // Getters and Setters
+    
     public int getIdRecord() { return idRecord; }
     public void setIdRecord(int idRecord) { this.idRecord = idRecord; }
 
@@ -66,3 +66,4 @@ public class LaporanReview {
     public Admin getAdmin() { return admin; }
     public void setAdmin(Admin admin) { this.admin = admin; }
 }
+// #/nadia(Admin)

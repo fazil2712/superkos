@@ -97,8 +97,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #yury(PencariHunian) -->
 
-    <!-- Navbar -->
+
+
+    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -118,7 +121,7 @@
 
     <div class="max-w-5xl mx-auto px-4 py-10">
 
-        <!-- Page Header -->
+        
         <div class="mb-8 flex items-start gap-4">
             <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-user-friends text-blue-600 text-xl"></i>
@@ -129,7 +132,7 @@
             </div>
         </div>
 
-        <!-- ── No Survey State ──────────────────────────────────────────────── -->
+        
         <div th:if="${noSurvey}" class="text-center py-24 fade-up">
             <div class="w-24 h-24 rounded-3xl bg-purple-50 flex items-center justify-center mx-auto mb-5">
                 <i class="fas fa-clipboard-list text-5xl text-purple-300"></i>
@@ -141,10 +144,10 @@
             </a>
         </div>
 
-        <!-- ── Results ─────────────────────────────────────────────────────── -->
+        
         <div th:unless="${noSurvey}">
 
-            <!-- Result count info -->
+            
             <p class="text-sm text-gray-500 mb-6" th:if="${totalResults > 0}">
                 Menampilkan <span class="font-bold text-gray-800" th:text="${results.size()}">0</span>
                 dari <span class="font-bold text-gray-800" th:text="${totalResults}">0</span>
@@ -154,7 +157,7 @@
                 </span>
             </p>
 
-            <!-- Empty state: nobody has taken quiz yet -->
+            
             <div th:if="${results.empty}" class="text-center py-20 fade-up">
                 <div class="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-users-slash text-4xl text-gray-300"></i>
@@ -163,7 +166,7 @@
                 <p class="text-gray-400 text-sm">Pengguna lain belum mengisi kuis preferensi. Coba lagi nanti!</p>
             </div>
 
-            <!-- Match Cards -->
+            
             <div class="space-y-5">
                 <a th:each="r, iterStat : ${results}"
                    th:href="@{'/roommate/profile/' + ${r.candidateId}}"
@@ -172,7 +175,7 @@
 
                     <div class="p-5 flex flex-col sm:flex-row items-start gap-5">
 
-                        <!-- Rank + Avatar -->
+                        
                         <div class="flex items-center gap-3 flex-shrink-0">
                             <div class="text-2xl font-black text-gray-200 w-6 text-center select-none"
                                  th:text="'#' + (${currentPage} * 10 + ${iterStat.index + 1})">#1</div>
@@ -181,12 +184,12 @@
                                  th:text="${r.initial}">A</div>
                         </div>
 
-                        <!-- Profile Info -->
+                        
                         <div class="flex-1 min-w-0">
                             <div class="flex flex-wrap items-center gap-2 mb-1">
                                 <h2 class="font-bold text-gray-900 text-base group-hover:text-purple-700 transition"
                                     th:text="${r.nama}">Nama</h2>
-                                <!-- Fuzzy label badge -->
+                                
                                 <span class="text-xs font-bold px-2.5 py-0.5 rounded-full"
                                       th:classappend="${r.fuzzyLabel == 'Sangat Cocok'} ? 'badge-sangat' :
                                                       (${r.fuzzyLabel == 'Cocok'} ? 'badge-cocok' :
@@ -213,9 +216,9 @@
                                class="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2"
                                th:text="${r.biodata}">Bio...</p>
 
-                            <!-- Category Breakdown Bars -->
+                            
                             <div class="space-y-2">
-                                <!-- Social -->
+                                
                                 <div class="flex items-center gap-3">
                                     <span class="text-xs font-semibold text-purple-600 w-20 flex-shrink-0">
                                         <i class="fas fa-users text-[10px] mr-1"></i>Sosial
@@ -227,7 +230,7 @@
                                     <span class="text-xs font-bold text-gray-700 w-10 text-right"
                                           th:text="${r.socialScore} + '%'">0%</span>
                                 </div>
-                                <!-- Cleanliness -->
+                                
                                 <div class="flex items-center gap-3">
                                     <span class="text-xs font-semibold text-emerald-600 w-20 flex-shrink-0">
                                         <i class="fas fa-broom text-[10px] mr-1"></i>Kebersihan
@@ -239,7 +242,7 @@
                                     <span class="text-xs font-bold text-gray-700 w-10 text-right"
                                           th:text="${r.cleanScore} + '%'">0%</span>
                                 </div>
-                                <!-- Sleep -->
+                                
                                 <div class="flex items-center gap-3">
                                     <span class="text-xs font-semibold text-blue-600 w-20 flex-shrink-0">
                                         <i class="fas fa-moon text-[10px] mr-1"></i>Tidur
@@ -254,14 +257,14 @@
                             </div>
                         </div>
 
-                        <!-- Right: Score Ring + Contact -->
+                        
                         <div class="flex flex-col items-center gap-3 flex-shrink-0 ml-auto">
-                            <!-- SVG Arc Score Ring -->
+                            
                             <div class="score-ring">
                                 <svg width="96" height="96" viewBox="0 0 96 96">
-                                    <!-- Track -->
+                                    
                                     <circle cx="48" cy="48" r="40" fill="none" stroke="#f3f4f6" stroke-width="8"/>
-                                    <!-- Fill — stroke-dasharray = 251.2 (circumference of r=40) -->
+                                    
                                     <circle cx="48" cy="48" r="40" fill="none"
                                             stroke="url(#matchGrad)" stroke-width="8"
                                             stroke-linecap="round"
@@ -281,7 +284,7 @@
                                 </div>
                             </div>
 
-                            <!-- Contact button -->
+                            
                             <div th:if="${r.kontak != null && !r.kontak.isEmpty()}"
                                  class="text-center">
                                 <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wide mb-1">Kontak</p>
@@ -298,7 +301,7 @@
                 </a>
             </div>
 
-            <!-- Pagination -->
+            
             <div th:if="${totalPages > 1}" class="flex items-center justify-center gap-3 mt-10">
                 <a th:href="@{/roommate/match(page=${currentPage - 1})}"
                    th:classappend="${!hasPrevious} ? ' disabled' : ''"
@@ -318,5 +321,7 @@
     </div>
 
     <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+
+<!-- #/yury(PencariHunian) -->
 </body>
 </html>

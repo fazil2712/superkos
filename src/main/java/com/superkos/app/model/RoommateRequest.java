@@ -1,40 +1,40 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
-
+// #babas(RoommateRequest)
 @Entity
 public class RoommateRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idRequest;
 
-    /** PENDING, ACCEPTED, REJECTED */
+    
     private String status;
 
-    /** The user who sent the request */
+    
     @ManyToOne
     @JoinColumn(name = "pencari_hunian_id")
     private PencariHunian pencariHunian;
 
-    /** The user who received the request */
+    
     @ManyToOne
     @JoinColumn(name = "target_pencari_id")
     private PencariHunian targetPencari;
 
-    /** Created when the request is ACCEPTED */
+    
     @OneToOne
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
     private boolean senderRead = false;
 
-    /** Accepts the request and updates status. ChatRoom is linked by the controller. */
+    
     public void terima() { this.status = "ACCEPTED"; }
 
-    /** Rejects the request. */
+    
     public void tolak()  { this.status = "REJECTED"; }
 
-    // ── Getters & Setters ─────────────────────────────────────────────────────
+    
     public int getIdRequest()                      { return idRequest; }
     public void setIdRequest(int idRequest)        { this.idRequest = idRequest; }
 
@@ -53,3 +53,4 @@ public class RoommateRequest {
     public boolean isSenderRead()                  { return senderRead; }
     public void setSenderRead(boolean senderRead)  { this.senderRead = senderRead; }
 }
+// #/babas(RoommateRequest)

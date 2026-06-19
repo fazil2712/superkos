@@ -9,14 +9,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+// #naufal(ChatRoom & Message)
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-    /** All messages in a chat room, ordered oldest first. */
+    
     List<Message> findByChatRoomOrderByTimestampAsc(ChatRoom chatRoom);
 
-    /** Count all unread messages across all chats for a given user. */
+    
     @Query("""
         SELECT COUNT(m) FROM Message m
         WHERE m.chatRoom IN (
@@ -27,3 +27,4 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     """)
     long countUnreadMessages(@Param("user") User user);
 }
+// #/naufal(ChatRoom & Message)

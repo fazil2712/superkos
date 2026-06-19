@@ -17,23 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-/**
- * Handles the Roommate Match feature.
- *
- * Route: GET /roommate/match?page=0
- *
- * Steps:
- *  1. Identify the logged-in PencariHunian and load their 3 category scores.
- *  2. Query the DB for candidates (paginated, 10 per page) — only users with a
- *     complete survey are included; the current user is always excluded.
- *  3. For each candidate, call RoommateSurvey.hitungKecocokan() with the exact
- *     formula: compatibility_i = (1 – |diff_i| / 9) × 100, overall = avg of 3.
- *  4. Discard any result where the score < 0 (incomplete survey guard).
- *  5. Attach a fuzzy label per RoommateSurvey.fuzzyLabel().
- *  6. Sort highest score first.
- *  7. Pass the sorted list + pagination metadata to the template.
- */
+// #yury(PencariHunian)
 @Controller
 public class RoommateMatchController {
 
@@ -48,16 +32,16 @@ public class RoommateMatchController {
             HttpSession session,
             Model model) {
 
-        // ── 1. Auth & role guard ──────────────────────────────────────────────
+        
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) return "redirect:/login";
         if (!(loggedInUser instanceof PencariHunian)) return "redirect:/";
 
-        // Load a fresh copy from DB to get the survey eagerly
+        
         PencariHunian me = pencariHunianRepository.findById(loggedInUser.getId()).orElse(null);
         if (me == null) return "redirect:/login";
 
-        // ── 2. Current user must have completed the quiz ──────────────────────
+        
         RoommateSurvey mySurvey = me.getRoommateSurvey();
         if (mySurvey == null || !mySurvey.isQuizComplete()) {
             model.addAttribute("loggedInUser", me);
@@ -65,17 +49,17 @@ public class RoommateMatchController {
             return "roommate_match";
         }
 
-        // ── 3. Paginated candidate query (DB-level exclusion of self + incomplete surveys) ──
+        
         Page<PencariHunian> candidatePage = pencariHunianRepository
                 .findCandidates(me.getId(), PageRequest.of(page, PAGE_SIZE));
 
-        // ── 4 & 5. Calculate scores + build DTOs ─────────────────────────────
+        
         List<MatchResult> results = candidatePage.getContent().stream()
                 .map(candidate -> {
                     RoommateSurvey theirSurvey = candidate.getRoommateSurvey();
 
                     double overall = mySurvey.hitungKecocokan(theirSurvey);
-                    if (overall < 0) return null; // filter guard (should not happen after DB filter)
+                    if (overall < 0) return null; 
 
                     double[] breakdown = mySurvey.getBreakdown(theirSurvey);
 
@@ -90,18 +74,18 @@ public class RoommateMatchController {
                             candidate.getBiodata(),
                             candidate.getUmur(),
                             overall,
-                            breakdown[0],   // social compatibility %
-                            breakdown[1],   // cleanliness compatibility %
-                            breakdown[2],   // sleep compatibility %
+                            breakdown[0],   
+                            breakdown[1],   
+                            breakdown[2],   
                             RoommateSurvey.fuzzyLabel(overall)
                     );
                 })
                 .filter(r -> r != null)
-                // ── 6. Sort: highest overall score first ──────────────────────
+                
                 .sorted(Comparator.comparingDouble(MatchResult::getOverallScore).reversed())
                 .collect(Collectors.toList());
 
-        // ── 7. Pass to template ───────────────────────────────────────────────
+        
         model.addAttribute("loggedInUser",  me);
         model.addAttribute("results",       results);
         model.addAttribute("currentPage",   candidatePage.getNumber());
@@ -114,3 +98,4 @@ public class RoommateMatchController {
         return "roommate_match";
     }
 }
+// #/yury(PencariHunian)

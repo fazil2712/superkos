@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 import java.util.ArrayList;
-
+// #yury(PemilikProperti)
 @Entity
 @Getter
 @Setter
@@ -32,3 +32,4 @@ public class PemilikProperti extends User {
         return new java.util.ArrayList<>();
     }
 }
+// #/yury(PemilikProperti)

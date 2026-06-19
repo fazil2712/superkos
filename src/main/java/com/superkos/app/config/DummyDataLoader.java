@@ -16,7 +16,7 @@ public class DummyDataLoader {
     @Bean
     CommandLineRunner initDatabase(HunianRepository repository, PemilikPropertiRepository pemilikRepository) {
         return args -> {
-            // Seed a dummy owner first so the dummy properties have an owner
+            
             PemilikProperti dummyPemilik = pemilikRepository.findByEmail("pemilik@superkos.com");
             if (dummyPemilik == null) {
                 dummyPemilik = new PemilikProperti();
@@ -29,7 +29,7 @@ public class DummyDataLoader {
                 dummyPemilik = pemilikRepository.save(dummyPemilik);
             }
 
-            // Only seed data if the table is empty
+            
             if (repository.count() == 0) {
                 Hunian h1 = new Hunian();
                 h1.setNamaHunian("Kost Superkos Mas Yono Tipe H");
@@ -65,7 +65,7 @@ public class DummyDataLoader {
                 repository.save(h3);
             }
 
-            // Link existing orphan properties to the dummy owner
+            
             List<Hunian> orphans = repository.findAll();
             for (Hunian h : orphans) {
                 if (h.getPemilik() == null) {

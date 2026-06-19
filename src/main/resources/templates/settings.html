@@ -106,8 +106,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #nadia(Roommate Survey) -->
 
-    <!-- Navbar -->
+
+
+    
     <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -122,13 +125,13 @@
 
     <div class="max-w-3xl mx-auto px-4 py-10 fade-up">
 
-        <!-- Page title -->
+        
         <div class="mb-8">
             <h1 class="text-2xl font-black text-gray-900">Pengaturan</h1>
             <p class="text-gray-500 text-sm mt-1">Kelola preferensi dan kuis roommateму</p>
         </div>
 
-        <!-- Success Banner -->
+        
         <div th:if="${param.success}" class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-check text-emerald-600 text-sm"></i>
@@ -139,7 +142,7 @@
             </div>
         </div>
 
-        <!-- Cooldown blocked banner -->
+        
         <div th:if="${param.cooldown}" class="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-lock text-amber-600 text-sm"></i>
@@ -150,13 +153,21 @@
             </div>
         </div>
 
-        <!-- ── Profile Summary Card ───────────────────────────── -->
+        
         <div class="settings-card mb-6">
             <div class="p-6 flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
-                     style="background: linear-gradient(135deg, #a855f7, #3b82f6);"
-                     th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">
-                    ?
+                
+                <div class="flex-shrink-0">
+                    <img th:if="${loggedInUser.fotoProfil != null}"
+                         th:src="${loggedInUser.fotoProfil}"
+                         alt="Foto Profil"
+                         class="w-14 h-14 rounded-2xl object-cover shadow">
+                    <div th:unless="${loggedInUser.fotoProfil != null}"
+                         class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black text-white"
+                         style="background: linear-gradient(135deg, #a855f7, #3b82f6);"
+                         th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">
+                        ?
+                    </div>
                 </div>
                 <div class="flex-1">
                     <p class="font-bold text-gray-900" th:text="${loggedInUser.nama}">Nama</p>
@@ -180,7 +191,7 @@
             </div>
         </div>
 
-        <!-- ── Quiz Preferences Card ──────────────────────────── -->
+        
         <div class="settings-card" th:if="${isPencariHunian}">
             <div class="p-6 border-b border-gray-50 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
@@ -194,7 +205,7 @@
 
             <div class="p-6">
 
-                <!-- Last taken info -->
+                
                 <div th:if="${survey != null && survey.lastQuizTaken != null}" class="flex items-center gap-2 text-sm text-gray-500 mb-5">
                     <i class="fas fa-calendar-check text-purple-400"></i>
                     <span>Kuis terakhir diambil:
@@ -205,7 +216,7 @@
                     </span>
                 </div>
 
-                <!-- No quiz yet -->
+                
                 <div th:if="${survey == null || survey.lastQuizTaken == null}" class="text-center py-6">
                     <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
                         <i class="fas fa-question-circle text-2xl text-gray-400"></i>
@@ -217,10 +228,10 @@
                     </a>
                 </div>
 
-                <!-- Has quiz data -->
+                
                 <div th:if="${survey != null && survey.lastQuizTaken != null}">
 
-                    <!-- ── LOCKED ─────────────────────────────────── -->
+                    
                     <div th:if="${!canRetake}" class="locked-card">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -233,7 +244,7 @@
                                     Ini memastikan preferensimu mencerminkan kebiasaan jangka panjang, bukan suasana hati sesaat.
                                 </p>
 
-                                <!-- Cooldown progress -->
+                                
                                 <div class="mb-3">
                                     <div class="flex justify-between text-xs font-semibold text-amber-800 mb-1.5">
                                         <span th:text="'Hari ke-' + ${daysElapsed} + ' dari 7'">Hari ke-</span>
@@ -244,7 +255,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Remaining time badges -->
+                                
                                 <div class="flex items-center gap-2 flex-wrap mt-3">
                                     <div class="flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-bold">
                                         <i class="fas fa-clock text-xs"></i>
@@ -256,7 +267,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Disabled button -->
+                        
                         <div class="mt-5 pt-4 border-t border-amber-200">
                             <button disabled
                                     class="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-amber-200 text-amber-500 font-bold cursor-not-allowed text-sm">
@@ -265,7 +276,7 @@
                         </div>
                     </div>
 
-                    <!-- ── AVAILABLE ──────────────────────────────── -->
+                    
                     <div th:if="${canRetake}" class="available-card">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
@@ -281,7 +292,7 @@
                                     <p class="text-xs font-bold text-emerald-800 flex items-center gap-1.5"><i class="fas fa-exclamation-triangle"></i> Perhatian</p>
                                     <p class="text-xs text-emerald-700 mt-1">Jika kamu melakukan retake kuis sekarang, kuis akan kembali <b class="font-bold">terkunci selama 7 hari</b>. Jawablah dengan jujur tanpa mencoba memanipulasi hasil.</p>
                                 </div>
-                                <!-- Completed bar -->
+                                
                                 <div class="mb-4">
                                     <div class="flex justify-between text-xs font-semibold text-emerald-800 mb-1.5">
                                         <span>Cooldown selesai</span><span>100%</span>
@@ -308,5 +319,7 @@
     </div>
 
     <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+
+<!-- #/nadia(Roommate Survey) -->
 </body>
 </html>

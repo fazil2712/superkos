@@ -6,7 +6,9 @@ import com.superkos.app.repository.RoommateRequestRepository;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public abstract // #naufal
+// #naufal(User)
+class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,17 +18,19 @@ public abstract class User {
     protected String email;
     protected String password;
 
-    // ── Profile fields ────────────────────────────────────────────────────────
+    
     @Column(columnDefinition = "TEXT")
     protected String biodata;
     protected Integer umur;
     protected String lokasi;
     protected String gender;
     protected String pekerjaan;
-    /** WhatsApp / Instagram / line / etc. Shown on the roommate match card. */
+    
     protected String kontak;
+    
+    protected String fotoProfil;
 
-    // ── UML Methods ───────────────────────────────────────────────────────────
+    
     public java.util.Map<String, Object> dashboard() {
         return new java.util.HashMap<>();
     }
@@ -50,7 +54,7 @@ public abstract class User {
         return new java.util.ArrayList<>();
     }
 
-    // ── Getters & Setters ─────────────────────────────────────────────────────
+    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -80,4 +84,8 @@ public abstract class User {
 
     public String getKontak() { return kontak; }
     public void setKontak(String kontak) { this.kontak = kontak; }
+
+    public String getFotoProfil() { return fotoProfil; }
+    public void setFotoProfil(String fotoProfil) { this.fotoProfil = fotoProfil; }
 }
+// #/naufal(User)

@@ -3,7 +3,7 @@ package com.superkos.app.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+// #nadia(Admin)
 @Entity
 @Getter
 @Setter
@@ -31,3 +31,4 @@ public class Admin extends User {
         System.out.println("System policy updated by admin: " + this.getNama());
     }
 }
+// #/nadia(Admin)

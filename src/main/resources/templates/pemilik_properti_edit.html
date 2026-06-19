@@ -64,8 +64,11 @@
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- #yury(PemilikProperti) -->
 
-<!-- Navbar -->
+
+
+
 <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -80,7 +83,7 @@
 
 <div class="max-w-3xl mx-auto px-4 py-10 fade-up">
 
-    <!-- Page Header -->
+    
     <div class="mb-8 flex items-center gap-4">
         <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
             <i class="fas fa-pen text-amber-600 text-xl"></i>
@@ -95,7 +98,7 @@
         </a>
     </div>
 
-    <!-- Edit Form -->
+    
     <div class="section-card">
         <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -104,8 +107,8 @@
             <h2 class="font-bold text-gray-800">Detail Properti</h2>
         </div>
 
-        <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/edit'}" method="post" class="p-5 space-y-5">
-            <!-- Row 1: Nama + Tipe -->
+        <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/edit'}" method="post" enctype="multipart/form-data" class="p-5 space-y-5">
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
@@ -121,7 +124,7 @@
                 </div>
             </div>
 
-            <!-- Row 2: Harga + Lokasi -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
@@ -133,7 +136,7 @@
                 </div>
             </div>
 
-            <!-- Row 3: Tipe Gender + Jumlah Kamar + Tipe Unit -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
@@ -153,7 +156,7 @@
                 </div>
             </div>
 
-            <!-- Row 4: Dates -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
@@ -167,7 +170,7 @@
                 </div>
             </div>
 
-            <!-- Row 5: Kategori Sewa + Status -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
@@ -198,7 +201,46 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-images text-purple-400 mr-1"></i> Foto Hunian
+                    <span class="text-xs font-normal text-gray-400 ml-1">(min 3 foto)</span>
+                </label>
+
+                
+                <div th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-3">
+                    <p class="text-xs text-gray-500 mb-2 font-semibold">Foto saat ini:</p>
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                        <div th:each="foto, iterStat : ${hunian.fotoHunian}" class="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
+                            <img th:src="${foto}" class="w-full h-full object-cover" alt="foto">
+                            <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" method="post"
+                                  class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition"
+                                  onsubmit="return confirm('Hapus foto ini?')">
+                                <button type="submit" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
+                                    <i class="fas fa-trash mr-1"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-2">
+                    <p class="text-xs text-amber-600 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Belum ada foto. Harap upload minimal 3 foto.</p>
+                </div>
+
+                
+                <label for="editFotoInput"
+                       class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-purple-300 rounded-xl cursor-pointer bg-purple-50 hover:bg-purple-100 transition mb-2">
+                    <i class="fas fa-plus text-xl text-purple-400 mb-1"></i>
+                    <span class="text-sm text-purple-600 font-semibold">Tambah foto baru</span>
+                    <input type="file" id="editFotoInput" name="fotoHunian" multiple accept="image/*" class="hidden"
+                           onchange="previewHunianPhotos(event, 'editPhotoGrid', 'editPhotoCount')">
+                </label>
+                <div id="editPhotoGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
+                <p id="editPhotoCount" class="text-xs text-gray-400 mt-1">0 foto baru dipilih</p>
+            </div>
+
+            
             <div class="flex gap-3 pt-2">
                 <button type="submit"
                         class="flex-1 rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm">
@@ -212,7 +254,7 @@
         </form>
     </div>
 
-    <!-- Danger Zone -->
+    
     <div class="mt-6 section-card border-red-200" style="border-color: #fecaca;">
         <div class="px-5 py-4 border-b border-red-50 flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
@@ -238,5 +280,29 @@
 </div>
 
 <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+<script>
+function previewHunianPhotos(event, gridId, countId) {
+    const files = event.target.files;
+    const grid = document.getElementById(gridId);
+    const count = document.getElementById(countId);
+    grid.innerHTML = '';
+    count.textContent = files.length + ' foto baru dipilih';
+    Array.from(files).forEach(function(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'relative rounded-lg overflow-hidden aspect-square bg-gray-100';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'w-full h-full object-cover';
+            div.appendChild(img);
+            grid.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+</script>
+
+<!-- #/yury(PemilikProperti) -->
 </body>
 </html>
