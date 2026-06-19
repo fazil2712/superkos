@@ -107,4 +107,5 @@ Proposal dan diagram sistem tersedia pada folder dokumentasi project.
 
 ## 📌 Tujuan Project
 
-Project ini dibuat untuk memenuhi tugas mata kuliah Pemrograman Berorientasi Objek (PBO) di Telkom University.
+Project ini dibuat untuk memenuhi tugas mata kuliah Pemrograman Berorientasi Objek (PBO) di Telkom University. Alhamdulillah
+
