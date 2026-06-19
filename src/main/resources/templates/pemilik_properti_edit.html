@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,25 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
         @keyframes gradientFlow {
-            0%   { background-position: 0% 50%; }
-            50%  { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
+
         .rainbow-text {
             background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
             background-size: 200% auto;
@@ -23,6 +36,7 @@
             -webkit-text-fill-color: transparent;
             animation: gradientFlow 5s linear infinite;
         }
+
         .rainbow-bg {
             background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
             background-size: 200% auto;
@@ -34,7 +48,7 @@
             background: white;
             border-radius: 20px;
             border: 1.5px solid #f3f4f6;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
 
@@ -49,265 +63,309 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             background: white;
         }
+
         .input-field:focus {
             border-color: #a855f7;
             box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
         }
-        select.input-field { cursor: pointer; }
+
+        select.input-field {
+            cursor: pointer;
+        }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .fade-up { animation: fadeUp 0.3s ease both; }
+
+        .fade-up {
+            animation: fadeUp 0.3s ease both;
+        }
     </style>
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
+
 <body class="bg-gray-50 min-h-screen">
-<!-- #yury(PemilikProperti) -->
+    <!-- #yury(PemilikProperti) -->
 
 
 
 
-<header class="border-b border-gray-200 sticky top-0 bg-white z-50">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
-            <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
-                <i class="fas fa-home rainbow-text"></i>
-                <span class="rainbow-text">Superkos</span>
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+                <a href="/pemilik/dashboard" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i>
+                    <span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-3xl mx-auto px-4 py-10 fade-up">
+
+
+        <div class="mb-8 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
+                <i class="fas fa-pen text-amber-600 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-gray-900">Edit Properti</h1>
+                <p class="text-gray-500 text-sm mt-0.5" th:text="${hunian.namaHunian}">Nama Hunian</p>
+            </div>
+            <a href="/pemilik/properti"
+                class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
+                <i class="fas fa-arrow-left text-[10px]"></i> Kembali
             </a>
         </div>
-    </div>
-</header>
 
-<div class="max-w-3xl mx-auto px-4 py-10 fade-up">
 
-    
-    <div class="mb-8 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center">
-            <i class="fas fa-pen text-amber-600 text-xl"></i>
-        </div>
-        <div>
-            <h1 class="text-2xl font-black text-gray-900">Edit Properti</h1>
-            <p class="text-gray-500 text-sm mt-0.5" th:text="${hunian.namaHunian}">Nama Hunian</p>
-        </div>
-        <a href="/pemilik/properti"
-           class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition flex items-center gap-1.5">
-            <i class="fas fa-arrow-left text-[10px]"></i> Kembali
-        </a>
-    </div>
-
-    
-    <div class="section-card">
-        <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                <i class="fas fa-edit text-amber-600 text-sm"></i>
-            </div>
-            <h2 class="font-bold text-gray-800">Detail Properti</h2>
-        </div>
-
-        <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/edit'}" method="post" enctype="multipart/form-data" class="p-5 space-y-5">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span class="text-red-500">*</span></label>
-                    <input type="text" name="namaHunian" required class="input-field" th:value="${hunian.namaHunian}">
+        <div class="section-card">
+            <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <i class="fas fa-edit text-amber-600 text-sm"></i>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Hunian</label>
-                    <select name="tipeHunian" class="input-field">
-                        <option value="Kost" th:selected="${hunian.tipeHunian == 'Kost'}">Kost</option>
-                        <option value="Kontrakan" th:selected="${hunian.tipeHunian == 'Kontrakan'}">Kontrakan</option>
-                        <option value="Apartemen" th:selected="${hunian.tipeHunian == 'Apartemen'}">Apartemen</option>
-                    </select>
-                </div>
+                <h2 class="font-bold text-gray-800">Detail Properti</h2>
             </div>
 
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span class="text-red-500">*</span></label>
-                    <input type="number" name="harga" required min="0" class="input-field" th:value="${hunian.harga}">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span class="text-red-500">*</span></label>
-                    <input type="text" name="lokasi" required class="input-field" th:value="${hunian.lokasi}">
-                </div>
-            </div>
+            <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/edit'}" method="post"
+                enctype="multipart/form-data" class="p-5 space-y-5">
 
-            
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi / Cerita Kos</label>
-                <textarea name="deskripsi" class="input-field" rows="4" th:text="${hunian.deskripsi}" placeholder="Ceritakan tentang kos ini..."></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
-                    <select name="tipeGender" class="input-field">
-                        <option value="Campur" th:selected="${hunian.tipeGender == 'Campur'}">Campur</option>
-                        <option value="Putra" th:selected="${hunian.tipeGender == 'Putra'}">Putra</option>
-                        <option value="Putri" th:selected="${hunian.tipeGender == 'Putri'}">Putri</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
-                    <input type="number" name="jumlahKamar" min="1" class="input-field" th:value="${hunian.jumlahKamar}">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Unit</label>
-                    <input type="text" name="tipeUnit" class="input-field" th:value="${hunian.tipeUnit}">
-                </div>
-            </div>
-
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
-                    <input type="date" name="availableDateStart" class="input-field"
-                           th:value="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'yyyy-MM-dd') : ''}">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Akhir Tersedia</label>
-                    <input type="date" name="availableDateEnd" class="input-field"
-                           th:value="${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'yyyy-MM-dd') : ''}">
-                </div>
-            </div>
-
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
-                    <div class="flex flex-wrap gap-3">
-                        <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
-                               class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="kategoriSewa" th:value="${opt}"
-                                   th:checked="${hunian.kategoriSewa != null && hunian.kategoriSewa.contains(opt)}"
-                                   class="w-4 h-4 accent-purple-600">
-                            <span class="text-sm text-gray-700" th:text="${opt}">Opsi</span>
-                        </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Hunian <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="namaHunian" required class="input-field"
+                            th:value="${hunian.namaHunian}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Hunian</label>
+                        <select name="tipeHunian" class="input-field">
+                            <option value="Kost" th:selected="${hunian.tipeHunian == 'Kost'}">Kost</option>
+                            <option value="Kontrakan" th:selected="${hunian.tipeHunian == 'Kontrakan'}">Kontrakan
+                            </option>
+                            <option value="Apartemen" th:selected="${hunian.tipeHunian == 'Apartemen'}">Apartemen
+                            </option>
+                        </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="statusTersedia" value="true"
-                                   th:checked="${hunian.statusTersedia}" class="accent-green-500">
-                            <span class="text-sm font-medium text-green-700">Tersedia</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="statusTersedia" value="false"
-                                   th:checked="${!hunian.statusTersedia}" class="accent-red-500">
-                            <span class="text-sm font-medium text-red-600">Penuh / Tidak Tersedia</span>
-                        </label>
+
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Harga / Bulan (Rp) <span
+                                class="text-red-500">*</span></label>
+                        <input type="number" name="harga" required min="0" class="input-field"
+                            th:value="${hunian.harga}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="lokasi" required class="input-field" th:value="${hunian.lokasi}">
                     </div>
                 </div>
-            </div>
 
-            
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="fas fa-images text-purple-400 mr-1"></i> Foto Hunian
-                    <span class="text-xs font-normal text-gray-400 ml-1">(min 3 foto)</span>
-                </label>
 
-                
-                <div th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-3">
-                    <p class="text-xs text-gray-500 mb-2 font-semibold">Foto saat ini:</p>
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                        <div th:each="foto, iterStat : ${hunian.fotoHunian}" class="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
-                            <img th:src="${foto}" class="w-full h-full object-cover" alt="foto">
-                            <form th:id="'deletePhotoForm-' + ${iterStat.index}" th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" method="post"
-                                  class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                                <button type="button" th:onclick="'showDeletePhotoPopup(' + ${iterStat.index} + ')'" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
-                                    <i class="fas fa-trash mr-1"></i> Hapus
-                                </button>
-                            </form>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi / Cerita Kos</label>
+                    <textarea name="deskripsi" class="input-field" rows="4" th:text="${hunian.deskripsi}"
+                        placeholder="Ceritakan tentang kos ini..."></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipe Gender</label>
+                        <select name="tipeGender" class="input-field">
+                            <option value="Campur" th:selected="${hunian.tipeGender == 'Campur'}">Campur</option>
+                            <option value="Putra" th:selected="${hunian.tipeGender == 'Putra'}">Putra</option>
+                            <option value="Putri" th:selected="${hunian.tipeGender == 'Putri'}">Putri</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
+                        <div class="space-y-2">
+                            <select id="jumlahKamarSelect" class="input-field" onchange="toggleJumlahKamarInput()">
+                                <option value="1" th:selected="${hunian.jumlahKamar == 1}">1</option>
+                                <option value="2" th:selected="${hunian.jumlahKamar == 2}">2</option>
+                                <option value="3" th:selected="${hunian.jumlahKamar == 3}">3</option>
+                                <option value="4" th:selected="${hunian.jumlahKamar == 4}">4</option>
+                                <option value="5" th:selected="${hunian.jumlahKamar == 5}">5</option>
+                                <option value="6" th:selected="${hunian.jumlahKamar == 6}">6</option>
+                                <option value="7" th:selected="${hunian.jumlahKamar == 7}">7</option>
+                                <option value="8" th:selected="${hunian.jumlahKamar == 8}">8</option>
+                                <option value="9" th:selected="${hunian.jumlahKamar == 9}">9</option>
+                                <option value="10" th:selected="${hunian.jumlahKamar == 10}">10</option>
+                                <option value="custom" th:selected="${hunian.jumlahKamar > 10}">Jumlah Lain</option>
+                            </select>
+                            
+                            <div id="jumlahKamarCustomDiv" th:class="${hunian.jumlahKamar > 10 ? '' : 'hidden'}">
+                                <input type="number" id="jumlahKamarInput" name="jumlahKamar" min="1" class="input-field"
+                                       th:value="${hunian.jumlahKamar}" placeholder="Masukkan kapasitas...">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-2">
-                    <p class="text-xs text-amber-600 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Belum ada foto. Harap upload minimal 3 foto.</p>
+
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai Tersedia</label>
+                        <input type="date" name="availableDateStart" class="input-field"
+                            th:value="${hunian.availableDateStart != null ? #dates.format(hunian.availableDateStart, 'yyyy-MM-dd') : ''}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Akhir Tersedia</label>
+                        <input type="date" name="availableDateEnd" class="input-field"
+                            th:value="${hunian.availableDateEnd != null ? #dates.format(hunian.availableDateEnd, 'yyyy-MM-dd') : ''}">
+                    </div>
                 </div>
 
-                
-                <label for="editFotoInput"
-                       class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-purple-300 rounded-xl cursor-pointer bg-purple-50 hover:bg-purple-100 transition mb-2">
-                    <i class="fas fa-plus text-xl text-purple-400 mb-1"></i>
-                    <span class="text-sm text-purple-600 font-semibold">Tambah foto baru</span>
-                    <input type="file" id="editFotoInput" name="fotoHunian" multiple accept="image/*" class="hidden"
-                           onchange="previewHunianPhotos(event, 'editPhotoGrid', 'editPhotoCount')">
-                </label>
-                <div id="editPhotoGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
-                <p id="editPhotoCount" class="text-xs text-gray-400 mt-1">0 foto baru dipilih</p>
-            </div>
 
-            
-            <div class="flex gap-3 pt-2">
-                <button type="submit"
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Sewa</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label th:each="opt : ${ {'Harian', 'Mingguan', 'Bulanan', '6 Bulanan', 'Tahunan'} }"
+                                class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="kategoriSewa" th:value="${opt}"
+                                    th:checked="${hunian.kategoriSewa != null && hunian.kategoriSewa.contains(opt)}"
+                                    class="w-4 h-4 accent-purple-600">
+                                <span class="text-sm text-gray-700" th:text="${opt}">Opsi</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="statusTersedia" value="true"
+                                    th:checked="${hunian.statusTersedia}" class="accent-green-500">
+                                <span class="text-sm font-medium text-green-700">Tersedia</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="statusTersedia" value="false"
+                                    th:checked="${!hunian.statusTersedia}" class="accent-red-500">
+                                <span class="text-sm font-medium text-red-600">Penuh / Tidak Tersedia</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-images text-purple-400 mr-1"></i> Foto Hunian
+                        <span class="text-xs font-normal text-gray-400 ml-1">(min 3 foto)</span>
+                    </label>
+
+
+                    <div th:if="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-3">
+                        <p class="text-xs text-gray-500 mb-2 font-semibold">Foto saat ini:</p>
+                        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                            <div th:each="foto, iterStat : ${hunian.fotoHunian}"
+                                class="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
+                                <img th:src="${foto}" class="w-full h-full object-cover" alt="foto">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                    <button type="button" th:data-url="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" onclick="showDeletePhotoPopup(this)" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
+                                        <i class="fas fa-trash mr-1"></i> Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:unless="${hunian.fotoHunian != null && !hunian.fotoHunian.isEmpty()}" class="mb-2">
+                        <p class="text-xs text-amber-600 font-semibold"><i
+                                class="fas fa-exclamation-triangle mr-1"></i>Belum ada foto. Harap upload minimal 3
+                            foto.</p>
+                    </div>
+
+
+                    <label for="editFotoInput"
+                        class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-purple-300 rounded-xl cursor-pointer bg-purple-50 hover:bg-purple-100 transition mb-2">
+                        <i class="fas fa-plus text-xl text-purple-400 mb-1"></i>
+                        <span class="text-sm text-purple-600 font-semibold">Tambah foto baru</span>
+                        <input type="file" id="editFotoInput" name="fotoHunian" multiple accept="image/*" class="hidden"
+                            onchange="previewHunianPhotos(event, 'editPhotoGrid', 'editPhotoCount')">
+                    </label>
+                    <div id="editPhotoGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
+                    <p id="editPhotoCount" class="text-xs text-gray-400 mt-1">0 foto baru dipilih</p>
+                </div>
+
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit"
                         class="flex-1 rainbow-bg text-white font-bold py-3 rounded-xl shadow transition hover:shadow-lg text-sm">
-                    <i class="fas fa-save mr-1"></i> Simpan Perubahan
-                </button>
-                <a href="/pemilik/properti"
-                   class="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 border border-gray-200 hover:bg-gray-200 transition flex items-center justify-center">
-                    Batal
-                </a>
-            </div>
-        </form>
-    </div>
-
-    
-    <div class="mt-6 section-card border-red-200" style="border-color: #fecaca;">
-        <div class="px-5 py-4 border-b border-red-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
-            </div>
-            <h2 class="font-bold text-red-700 text-sm">Zona Berbahaya</h2>
-        </div>
-        <div class="p-5 flex items-center justify-between">
-            <div>
-                <p class="text-sm font-semibold text-gray-700">Hapus Properti Ini</p>
-                <p class="text-xs text-gray-400">Tindakan ini tidak dapat dibatalkan.</p>
-            </div>
-            <form id="deletePropertiForm" th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/delete'}" method="post">
-                <button type="button" onclick="showDeletePropertiPopup()"
-                        class="text-xs font-bold text-red-600 bg-red-50 border border-red-300 px-4 py-2 rounded-lg hover:bg-red-100 transition flex items-center gap-1.5">
-                    <i class="fas fa-trash"></i> Hapus Properti
-                </button>
+                        <i class="fas fa-save mr-1"></i> Simpan Perubahan
+                    </button>
+                    <a href="/pemilik/properti"
+                        class="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 border border-gray-200 hover:bg-gray-200 transition flex items-center justify-center">
+                        Batal
+                    </a>
+                </div>
             </form>
         </div>
+
+
+        <div class="mt-6 section-card border-red-200" style="border-color: #fecaca;">
+            <div class="px-5 py-4 border-b border-red-50 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
+                </div>
+                <h2 class="font-bold text-red-700 text-sm">Zona Berbahaya</h2>
+            </div>
+            <div class="p-5 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Hapus Properti Ini</p>
+                    <p class="text-xs text-gray-400">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <form id="deletePropertiForm" th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/delete'}"
+                    method="post">
+                    <button type="button" onclick="showDeletePropertiPopup()"
+                        class="text-xs font-bold text-red-600 bg-red-50 border border-red-300 px-4 py-2 rounded-lg hover:bg-red-100 transition flex items-center gap-1.5">
+                        <i class="fas fa-trash"></i> Hapus Properti
+                    </button>
+                </form>
+                <form id="deletePhotoForm" method="post" style="display: none;"></form>
+            </div>
+        </div>
+
     </div>
 
-</div>
-
-<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
-<script>
-function previewHunianPhotos(event, gridId, countId) {
-    const files = event.target.files;
-    const grid = document.getElementById(gridId);
-    const count = document.getElementById(countId);
-    grid.innerHTML = '';
-    count.textContent = files.length + ' foto baru dipilih';
-    Array.from(files).forEach(function(file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const div = document.createElement('div');
-            div.className = 'relative rounded-lg overflow-hidden aspect-square bg-gray-100';
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'w-full h-full object-cover';
-            div.appendChild(img);
-            grid.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-</script>
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+    <script>
+        function previewHunianPhotos(event, gridId, countId) {
+            const files = event.target.files;
+            const grid = document.getElementById(gridId);
+            const count = document.getElementById(countId);
+            grid.innerHTML = '';
+            count.textContent = files.length + ' foto baru dipilih';
+            Array.from(files).forEach(function (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative rounded-lg overflow-hidden aspect-square bg-gray-100';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-full h-full object-cover';
+                    div.appendChild(img);
+                    grid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
 
     <!-- Popup Hapus Foto -->
-    <div id="deletePhotoPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div id="deletePhotoPopup"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
             <div class="text-5xl mb-4">🖼️</div>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Hapus Foto</h2>
@@ -315,10 +373,12 @@ function previewHunianPhotos(event, gridId, countId) {
                 Apakah Anda yakin ingin menghapus foto properti ini?
             </p>
             <div class="flex gap-3">
-                <button type="button" onclick="closeDeletePhotoPopup()" class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                <button type="button" onclick="closeDeletePhotoPopup()"
+                    class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
                     Batal
                 </button>
-                <button type="button" onclick="submitDeletePhotoForm()" class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
+                <button type="button" onclick="submitDeletePhotoForm()"
+                    class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
                     Ya, Hapus
                 </button>
             </div>
@@ -326,18 +386,22 @@ function previewHunianPhotos(event, gridId, countId) {
     </div>
 
     <!-- Popup Hapus Properti -->
-    <div id="deletePropertiPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div id="deletePropertiPopup"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
             <div class="text-5xl mb-4">🗑️</div>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Hapus Properti</h2>
             <p class="text-gray-600 mb-6 text-sm text-center">
-                Apakah Anda yakin ingin menghapus properti ini? Tindakan ini tidak bisa dibatalkan dan semua data terkait akan terhapus.
+                Apakah Anda yakin ingin menghapus properti ini? Tindakan ini tidak bisa dibatalkan dan semua data
+                terkait akan terhapus.
             </p>
             <div class="flex gap-3">
-                <button type="button" onclick="closeDeletePropertiPopup()" class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                <button type="button" onclick="closeDeletePropertiPopup()"
+                    class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
                     Batal
                 </button>
-                <button type="button" onclick="submitDeletePropertiForm()" class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
+                <button type="button" onclick="submitDeletePropertiForm()"
+                    class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
                     Ya, Hapus
                 </button>
             </div>
@@ -345,21 +409,38 @@ function previewHunianPhotos(event, gridId, countId) {
     </div>
 
     <script>
-        let photoFormIndexToDelete = null;
+        function toggleJumlahKamarInput() {
+            const select = document.getElementById('jumlahKamarSelect');
+            const customDiv = document.getElementById('jumlahKamarCustomDiv');
+            const input = document.getElementById('jumlahKamarInput');
+            
+            if (select.value === 'custom') {
+                customDiv.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+            } else {
+                customDiv.classList.add('hidden');
+                input.value = select.value;
+            }
+        }
 
-        function showDeletePhotoPopup(index) {
-            photoFormIndexToDelete = index;
+        let deletePhotoUrl = null;
+
+        function showDeletePhotoPopup(button) {
+            deletePhotoUrl = button.getAttribute('data-url');
             document.getElementById('deletePhotoPopup').classList.remove('hidden');
         }
 
         function closeDeletePhotoPopup() {
             document.getElementById('deletePhotoPopup').classList.add('hidden');
-            photoFormIndexToDelete = null;
+            deletePhotoUrl = null;
         }
 
         function submitDeletePhotoForm() {
-            if (photoFormIndexToDelete !== null) {
-                document.getElementById('deletePhotoForm-' + photoFormIndexToDelete).submit();
+            if (deletePhotoUrl) {
+                const form = document.getElementById('deletePhotoForm');
+                form.action = deletePhotoUrl;
+                form.submit();
             }
         }
 
@@ -376,6 +457,7 @@ function previewHunianPhotos(event, gridId, countId) {
         }
     </script>
 
-<!-- #/yury(PemilikProperti) -->
+    <!-- #/yury(PemilikProperti) -->
 </body>
+
 </html>

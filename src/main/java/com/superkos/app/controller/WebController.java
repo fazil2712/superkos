@@ -121,14 +121,30 @@ public class WebController {
 
             
             boolean inWishlist = false;
+            boolean isSewaAccepted = false;
+            int chatRoomId = -1;
             if (loggedInUser instanceof PencariHunian pencari) {
                 PencariHunian fresh = pencariHunianRepository.findById(pencari.getId()).orElse(null);
-                if (fresh != null && fresh.getWishlist() != null) {
-                    inWishlist = fresh.getWishlist().stream()
-                            .anyMatch(h -> h.getIdHunian() == id);
+                if (fresh != null) {
+                    if (fresh.getWishlist() != null) {
+                        inWishlist = fresh.getWishlist().stream()
+                                .anyMatch(h -> h.getIdHunian() == id);
+                    }
+                    List<Reservasi> reservasis = reservasiRepository.findByPencariHunianAndHunian(fresh, hunianOpt.get());
+                    for (Reservasi r : reservasis) {
+                        if ("ACCEPTED".equals(r.getStatus())) {
+                            isSewaAccepted = true;
+                            if (r.getChatRoom() != null) {
+                                chatRoomId = r.getChatRoom().getIdChat();
+                            }
+                            break;
+                        }
+                    }
                 }
             }
             model.addAttribute("inWishlist", inWishlist);
+            model.addAttribute("isSewaAccepted", isSewaAccepted);
+            model.addAttribute("chatRoomId", chatRoomId);
             return "detail";
         }
         return "redirect:/";

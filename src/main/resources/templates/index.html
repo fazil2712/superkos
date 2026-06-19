@@ -185,82 +185,83 @@
     <section class="max-w-7xl mx-auto px-4 pt-8 pb-4 fade-up" th:if="${loggedInUser == null}">
         <!-- Frame luar untuk efek border gradient -->
         <div class=" relative rounded-[2rem] overflow-hidden rainbow-bg p-[2px] shadow-2xl">
-        <!-- Container dalam dengan efek glassmorphism/blur -->
-        <div
-            class="bg-white/95 backdrop-blur-xl rounded-[30px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 relative z-10">
-            <!-- Teks Kiri -->
-            <div class="flex-1 text-center md:text-left">
-                <span
-                    class="inline-block py-1.5 px-4 rounded-full bg-purple-100 text-purple-700 text-[10px] sm:text-xs font-bold mb-5 tracking-widest uppercase">
-                    #AntiSoloSoloClub 🚀
-                </span>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 mb-4 leading-tight tracking-tight">
-                    Cari Kos Pewe + <br />
-                    <span class="rainbow-text">Roommate Se-Vibe!</span>
-                </h1>
-                <p class="text-gray-600 mb-8 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
-                    Ngekos sendirian kemahalan? Cari temen sekamar takut
-                    zonk? Chill aja! Algoritma Superkos bakal nyariin lo
-                    roommate yang sefrekuensi (Sosial, Kebersihan & Jam
-                    Tidur). Patungan kos jadi lebih hemat & <b><i>no drama</i> !</b>
-                </p>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                    <a href="#filterForm"
-                        class="rainbow-bg text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2">
-                        <i class="fas fa-rocket text-sm"></i> Gas Cari
-                        Kos
-                    </a>
-                    <a href="/quiz/setup"
-                        class="bg-purple-50 text-purple-700 font-bold px-8 py-3.5 rounded-xl border border-purple-200 shadow-sm transition hover:bg-purple-100 flex items-center justify-center gap-2">
-                        <i class="fas fa-magic text-sm"></i> Vibe Check
-                        Kuis
-                    </a>
-                </div>
-            </div>
-
-            <!-- Ilustrasi Kanan (Glassmorphism UI Card) -->
-            <div class="flex-1 w-full relative hidden md:block">
-                <!-- Elemen dekoratif blur di belakang -->
-                <div
-                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-blue-400 blur-[70px] rounded-full opacity-40">
-                </div>
-
-                <div
-                    class="bg-white/50 backdrop-blur-md border border-white/60 shadow-xl rounded-3xl p-6 relative transform rotate-3 translate-x-4 max-w-sm mx-auto">
-                    <div class="flex items-center gap-4 mb-5">
-                        <div
-                            class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                            Z
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-gray-900 text-sm">
-                                Roommate Match Found!
-                            </h3>
-                            <p class="text-xs text-green-600 font-black tracking-wide">
-                                ✨ 98% SEFREKUENSI
-                            </p>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-[10px] font-bold text-gray-500 mb-1">
-                                <span>Kecocokan Gaya Hidup</span>
-                                <span>Perfect Match</span>
-                            </div>
-                            <div class="h-2 bg-gray-200/50 rounded-full overflow-hidden">
-                                <div class="h-full rainbow-bg w-[98%] rounded-full"></div>
-                            </div>
-                        </div>
-                        <div class="bg-white/70 rounded-xl p-3 border border-white/50">
-                            <p class="text-[11px] text-gray-600 italic font-medium">
-                                "Sama-sama seneng ngoding malem & anti
-                                piring numpuk di wastafel cucian!" 💻✨
-                            </p>
-                        </div>
+            <!-- Container dalam dengan efek glassmorphism/blur -->
+            <div
+                class="bg-white/95 backdrop-blur-xl rounded-[30px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 relative z-10">
+                <!-- Teks Kiri -->
+                <div class="flex-1 text-center md:text-left">
+                    <span
+                        class="inline-block py-1.5 px-4 rounded-full bg-purple-100 text-purple-700 text-[10px] sm:text-xs font-bold mb-5 tracking-widest uppercase">
+                        #AntiSoloSoloClub 🚀
+                    </span>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 mb-4 leading-tight tracking-tight">
+                        Cari Kos Pewe + <br />
+                        <span class="rainbow-text">Roommate Se-Vibe!</span>
+                    </h1>
+                    <p class="text-gray-600 mb-8 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
+                        Ngekos sendirian kemahalan? Cari temen sekamar takut
+                        zonk? Chill aja! Algoritma Superkos bakal nyariin lo
+                        roommate yang sefrekuensi (Sosial, Kebersihan & Jam
+                        Tidur). Patungan kos jadi lebih hemat & <b><i>no drama</i> !</b>
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                        <a href="#filterForm"
+                            class="rainbow-bg text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2">
+                            <i class="fas fa-rocket text-sm"></i> Gas Cari
+                            Kos
+                        </a>
+                        <a href="/quiz/setup"
+                            class="bg-purple-50 text-purple-700 font-bold px-8 py-3.5 rounded-xl border border-purple-200 shadow-sm transition hover:bg-purple-100 flex items-center justify-center gap-2">
+                            <i class="fas fa-magic text-sm"></i> Vibe Check
+                            Kuis
+                        </a>
                     </div>
                 </div>
+
+                <!-- Ilustrasi Kanan (Glassmorphism UI Card) -->
+                <div class="flex-1 w-full relative hidden md:block">
+                    <!-- Elemen dekoratif blur di belakang -->
+                    <div
+                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-blue-400 blur-[70px] rounded-full opacity-40">
+                    </div>
+
+                    <div
+                        class="bg-white/50 backdrop-blur-md border border-white/60 shadow-xl rounded-3xl p-6 relative transform rotate-3 translate-x-4 max-w-sm mx-auto">
+                        <div class="flex items-center gap-4 mb-5">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                                Z
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm">
+                                    Roommate Match Found!
+                                </h3>
+                                <p class="text-xs text-green-600 font-black tracking-wide">
+                                    ✨ 98% SEFREKUENSI
+                                </p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold text-gray-500 mb-1">
+                                    <span>Kecocokan Gaya Hidup</span>
+                                    <span>Perfect Match</span>
+                                </div>
+                                <div class="h-2 bg-gray-200/50 rounded-full overflow-hidden">
+                                    <div class="h-full rainbow-bg w-[98%] rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="bg-white/70 rounded-xl p-3 border border-white/50">
+                                <p class="text-[11px] text-gray-600 italic font-medium">
+                                    "Sama-sama seneng ngoding malem & anti
+                                    piring numpuk di wastafel cucian!" 💻✨
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
     </section>
     <!-- ====== END TOP SECTION ====== -->
@@ -565,113 +566,113 @@
     <!-- ====== BOTTOM SECTION INJECTION (HOW IT WORKS & CTA) ====== -->
     <section class="bg-gray-50/50 border-t border-gray-100 mt-12 pt-16 pb-20" th:if="${loggedInUser == null}">
         <div class=" max-w-7xl mx-auto px-4">
-        <!-- Judul Tata Cara -->
-        <div class="text-center max-w-2xl mx-auto mb-12 fade-up">
-            <h2 class="text-3xl font-black text-gray-900 mb-3 tracking-tight">
-                Gimana Sih Cara Mainnya? 🤔
-            </h2>
-            <p class="text-gray-500 text-sm md:text-base">
-                Superkos beda dari web cari kos <b><i>BASIC</i></b>. Gini alur
-                simpel dapet kos pewe + bestie baru buat patungan!
-            </p>
-        </div>
-
-        <!-- 3 Steps Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 fade-up" style="animation-delay: 100ms">
-            <!-- Step 1 -->
-            <div
-                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
-                </div>
-                <div
-                    class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
-                    1️⃣
-                </div>
-                <h3 class="font-bold text-lg text-gray-900 mb-2">
-                    Lirik Kos Inceran
-                </h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    Pakai filter canggih di atas buat cari kos idaman
-                    lo. Pastiin cari yang ada tag
-                    <span class="font-semibold text-blue-600">"Bisa untuk Roommate"</span>
-                    ya!
-                </p>
-            </div>
-
-            <!-- Step 2 -->
-            <div
-                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
-                </div>
-                <div
-                    class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
-                    2️⃣
-                </div>
-                <h3 class="font-bold text-lg text-gray-900 mb-2">
-                    Ikut Vibe Check Kuis
-                </h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    Jawab 20 pertanyaan kuis preferensi santai. Kita
-                    butuh tau gaya hidup lo (kebersihan, tingkat
-                    tongkrongan, sampe jam tidur).
-                </p>
-            </div>
-
-            <!-- Step 3 -->
-            <div
-                class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
-                </div>
-                <div
-                    class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
-                    3️⃣
-                </div>
-                <h3 class="font-bold text-lg text-gray-900 mb-2">
-                    Match & Patungan!
-                </h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    Liat list kandidat yang skor kecocokannya ijo semua.
-                    Kalo srek, langsung kirim request, chat, dan gas
-                    patungan sewa!
-                </p>
-            </div>
-        </div>
-
-        <!-- Footer Banner / CTA -->
-        <div class="mt-16 bg-gray-900 rounded-[2.5rem] p-10 md:p-14 text-center relative overflow-hidden fade-up"
-            style="animation-delay: 200ms">
-            <!-- Glow background untuk kesan minimalis-futuristik -->
-            <div
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600 to-blue-600 blur-[100px] rounded-full opacity-30 pointer-events-none">
-            </div>
-
-            <div class="relative z-10">
-                <h2 class="text-3xl md:text-4xl font-black text-white mb-5 tracking-tight">
-                    Udah Siap Ngekos Bebas Drama? 🌟
+            <!-- Judul Tata Cara -->
+            <div class="text-center max-w-2xl mx-auto mb-12 fade-up">
+                <h2 class="text-3xl font-black text-gray-900 mb-3 tracking-tight">
+                    Gimana Sih Cara Mainnya? 🤔
                 </h2>
-                <p class="text-gray-300 mb-8 max-w-lg mx-auto text-sm md:text-base">
-                    Gabung sama ribuan Gen Z lainnya yang udah nemuin
-                    kos pewe dan roommate se-vibe di platform kita.
+                <p class="text-gray-500 text-sm md:text-base">
+                    Superkos beda dari web cari kos <b><i>BASIC</i></b>. Gini alur
+                    simpel dapet kos pewe + bestie baru buat patungan!
                 </p>
-                <div th:if="${loggedInUser == null}">
-                    <a href="/register"
-                        class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
-                        <i class="fas fa-user-plus"></i> Buat Akun
-                        Sekarang (Gratis)
-                    </a>
+            </div>
+
+            <!-- 3 Steps Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 fade-up" style="animation-delay: 100ms">
+                <!-- Step 1 -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                    </div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                        1️⃣
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900 mb-2">
+                        Lirik Kos Inceran
+                    </h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        Pakai filter canggih di atas buat cari kos idaman
+                        lo. Pastiin cari yang ada tag
+                        <span class="font-semibold text-blue-600">"Bisa untuk Roommate"</span>
+                        ya!
+                    </p>
                 </div>
-                <div th:if="${loggedInUser != null}">
-                    <a href="/roommate/match"
-                        class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
-                        <i class="fas fa-search"></i> Cari Jodoh Kosanmu
-                        Sekarang!
-                    </a>
+
+                <!-- Step 2 -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                    </div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                        2️⃣
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900 mb-2">
+                        Ikut Vibe Check Kuis
+                    </h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        Jawab 20 pertanyaan kuis preferensi santai. Kita
+                        butuh tau gaya hidup lo (kebersihan, tingkat
+                        tongkrongan, sampe jam tidur).
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125">
+                    </div>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-6 shadow-sm">
+                        3️⃣
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-900 mb-2">
+                        Match & Patungan!
+                    </h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        Liat list kandidat yang skor kecocokannya ijo semua.
+                        Kalo srek, langsung kirim request, chat, dan gas
+                        patungan sewa!
+                    </p>
                 </div>
             </div>
-        </div>
+
+            <!-- Footer Banner / CTA -->
+            <div class="mt-16 bg-gray-900 rounded-[2.5rem] p-10 md:p-14 text-center relative overflow-hidden fade-up"
+                style="animation-delay: 200ms">
+                <!-- Glow background untuk kesan minimalis-futuristik -->
+                <div
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-gradient-to-r from-purple-600 to-blue-600 blur-[100px] rounded-full opacity-30 pointer-events-none">
+                </div>
+
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-5 tracking-tight">
+                        Udah Siap Ngekos Bebas Drama? 🌟
+                    </h2>
+                    <p class="text-gray-300 mb-8 max-w-lg mx-auto text-sm md:text-base">
+                        Gabung sama ribuan Gen Z lainnya yang udah nemuin
+                        kos pewe dan roommate se-vibe di platform kita.
+                    </p>
+                    <div th:if="${loggedInUser == null}">
+                        <a href="/register"
+                            class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
+                            <i class="fas fa-user-plus"></i> Buat Akun
+                            Sekarang (Gratis)
+                        </a>
+                    </div>
+                    <div th:if="${loggedInUser != null}">
+                        <a href="/roommate/match"
+                            class="rainbow-bg text-white font-bold px-10 py-4 rounded-xl shadow-2xl transition-transform hover:scale-105 inline-flex items-center gap-2">
+                            <i class="fas fa-search"></i> Cari Jodoh Kosanmu
+                            Sekarang!
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
     <!-- ====== END BOTTOM SECTION ====== -->

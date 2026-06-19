@@ -503,12 +503,36 @@
             
             <div class="space-y-3">
               
+              <!-- Tanya Pemilik Button -->
+              <!-- Case 1: Belum login -->
               <button
+                th:if="${loggedInUser == null}"
+                onclick="showLoginPopup()"
                 class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
               >
                 <i class="far fa-comment-dots"></i>
                 Tanya Pemilik
               </button>
+
+              <!-- Case 2: Sudah login tapi belum mengajukan sewa / belum di-accept -->
+              <button
+                th:if="${loggedInUser != null && !isSewaAccepted}"
+                onclick="showChatPopup()"
+                class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
+              >
+                <i class="far fa-comment-dots"></i>
+                Tanya Pemilik
+              </button>
+
+              <!-- Case 3: Sudah login dan reservasi di-accept (bisa chat) -->
+              <a
+                th:if="${loggedInUser != null && isSewaAccepted}"
+                th:href="@{'/chat/' + ${chatRoomId}}"
+                class="w-full border border-purple-400 rainbow-text font-bold py-3 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2 text-center"
+              >
+                <i class="far fa-comment-dots"></i>
+                Tanya Pemilik
+              </a>
 
               
               <!-- #adam(ajukansewa) -->
@@ -625,6 +649,33 @@
       </div>
     </div>
 
+    <!-- Popup Tanya Pemilik Diperlukan Sewa -->
+    <div
+      id="chatPopup"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+    >
+      <div
+        class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl"
+      >
+        <div class="text-5xl mb-4">💬</div>
+
+        <h2 class="text-2xl font-bold mb-2">Akses Chat Dibatasi</h2>
+
+        <p class="text-gray-600 mb-6">
+          Silahkan melakukan pengajuan sewa dan tunggu konfirmasi pemilik sewa.
+        </p>
+
+        <div class="flex gap-3">
+          <button
+            onclick="closeChatPopup()"
+            class="w-full rainbow-bg py-3 rounded-lg text-white font-bold text-center"
+          >
+            Mengerti
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
       function showLoginPopup() {
         document.getElementById("loginPopup").classList.remove("hidden");
@@ -632,6 +683,14 @@
 
       function closeLoginPopup() {
         document.getElementById("loginPopup").classList.add("hidden");
+      }
+
+      function showChatPopup() {
+        document.getElementById("chatPopup").classList.remove("hidden");
+      }
+
+      function closeChatPopup() {
+        document.getElementById("chatPopup").classList.add("hidden");
       }
     </script>
 
