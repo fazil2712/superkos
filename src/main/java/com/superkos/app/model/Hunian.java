@@ -35,6 +35,11 @@ public class Hunian {
     @Column(name = "foto_url")
     private List<String> fotoHunian = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "hunian_fasilitas", joinColumns = @JoinColumn(name = "hunian_id"))
+    @Column(name = "fasilitas")
+    private List<String> fasilitas = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "pemilik_id")
     private PemilikProperti pemilik;
@@ -85,5 +90,8 @@ public class Hunian {
 
     public List<String> getFotoHunian() { return fotoHunian; }
     public void setFotoHunian(List<String> fotoHunian) { this.fotoHunian = fotoHunian; }
+
+    public List<String> getFasilitas() { return fasilitas; }
+    public void setFasilitas(List<String> fasilitas) { this.fasilitas = fasilitas; }
 }
 // #/fazil(Hunian)

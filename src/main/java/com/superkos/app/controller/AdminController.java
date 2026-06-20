@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 // #nadia(Admin)
@@ -74,6 +75,7 @@ public class AdminController {
             @RequestParam String deskripsi,
             @RequestParam Integer jumlahKamar,
             @RequestParam String tipeGender,
+            @RequestParam(required = false) List<String> fasilitas,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
@@ -88,6 +90,7 @@ public class AdminController {
             hunian.setDeskripsi(deskripsi);
             hunian.setJumlahKamar(jumlahKamar);
             hunian.setTipeGender(tipeGender);
+            hunian.setFasilitas(fasilitas != null ? fasilitas : new ArrayList<>());
             hunianRepository.save(hunian);
             redirectAttributes.addFlashAttribute("successMessage", "Data hunian berhasil diupdate.");
         }

@@ -264,7 +264,8 @@ public class WebController {
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String pekerjaan,
             @RequestParam(required = false) String kontak,
-            HttpSession session) {
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            HttpSession session) throws IOException {
 
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) return "redirect:/login";
@@ -279,6 +280,19 @@ public class WebController {
         userToUpdate.setGender(gender);
         userToUpdate.setPekerjaan(pekerjaan);
         userToUpdate.setKontak(kontak);
+
+        if (file != null && !file.isEmpty()) {
+            String originalName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "foto.jpg";
+            String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.')) : ".jpg";
+
+            Path uploadDir = Paths.get("uploads", "profile");
+            Files.createDirectories(uploadDir);
+            String fileName = userToUpdate.getId() + "_foto" + ext;
+            Path filePath = uploadDir.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            userToUpdate.setFotoProfil("/uploads/profile/" + fileName);
+        }
 
         userRepository.save(userToUpdate);
         session.setAttribute("loggedInUser", userToUpdate);

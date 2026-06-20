@@ -29,6 +29,9 @@ public class RoommateMatchController {
     @GetMapping("/roommate/match")
     public String showMatches(
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer minMatch,
+            @RequestParam(required = false) String gender,
             HttpSession session,
             Model model) {
 
@@ -49,12 +52,11 @@ public class RoommateMatchController {
             return "roommate_match";
         }
 
-        
-        Page<PencariHunian> candidatePage = pencariHunianRepository
-                .findCandidates(me.getId(), PageRequest.of(page, PAGE_SIZE));
+        // Fetch all candidates
+        List<PencariHunian> allCandidates = pencariHunianRepository.findAllCandidates(me.getId());
 
         
-        List<MatchResult> results = candidatePage.getContent().stream()
+        List<MatchResult> results = allCandidates.stream()
                 .map(candidate -> {
                     RoommateSurvey theirSurvey = candidate.getRoommateSurvey();
 
@@ -82,19 +84,68 @@ public class RoommateMatchController {
                     );
                 })
                 .filter(r -> r != null)
-                
-                .sorted(Comparator.comparingDouble(MatchResult::getOverallScore).reversed())
                 .collect(Collectors.toList());
+
+        // Logika Pencarian: Gunakan keyword untuk memfilter list user berdasarkan kecocokan nama atau lokasi
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = keyword.toLowerCase();
+            results = results.stream()
+                    .filter(r -> (r.getNama() != null && r.getNama().toLowerCase().contains(kw))
+                            || (r.getLokasi() != null && r.getLokasi().toLowerCase().contains(kw)))
+                    .collect(Collectors.toList());
+        }
+
+        // Logika Filter Gender: Filter list user agar hanya menampilkan gender yang dipilih
+        if (gender != null && !gender.trim().isEmpty()) {
+            results = results.stream()
+                    .filter(r -> r.getGender() != null && r.getGender().equalsIgnoreCase(gender))
+                    .collect(Collectors.toList());
+        }
+
+        // Logika Filter Kecocokan: Tampilkan hanya yang skornya >= minMatch
+        if (minMatch != null) {
+            results = results.stream()
+                    .filter(r -> r.getOverallScore() >= minMatch)
+                    .collect(Collectors.toList());
+        }
+
+        // Sort by overall score descending
+        results.sort(Comparator.comparingDouble(MatchResult::getOverallScore).reversed());
+
+        // In-memory pagination
+        int totalResults = results.size();
+        int totalPages = (int) Math.ceil((double) totalResults / PAGE_SIZE);
+        if (totalPages == 0) {
+            totalPages = 1;
+        }
+
+        if (page < 0) page = 0;
+        if (page >= totalPages) page = totalPages - 1;
+
+        int start = page * PAGE_SIZE;
+        int end = Math.min(start + PAGE_SIZE, totalResults);
+
+        List<MatchResult> paginatedResults;
+        if (start < totalResults) {
+            paginatedResults = results.subList(start, end);
+        } else {
+            paginatedResults = java.util.Collections.emptyList();
+        }
 
         
         model.addAttribute("loggedInUser",  me);
-        model.addAttribute("results",       results);
-        model.addAttribute("currentPage",   candidatePage.getNumber());
-        model.addAttribute("totalPages",    candidatePage.getTotalPages());
-        model.addAttribute("totalResults",  candidatePage.getTotalElements());
-        model.addAttribute("hasPrevious",   candidatePage.hasPrevious());
-        model.addAttribute("hasNext",       candidatePage.hasNext());
+        model.addAttribute("results",       paginatedResults);
+        model.addAttribute("currentPage",   page);
+        model.addAttribute("totalPages",    totalPages);
+        model.addAttribute("totalResults",  totalResults);
+        model.addAttribute("hasPrevious",   page > 0);
+        model.addAttribute("hasNext",       page < totalPages - 1);
         model.addAttribute("noSurvey",      false);
+
+        // Keep filter values in model
+        model.addAttribute("keyword",       keyword);
+        model.addAttribute("minMatch",      minMatch);
+        model.addAttribute("gender",        gender);
 
         return "roommate_match";
     }

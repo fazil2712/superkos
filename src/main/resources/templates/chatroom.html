@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,287 +9,408 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         @keyframes gradientFlow {
-            0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+            0% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0% 50%
+            }
         }
+
         .rainbow-text {
-            background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444);
-            background-size: 200% auto; -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; animation: gradientFlow 5s linear infinite;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
         }
+
         .rainbow-bg {
-            background: linear-gradient(90deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7,#ef4444);
-            background-size: 200% auto; animation: gradientFlow 5s linear infinite; color: white;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ef4444);
+            background-size: 200% auto;
+            animation: gradientFlow 5s linear infinite;
+            color: white;
         }
-        .avatar-ring { background: linear-gradient(135deg,#ef4444,#f59e0b,#10b981,#3b82f6,#a855f7); padding: 2px; border-radius: 50%; }
-        .avatar-inner { background: white; border-radius: 50%; padding: 2px; }
-        .avatar-sm { background: linear-gradient(135deg,#6366f1,#a855f7); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: .9rem; }
+
+        .avatar-ring {
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7);
+            padding: 2px;
+            border-radius: 50%;
+        }
+
+        .avatar-inner {
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .avatar-sm {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: .9rem;
+        }
 
         /* Chat layout — full viewport minus navbar */
         .chat-layout {
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             height: calc(100vh - 64px);
         }
 
         /* Chat header */
         .chat-header {
-            background: white; border-bottom: 1.5px solid #f3f4f6;
-            padding: 14px 24px; display: flex; align-items: center; gap: 14px;
-            flex-shrink: 0; box-shadow: 0 1px 8px rgba(0,0,0,.04);
+            background: white;
+            border-bottom: 1.5px solid #f3f4f6;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, .04);
         }
 
         /* Scrollable messages area */
         .messages-area {
-            flex: 1; overflow-y: auto; padding: 24px;
-            display: flex; flex-direction: column; gap: 12px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             background: #f9fafb;
         }
 
         /* Bubble */
-        .bubble-wrap { display: flex; align-items: flex-end; gap: 8px; }
-        .bubble-wrap.mine { flex-direction: row-reverse; }
+        .bubble-wrap {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .bubble-wrap.mine {
+            flex-direction: row-reverse;
+        }
 
         .bubble {
-            padding: 10px 16px; border-radius: 18px;
-            font-size: .9rem; line-height: 1.45; word-break: break-word;
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-size: .9rem;
+            line-height: 1.45;
+            word-break: break-word;
         }
+
         .bubble.theirs {
-            background: white; color: #111827;
+            background: white;
+            color: #111827;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 6px rgba(0,0,0,.07);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .07);
         }
+
         .bubble.mine {
-            background: linear-gradient(135deg,#a855f7,#3b82f6);
-            color: white; border-bottom-right-radius: 4px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: white;
+            border-bottom-right-radius: 4px;
         }
 
         .bubble-time {
-            font-size: .65rem; color: #9ca3af;
-            flex-shrink: 0; margin-bottom: 2px;
+            font-size: .65rem;
+            color: #9ca3af;
+            flex-shrink: 0;
+            margin-bottom: 2px;
         }
-        .bubble-wrap.mine .bubble-time { text-align: right; }
+
+        .bubble-wrap.mine .bubble-time {
+            text-align: right;
+        }
 
         .sender-name {
-            font-size: .68rem; font-weight: 700; color: #6366f1;
+            font-size: .68rem;
+            font-weight: 700;
+            color: #6366f1;
             margin-bottom: 2px;
         }
 
         /* Mini avatar inside chat */
         .chat-av {
-            width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: .75rem; color: white; flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .75rem;
+            color: white;
+            flex-shrink: 0;
         }
 
         /* Input bar */
         .input-bar {
-            background: white; border-top: 1.5px solid #f3f4f6;
-            padding: 14px 20px; display: flex; gap: 10px; align-items: center;
+            background: white;
+            border-top: 1.5px solid #f3f4f6;
+            padding: 14px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
             flex-shrink: 0;
         }
+
         .msg-input {
-            flex: 1; border: 1.5px solid #e5e7eb; border-radius: 24px;
-            padding: 10px 18px; outline: none; font-size: .9rem;
-            font-family: 'Inter', sans-serif; color: #111827; background: #f9fafb;
+            flex: 1;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 24px;
+            padding: 10px 18px;
+            outline: none;
+            font-size: .9rem;
+            font-family: 'Inter', sans-serif;
+            color: #111827;
+            background: #f9fafb;
             transition: border-color .2s, box-shadow .2s;
         }
+
         .msg-input:focus {
             border-color: #a855f7;
-            box-shadow: 0 0 0 3px rgba(168,85,247,.12);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, .12);
             background: white;
         }
+
         .send-btn {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: linear-gradient(135deg,#a855f7,#3b82f6);
-            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            color: white; font-size: .95rem; flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: .95rem;
+            flex-shrink: 0;
             transition: transform .15s, box-shadow .15s;
-            box-shadow: 0 4px 14px rgba(168,85,247,.35);
+            box-shadow: 0 4px 14px rgba(168, 85, 247, .35);
         }
-        .send-btn:hover { transform: scale(1.08); }
-        .send-btn:active { transform: scale(.96); }
+
+        .send-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .send-btn:active {
+            transform: scale(.96);
+        }
 
         /* Group participant avatars */
         .participant-avatars {
-            display: flex; margin-left: -6px;
+            display: flex;
+            margin-left: -6px;
         }
+
         .participant-avatars .chat-av {
-            margin-left: -6px; border: 2px solid white;
+            margin-left: -6px;
+            border: 2px solid white;
         }
     </style>
     <div th:replace="~{fragments/dropdown :: dropdown-css}"></div>
 </head>
+
 <body class="bg-gray-50">
-<!-- #naufal(ChatRoom & Message) -->
+    <!-- #naufal(ChatRoom & Message) -->
 
 
 
 
-<header class="border-b border-gray-200 sticky top-0 bg-white z-50" style="height:64px;">
-    <div class="max-w-full px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
-            <a href="/" class="flex items-center gap-2 text-xl font-bold">
-                <i class="fas fa-home rainbow-text"></i><span class="rainbow-text">Superkos</span>
-            </a>
+    <header class="border-b border-gray-200 sticky top-0 bg-white z-50" style="height:64px;">
+        <div class="max-w-full px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div th:replace="~{fragments/dropdown :: dropdown-html}"></div>
+                <a href="/" class="flex items-center gap-2 text-xl font-bold">
+                    <i class="fas fa-home rainbow-text"></i><span class="rainbow-text">Superkos</span>
+                </a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
 
-<div class="chat-layout">
+    <div class="chat-layout">
 
-    
-    <div class="chat-header">
-        
-        <a th:if="${loggedInUser.class.simpleName == 'PencariHunian'}"
-           href="/roommate/inbox" class="text-gray-400 hover:text-gray-700 transition mr-1">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <a th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}"
-           href="/pemilik/reservasi" class="text-gray-400 hover:text-gray-700 transition mr-1">
-            <i class="fas fa-arrow-left"></i>
-        </a>
 
-        
-        <div th:if="${isGroupChat}" class="flex items-center gap-3 flex-1">
-            <div class="participant-avatars">
-                <div th:each="p : ${otherParticipants}">
-                     <img th:if="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" th:src="${p.fotoProfil}" class="chat-av object-cover" alt="Avatar" />
-                     <div th:unless="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" class="chat-av"
-                          th:style="'background: linear-gradient(135deg,#a855f7,#3b82f6);'"
-                          th:text="${p.nama != null && !p.nama.isEmpty() ? p.nama.substring(0,1).toUpperCase() : '?'}">A</div>
+        <div class="chat-header">
+
+            <a th:if="${loggedInUser.class.simpleName == 'PencariHunian'}" href="/roommate/inbox"
+                class="text-gray-400 hover:text-gray-700 transition mr-1">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a th:if="${loggedInUser.class.simpleName == 'PemilikProperti'}" href="/pemilik/reservasi"
+                class="text-gray-400 hover:text-gray-700 transition mr-1">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+
+
+            <div th:if="${isGroupChat}" class="flex items-center gap-3 flex-1">
+                <div class="participant-avatars">
+                    <div th:each="p : ${otherParticipants}">
+                        <img th:if="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" th:src="${p.fotoProfil}"
+                            class="chat-av object-cover" alt="Avatar" />
+                        <div th:unless="${p.fotoProfil != null && !p.fotoProfil.isEmpty()}" class="chat-av"
+                            th:style="'background: linear-gradient(135deg,#a855f7,#3b82f6);'"
+                            th:text="${p.nama != null && !p.nama.isEmpty() ? p.nama.substring(0,1).toUpperCase() : '?'}">
+                            A</div>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-gray-900 text-sm" th:text="${chatTitle}">Group Chat</p>
+                    <p class="text-xs text-gray-500 font-semibold flex items-center gap-1">
+                        <i class="fas fa-users text-purple-400" style="font-size:.6rem;"></i>
+                        <span th:text="${room.participants.size()} + ' anggota'">3 anggota</span>
+                    </p>
+                </div>
+
+                <a th:if="${inviteReservasiId > 0}"
+                    th:href="@{'/reservasi/' + ${inviteReservasiId} + '/invite-roommate'}"
+                    class="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition flex items-center gap-1.5 flex-shrink-0">
+                    <i class="fas fa-user-plus text-[9px]"></i> Undang
+                </a>
+            </div>
+
+
+            <div th:unless="${isGroupChat}" class="flex items-center gap-3">
+                <img th:if="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}"
+                    th:src="${other.fotoProfil}" class="chat-av object-cover" alt="Avatar" />
+                <div th:unless="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}"
+                    class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
+                    th:text="${other != null && other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">
+                    A</div>
+                <div>
+                    <p class="font-bold text-gray-900 text-sm" th:text="${other != null ? other.nama : 'Chat'}">Nama</p>
+                    <p class="text-xs text-green-500 font-semibold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
+                        Terhubung
+                    </p>
                 </div>
             </div>
-            <div class="flex-1">
-                <p class="font-bold text-gray-900 text-sm" th:text="${chatTitle}">Group Chat</p>
-                <p class="text-xs text-gray-500 font-semibold flex items-center gap-1">
-                    <i class="fas fa-users text-purple-400" style="font-size:.6rem;"></i>
-                    <span th:text="${room.participants.size()} + ' anggota'">3 anggota</span>
-                </p>
-            </div>
-            
-            <a th:if="${inviteReservasiId > 0}"
-               th:href="@{'/reservasi/' + ${inviteReservasiId} + '/invite-roommate'}"
-               class="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition flex items-center gap-1.5 flex-shrink-0">
-                <i class="fas fa-user-plus text-[9px]"></i> Undang
-            </a>
         </div>
 
-        
-        <div th:unless="${isGroupChat}" class="flex items-center gap-3">
-            <img th:if="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}" th:src="${other.fotoProfil}" class="chat-av object-cover" alt="Avatar" />
-            <div th:unless="${other != null && other.fotoProfil != null && !other.fotoProfil.isEmpty()}" class="chat-av" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
-                 th:text="${other != null && other.nama != null && !other.nama.isEmpty() ? other.nama.substring(0,1).toUpperCase() : '?'}">A</div>
-            <div>
-                <p class="font-bold text-gray-900 text-sm" th:text="${other != null ? other.nama : 'Chat'}">Nama</p>
-                <p class="text-xs text-green-500 font-semibold flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
-                    Terhubung
-                </p>
+
+        <a th:if="${room.chatType == 'RESERVASI' && room.hunian != null}"
+            th:href="@{'/hunian/' + ${room.hunian.idHunian}}"
+            class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 hover:bg-blue-100 transition flex items-center justify-between shadow-sm relative z-10"
+            title="Lihat Detail Properti">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-200 text-blue-700 flex items-center justify-center">
+                    <i class="fas fa-home text-[13px]"></i>
+                </div>
+                <div>
+                    <p class="text-[13px] font-bold text-blue-900 leading-tight" th:text="${room.hunian.namaHunian}">
+                        Nama Hunian</p>
+                    <p class="text-[10px] text-blue-700 flex items-center gap-1 mt-0.5"><i
+                            class="fas fa-map-marker-alt"></i> <span th:text="${room.hunian.lokasi}">Lokasi</span></p>
+                </div>
+            </div>
+            <div
+                class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-md border border-blue-200 flex items-center gap-1">
+                Lihat Detail <i class="fas fa-chevron-right text-[8px]"></i>
+            </div>
+        </a>
+
+
+        <div class="messages-area" id="messagesArea">
+
+
+            <div th:if="${messages.empty}" class="flex-1 flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-4">
+                    <i class="fas fa-comment-dots text-3xl text-purple-400"></i>
+                </div>
+                <p class="font-semibold text-gray-600 mb-1">Belum ada pesan</p>
+                <p class="text-gray-400 text-sm">Mulai obrolan!</p>
+            </div>
+
+
+            <div th:each="msg : ${messages}" th:with="isMine=${msg.sender.id == loggedInUser.id}" class="bubble-wrap"
+                th:classappend="${isMine} ? ' mine' : ''">
+
+
+                <img th:unless="${isMine}" th:if="${msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty()}"
+                    th:src="${msg.sender.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
+                <div th:unless="${isMine || (msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty())}"
+                    class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
+                    th:text="${msg.sender.nama != null && !msg.sender.nama.isEmpty() ? msg.sender.nama.substring(0,1).toUpperCase() : '?'}">
+                    A</div>
+
+                <div class="flex flex-col gap-0.5 max-w-[72%]"
+                    th:classappend="${isMine} ? ' items-end' : ' items-start'">
+
+                    <span th:if="${isGroupChat && !isMine}" class="sender-name" th:text="${msg.sender.nama}">Nama</span>
+                    <div class="bubble" th:classappend="${isMine} ? ' mine' : ' theirs'" th:text="${msg.isiPesan}">pesan
+                    </div>
+                    <span class="bubble-time" th:text="${#dates.format(msg.timestamp, 'HH:mm')}">00:00</span>
+                </div>
+
+
+                <img th:if="${isMine && loggedInUser.fotoProfil != null && !loggedInUser.fotoProfil.isEmpty()}"
+                    th:src="${loggedInUser.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
+                <div th:if="${isMine && (loggedInUser.fotoProfil == null || loggedInUser.fotoProfil.isEmpty())}"
+                    class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#6366f1,#a855f7);"
+                    th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">
+                    A</div>
             </div>
         </div>
+
+
+        <div class="input-bar">
+            <form th:action="@{'/chat/' + ${room.idChat} + '/send'}" method="post"
+                class="flex gap-3 items-center w-full" id="chatForm">
+                <input type="text" name="isiPesan" class="msg-input" placeholder="Ketik pesan..." autocomplete="off"
+                    id="msgInput" required maxlength="1000">
+                <button type="submit" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
     </div>
 
-    
-    <a th:if="${room.chatType == 'RESERVASI' && room.hunian != null}"
-       th:href="@{'/hunian/' + ${room.hunian.idHunian}}"
-       class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 hover:bg-blue-100 transition flex items-center justify-between shadow-sm relative z-10"
-       title="Lihat Detail Properti">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-blue-200 text-blue-700 flex items-center justify-center">
-                <i class="fas fa-home text-[13px]"></i>
-            </div>
-            <div>
-                <p class="text-[13px] font-bold text-blue-900 leading-tight" th:text="${room.hunian.namaHunian}">Nama Hunian</p>
-                <p class="text-[10px] text-blue-700 flex items-center gap-1 mt-0.5"><i class="fas fa-map-marker-alt"></i> <span th:text="${room.hunian.lokasi}">Lokasi</span></p>
-            </div>
-        </div>
-        <div class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-md border border-blue-200 flex items-center gap-1">
-            Lihat Detail <i class="fas fa-chevron-right text-[8px]"></i>
-        </div>
-    </a>
+    <div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
+    <script>
+        // Auto-scroll to bottom on load
+        const area = document.getElementById('messagesArea');
+        area.scrollTop = area.scrollHeight;
 
-    
-    <div class="messages-area" id="messagesArea">
+        // Submit on Enter key (not Shift+Enter)
+        document.getElementById('msgInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('chatForm').submit();
+            }
+        });
 
-        
-        <div th:if="${messages.empty}" class="flex-1 flex flex-col items-center justify-center py-16 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-4">
-                <i class="fas fa-comment-dots text-3xl text-purple-400"></i>
-            </div>
-            <p class="font-semibold text-gray-600 mb-1">Belum ada pesan</p>
-            <p class="text-gray-400 text-sm">Mulai obrolan!</p>
-        </div>
+        // Auto-refresh every 30 seconds ONLY if not typing
+        setInterval(function () {
+            var input = document.getElementById('msgInput');
+            if (input && input.value.trim() === "") {
+                window.location.reload();
+            }
+        }, 30000);
+    </script>
 
-        
-        <div th:each="msg : ${messages}"
-             th:with="isMine=${msg.sender.id == loggedInUser.id}"
-             class="bubble-wrap"
-             th:classappend="${isMine} ? ' mine' : ''">
-
-            
-            <img th:unless="${isMine}" th:if="${msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty()}" th:src="${msg.sender.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
-            <div th:unless="${isMine || (msg.sender.fotoProfil != null && !msg.sender.fotoProfil.isEmpty())}"
-                 class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
-                 th:text="${msg.sender.nama != null && !msg.sender.nama.isEmpty() ? msg.sender.nama.substring(0,1).toUpperCase() : '?'}">A</div>
-
-            <div class="flex flex-col gap-0.5 max-w-[72%]" th:classappend="${isMine} ? ' items-end' : ' items-start'">
-                
-                <span th:if="${isGroupChat && !isMine}" class="sender-name" th:text="${msg.sender.nama}">Nama</span>
-                <div class="bubble" th:classappend="${isMine} ? ' mine' : ' theirs'"
-                     th:text="${msg.isiPesan}">pesan</div>
-                <span class="bubble-time"
-                      th:text="${#dates.format(msg.timestamp, 'HH:mm')}">00:00</span>
-            </div>
-
-            
-            <img th:if="${isMine && loggedInUser.fotoProfil != null && !loggedInUser.fotoProfil.isEmpty()}" th:src="${loggedInUser.fotoProfil}" class="chat-av flex-shrink-0 object-cover" alt="Avatar" />
-            <div th:if="${isMine && (loggedInUser.fotoProfil == null || loggedInUser.fotoProfil.isEmpty())}"
-                 class="chat-av flex-shrink-0" style="background: linear-gradient(135deg,#6366f1,#a855f7);"
-                 th:text="${loggedInUser.nama != null && !loggedInUser.nama.isEmpty() ? loggedInUser.nama.substring(0,1).toUpperCase() : '?'}">A</div>
-        </div>
-    </div>
-
-    
-    <div class="input-bar">
-        <form th:action="@{'/chat/' + ${room.idChat} + '/send'}" method="post"
-              class="flex gap-3 items-center w-full" id="chatForm">
-            <input type="text" name="isiPesan" class="msg-input"
-                   placeholder="Ketik pesan..." autocomplete="off" id="msgInput"
-                   required maxlength="1000">
-            <button type="submit" class="send-btn">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </form>
-    </div>
-
-</div>
-
-<div th:replace="~{fragments/dropdown :: dropdown-js}"></div>
-<script>
-    // Auto-scroll to bottom on load
-    const area = document.getElementById('messagesArea');
-    area.scrollTop = area.scrollHeight;
-
-    // Submit on Enter key (not Shift+Enter)
-    document.getElementById('msgInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            document.getElementById('chatForm').submit();
-        }
-    });
-
-    // Auto-refresh every 30 seconds ONLY if not typing
-    setInterval(function() {
-        var input = document.getElementById('msgInput');
-        if (input && input.value.trim() === "") {
-            window.location.reload();
-        }
-    }, 30000);
-</script>
-
-<!-- #/naufal(ChatRoom & Message) -->
+    <!-- #/naufal(ChatRoom & Message) -->
 </body>
+
 </html>

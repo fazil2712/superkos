@@ -545,9 +545,13 @@
                                 <span class="font-medium text-gray-800" th:each="kat, iterStat : ${hunian.kategoriSewa}"
                                     th:text="${kat} + ${!iterStat.last ? ', ' : ''}">Harian</span>
                             </p>
-                            <p class="flex items-center gap-2 text-gray-600 font-medium text-xs mt-1">
-                                <i class="fas fa-check-circle"></i> K. Mandi
-                                Dalam · WiFi · Kasur
+                            <p th:if="${hunian.fasilitas != null && !hunian.fasilitas.empty}"
+                                class="flex items-center gap-x-2 gap-y-1 text-gray-600 font-medium text-xs mt-1 flex-wrap">
+                                <span th:each="fas, iterStat : ${hunian.fasilitas}">
+                                    <i class="fas fa-check-circle text-purple-400"></i>
+                                    <span th:text="${fas}">Fasilitas</span>
+                                    <span th:if="${!iterStat.last}" class="mx-1 text-gray-300">·</span>
+                                </span>
                             </p>
                         </div>
 

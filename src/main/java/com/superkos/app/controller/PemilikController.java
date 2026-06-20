@@ -109,6 +109,7 @@ public class PemilikController {
             @RequestParam(required = false) List<String> kategoriSewa,
             @RequestParam(required = false) String deskripsi,
             @RequestParam(required = false) List<MultipartFile> fotoHunian,
+            @RequestParam(required = false) List<String> fasilitas,
             HttpSession session) {
 
         PemilikProperti me = getMe(session);
@@ -126,6 +127,7 @@ public class PemilikController {
         hunian.setAvailableDateStart(availableDateStart);
         hunian.setAvailableDateEnd(availableDateEnd);
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());
+        hunian.setFasilitas(fasilitas != null ? fasilitas : new ArrayList<>());
         hunian.setDeskripsi(deskripsi);
         hunian.setPemilik(me);
 
@@ -169,6 +171,7 @@ public class PemilikController {
             @RequestParam(required = false) List<String> kategoriSewa,
             @RequestParam(required = false) String deskripsi,
             @RequestParam(required = false) List<MultipartFile> fotoHunian,
+            @RequestParam(required = false) List<String> fasilitas,
             HttpSession session) {
 
         PemilikProperti me = getMe(session);
@@ -190,6 +193,7 @@ public class PemilikController {
         hunian.setAvailableDateStart(availableDateStart);
         hunian.setAvailableDateEnd(availableDateEnd);
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());
+        hunian.setFasilitas(fasilitas != null ? fasilitas : new ArrayList<>());
         hunian.setDeskripsi(deskripsi);
         
         hunian.setFotoHunian(saveHunianPhotos(fotoHunian, hunian.getIdHunian(), hunian.getFotoHunian()));

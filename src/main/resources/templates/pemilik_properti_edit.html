@@ -205,10 +205,11 @@
                                 <option value="10" th:selected="${hunian.jumlahKamar == 10}">10</option>
                                 <option value="custom" th:selected="${hunian.jumlahKamar > 10}">Jumlah Lain</option>
                             </select>
-                            
+
                             <div id="jumlahKamarCustomDiv" th:class="${hunian.jumlahKamar > 10 ? '' : 'hidden'}">
-                                <input type="number" id="jumlahKamarInput" name="jumlahKamar" min="1" class="input-field"
-                                       th:value="${hunian.jumlahKamar}" placeholder="Masukkan kapasitas...">
+                                <input type="number" id="jumlahKamarInput" name="jumlahKamar" min="1"
+                                    class="input-field" th:value="${hunian.jumlahKamar}"
+                                    placeholder="Masukkan kapasitas...">
                             </div>
                         </div>
                     </div>
@@ -259,6 +260,18 @@
                     </div>
                 </div>
 
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Fasilitas Hunian</label>
+                    <div class="flex flex-wrap gap-4">
+                        <label th:each="fac : ${ {'WiFi', 'AC', 'Kasur', 'TV', 'Kamar Mandi Dalam', 'Akses 24 Jam'} }"
+                            class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="fasilitas" th:value="${fac}"
+                                th:checked="${hunian.fasilitas != null && hunian.fasilitas.contains(fac)}"
+                                class="w-4 h-4 accent-purple-600">
+                            <span class="text-sm text-gray-700" th:text="${fac}">Fasilitas</span>
+                        </label>
+                    </div>
+                </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -273,8 +286,12 @@
                             <div th:each="foto, iterStat : ${hunian.fotoHunian}"
                                 class="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
                                 <img th:src="${foto}" class="w-full h-full object-cover" alt="foto">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                                    <button type="button" th:data-url="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" onclick="showDeletePhotoPopup(this)" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
+                                <div
+                                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                    <button type="button"
+                                        th:data-url="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}"
+                                        onclick="showDeletePhotoPopup(this)"
+                                        class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
                                         <i class="fas fa-trash mr-1"></i> Hapus
                                     </button>
                                 </div>
@@ -413,7 +430,7 @@
             const select = document.getElementById('jumlahKamarSelect');
             const customDiv = document.getElementById('jumlahKamarCustomDiv');
             const input = document.getElementById('jumlahKamarInput');
-            
+
             if (select.value === 'custom') {
                 customDiv.classList.remove('hidden');
                 input.value = '';
