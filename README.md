@@ -23,7 +23,7 @@ Berdasarkan detail project dan *source code* terbaru, ini dia **daftar lengkap s
 ### 🚀 1. Fitur Utama & Core Value
 
 * **Roomatch (Roommate Matcher):** Fitur utama (matchmaking) yang didesain buat nyari dan nyamain kriteria temen sekamar (*roommate*) biar dapet yang satu frekuensi dan anti-drama.
-  
+* **"Real-time" Chat System:** Fitur obrolan langsung di dalam aplikasi. Lu bisa langsung DM pemilik kos buat nanya fasilitas, atau langsung *chatting* kenalan sama calon *roommate* hasil pilihan Roomatch lu tanpa perlu pindah ke aplikasi sebelah! 💬✨
 ### 🔍 2. Fitur Pencarian & Eksplorasi Hunian
 
 * **Smart Search:** Fitur pencarian pintar buat nyari data kos-kosan secara instan dan sat-set.
