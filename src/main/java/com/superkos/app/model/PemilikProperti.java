@@ -11,8 +11,11 @@ import java.util.ArrayList;
 @Setter
 public class PemilikProperti extends User {
 
-    @OneToMany(mappedBy = "pemilik", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pemilik", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hunian> daftarHunian = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pemilik", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservasi> daftarReservasi = new ArrayList<>();
 
     public java.util.Map<String, Object> dashboard() {
         java.util.Map<String, Object> stats = new java.util.HashMap<>();

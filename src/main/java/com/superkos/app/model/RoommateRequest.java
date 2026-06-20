@@ -1,6 +1,8 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 // #babas(RoommateRequest)
 @Entity
 public class RoommateRequest {
@@ -14,16 +16,19 @@ public class RoommateRequest {
     
     @ManyToOne
     @JoinColumn(name = "pencari_hunian_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PencariHunian pencariHunian;
 
     
     @ManyToOne
     @JoinColumn(name = "target_pencari_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PencariHunian targetPencari;
 
     
     @OneToOne
     @JoinColumn(name = "chat_room_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ChatRoom chatRoom;
 
     private boolean senderRead = false;

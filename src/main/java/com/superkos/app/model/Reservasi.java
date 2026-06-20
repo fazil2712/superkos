@@ -1,6 +1,8 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import java.util.Date;
 // #fazil(Daftar Reservasi)
 @Entity
@@ -12,15 +14,18 @@ public class Reservasi {
 
     @ManyToOne
     @JoinColumn(name = "pencari_hunian_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PencariHunian pencariHunian;
 
     @ManyToOne
     @JoinColumn(name = "hunian_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Hunian hunian;
 
     
     @ManyToOne
     @JoinColumn(name = "pemilik_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PemilikProperti pemilik;
 
     

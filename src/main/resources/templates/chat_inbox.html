@@ -216,9 +216,20 @@
                 displayName=${isGroup && chat.hunian != null ? chat.hunian.namaHunian : (otherUser != null ? otherUser.nama : 'Chat')},
                 initial=${displayName != null && !displayName.isEmpty() ? displayName.substring(0,1).toUpperCase() : '?'}">
                     <div class="flex items-center gap-3 w-full">
-                        <div class="mini-avatar"
-                            th:style="${isGroup ? 'background: linear-gradient(135deg,#a855f7,#3b82f6);' : 'background: linear-gradient(135deg,#10b981,#3b82f6);'}"
-                            th:text="${initial}">A</div>
+                        <div class="relative flex-shrink-0">
+                            <!-- Group chat avatar -->
+                            <div th:if="${isGroup}" class="mini-avatar"
+                                style="background: linear-gradient(135deg,#a855f7,#3b82f6);"
+                                th:text="${initial}">A</div>
+                            <!-- Peer-to-peer chat avatar -->
+                            <img th:if="${!isGroup && otherUser != null}"
+                                th:src="${otherUser.fotoProfil != null && !otherUser.fotoProfil.isEmpty() ? otherUser.fotoProfil : 'https://ui-avatars.com/api/?name=' + otherUser.nama}"
+                                class="w-[42px] h-[42px] rounded-xl object-cover border border-gray-100 flex-shrink-0" alt="Avatar" />
+                            <!-- Fallback if otherUser is null -->
+                            <div th:if="${!isGroup && otherUser == null}" class="mini-avatar"
+                                style="background: linear-gradient(135deg,#10b981,#3b82f6);"
+                                th:text="${initial}">C</div>
+                        </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-2">
                                 <p class="font-semibold text-gray-900 text-sm" th:text="${displayName}">Nama</p>

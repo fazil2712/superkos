@@ -5,12 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 import java.util.ArrayList;
-import com.superkos.app.repository.HunianRepository;
 import com.superkos.app.repository.RoommateRequestRepository;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
-import java.util.stream.Collectors;
+
 // #yury(PencariHunian)
 @Entity
 @Getter
@@ -19,12 +15,33 @@ public class PencariHunian extends User {
     private String bio;
     private String kriteriaRoommate;
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getKriteriaRoommate() {
+        return kriteriaRoommate;
+    }
+
+    public void setKriteriaRoommate(String kriteriaRoommate) {
+        this.kriteriaRoommate = kriteriaRoommate;
+    }
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "survey_id", referencedColumnName = "idSurvey")
     private RoommateSurvey roommateSurvey;
 
-    public RoommateSurvey getRoommateSurvey() { return roommateSurvey; }
-    public void setRoommateSurvey(RoommateSurvey s) { this.roommateSurvey = s; }
+    public RoommateSurvey getRoommateSurvey() {
+        return roommateSurvey;
+    }
+
+    public void setRoommateSurvey(RoommateSurvey s) {
+        this.roommateSurvey = s;
+    }
 
     @OneToMany(mappedBy = "pencariHunian", cascade = CascadeType.ALL)
     private List<RoommateRequest> roommateRequests = new ArrayList<>();
@@ -32,22 +49,31 @@ public class PencariHunian extends User {
     @OneToMany(mappedBy = "targetPencari", cascade = CascadeType.ALL)
     private List<RoommateRequest> receivedRequests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "pencariHunian", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservasi> daftarReservasi = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-        name = "wishlist",
-        joinColumns = @JoinColumn(name = "pencari_hunian_id"),
-        inverseJoinColumns = @JoinColumn(name = "hunian_id")
-    )
+    @JoinTable(name = "wishlist", joinColumns = @JoinColumn(name = "pencari_hunian_id"), inverseJoinColumns = @JoinColumn(name = "hunian_id"))
     private List<Hunian> wishlist = new ArrayList<>();
 
-    public List<Hunian> getWishlist() { return wishlist; }
-    public void setWishlist(List<Hunian> wishlist) { this.wishlist = wishlist; }
+    public List<Hunian> getWishlist() {
+        return wishlist;
+    }
 
-    public List<RoommateRequest> getReceivedRequests() { return receivedRequests; }
-    public void setReceivedRequests(List<RoommateRequest> receivedRequests) { this.receivedRequests = receivedRequests; }
+    public void setWishlist(List<Hunian> wishlist) {
+        this.wishlist = wishlist;
+    }
 
-    // Returns notification messages for pending roommate requests (used by GlobalModelAdvice)
+    public List<RoommateRequest> getReceivedRequests() {
+        return receivedRequests;
+    }
+
+    public void setReceivedRequests(List<RoommateRequest> receivedRequests) {
+        this.receivedRequests = receivedRequests;
+    }
+
+    // Returns notification messages for pending roommate requests (used by
+    // GlobalModelAdvice)
     public List<String> popnotif(RoommateRequestRepository reqRepo) {
         List<String> notifications = new ArrayList<>();
         long pendingCount = reqRepo.countByTargetPencariAndStatus(this, "PENDING");
@@ -74,7 +100,7 @@ public class PencariHunian extends User {
             wishlist.add(h);
         }
     }
-    
+
     public void hapusDariWishlist(Hunian h) {
         wishlist.remove(h);
     }

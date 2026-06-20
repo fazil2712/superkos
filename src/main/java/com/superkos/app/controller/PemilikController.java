@@ -103,7 +103,6 @@ public class PemilikController {
             @RequestParam(defaultValue = "true") boolean statusTersedia,
             @RequestParam(required = false) String tipeGender,
             @RequestParam(defaultValue = "1") int jumlahKamar,
-            @RequestParam(required = false) String tipeUnit,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateEnd,
             @RequestParam(required = false) List<String> kategoriSewa,
@@ -123,7 +122,6 @@ public class PemilikController {
         hunian.setStatusTersedia(statusTersedia);
         hunian.setTipeGender(tipeGender);
         hunian.setJumlahKamar(jumlahKamar);
-        hunian.setTipeUnit(tipeUnit);
         hunian.setAvailableDateStart(availableDateStart);
         hunian.setAvailableDateEnd(availableDateEnd);
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());
@@ -165,7 +163,6 @@ public class PemilikController {
             @RequestParam(defaultValue = "true") boolean statusTersedia,
             @RequestParam(required = false) String tipeGender,
             @RequestParam(defaultValue = "1") int jumlahKamar,
-            @RequestParam(required = false) String tipeUnit,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date availableDateEnd,
             @RequestParam(required = false) List<String> kategoriSewa,
@@ -189,7 +186,6 @@ public class PemilikController {
         hunian.setStatusTersedia(statusTersedia);
         hunian.setTipeGender(tipeGender);
         hunian.setJumlahKamar(jumlahKamar);
-        hunian.setTipeUnit(tipeUnit);
         hunian.setAvailableDateStart(availableDateStart);
         hunian.setAvailableDateEnd(availableDateEnd);
         hunian.setKategoriSewa(kategoriSewa != null ? kategoriSewa : new ArrayList<>());

@@ -122,6 +122,7 @@ public class WebController {
             
             boolean inWishlist = false;
             boolean isSewaAccepted = false;
+            boolean hasPendingReservasi = false;
             int chatRoomId = -1;
             if (loggedInUser instanceof PencariHunian pencari) {
                 PencariHunian fresh = pencariHunianRepository.findById(pencari.getId()).orElse(null);
@@ -139,11 +140,16 @@ public class WebController {
                             }
                             break;
                         }
+                        // Sudah pernah mengajukan (PENDING / REJECTED) tapi belum diterima
+                        if ("PENDING".equals(r.getStatus())) {
+                            hasPendingReservasi = true;
+                        }
                     }
                 }
             }
             model.addAttribute("inWishlist", inWishlist);
             model.addAttribute("isSewaAccepted", isSewaAccepted);
+            model.addAttribute("hasPendingReservasi", hasPendingReservasi);
             model.addAttribute("chatRoomId", chatRoomId);
             return "detail";
         }

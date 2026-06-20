@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ public class ChatController {
     @Autowired private MessageRepository messageRepository;
     @Autowired private ReservasiRepository reservasiRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private HunianRepository hunianRepository;
 
     
 
@@ -289,7 +291,9 @@ public class ChatController {
 
     @PostMapping("/chat/{chatId}/send")
     public String sendMessage(@PathVariable int chatId,
-                              @RequestParam String isiPesan,
+                              @RequestParam(required = false) String isiPesan,
+                              @RequestParam(value = "replyToId", required = false) Long replyToId,
+                              @RequestParam(value = "file", required = false) MultipartFile file,
                               HttpSession session) {
         User me = getMeGeneric(session);
         if (me == null) return "redirect:/login";
@@ -297,16 +301,120 @@ public class ChatController {
         ChatRoom room = chatRoomRepository.findById(chatId).orElse(null);
         if (room == null || !room.isParticipant(me)) return "redirect:/";
 
+        Message msg = new Message();
+        msg.setSender(me);
+        msg.setTimestamp(new Date());
+        msg.setChatRoom(room);
+        msg.setReplyToId(replyToId);
+
+        boolean hasContent = false;
+
         if (isiPesan != null && !isiPesan.trim().isEmpty()) {
-            Message msg = new Message();
             msg.setIsiPesan(isiPesan.trim());
-            msg.setSender(me);
-            msg.setTimestamp(new Date());
-            msg.setChatRoom(room);
+            hasContent = true;
+        }
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String originalName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "file.jpg";
+                String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.')) : ".jpg";
+
+                java.nio.file.Path uploadDir = java.nio.file.Paths.get("uploads", "chat");
+                java.nio.file.Files.createDirectories(uploadDir);
+                String fileName = System.currentTimeMillis() + "_" + java.util.UUID.randomUUID().toString().substring(0, 8) + ext;
+                java.nio.file.Path filePath = uploadDir.resolve(fileName);
+                java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+                msg.setAttachmentUrl("/uploads/chat/" + fileName);
+                hasContent = true;
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (hasContent) {
             messageRepository.save(msg);
         }
 
         return "redirect:/chat/" + chatId;
+    }
+
+    @PostMapping("/chat/message/{messageId}/reaction")
+    public String reactMessage(@PathVariable int messageId,
+                               @RequestParam String emoji,
+                               HttpSession session) {
+        User me = getMeGeneric(session);
+        if (me == null) return "redirect:/login";
+
+        Message msg = messageRepository.findById(messageId).orElse(null);
+        if (msg == null) return "redirect:/";
+        if (!msg.getChatRoom().isParticipant(me)) return "redirect:/";
+
+        msg.setReaction(emoji);
+        messageRepository.save(msg);
+
+        return "redirect:/chat/" + msg.getChatRoom().getIdChat();
+    }
+
+    @PostMapping("/chat/message/{messageId}/delete")
+    public String deleteMessage(@PathVariable int messageId,
+                                HttpSession session) {
+        User me = getMeGeneric(session);
+        if (me == null) return "redirect:/login";
+
+        Message msg = messageRepository.findById(messageId).orElse(null);
+        if (msg == null) return "redirect:/";
+        if (msg.getSender().getId() != me.getId()) return "redirect:/chat/" + msg.getChatRoom().getIdChat();
+
+        msg.setIsDeleted(true);
+        messageRepository.save(msg);
+
+        return "redirect:/chat/" + msg.getChatRoom().getIdChat();
+    }
+
+    @PostMapping("/chat/{chatId}/leave")
+    public String leaveGroup(@PathVariable int chatId,
+                             HttpSession session) {
+        User me = getMeGeneric(session);
+        if (me == null) return "redirect:/login";
+
+        ChatRoom room = chatRoomRepository.findById(chatId).orElse(null);
+        if (room != null) {
+            room.removeParticipant(me);
+            chatRoomRepository.save(room);
+        }
+        return "redirect:/roommate/inbox";
+    }
+
+    @PostMapping("/chat/tanya/{hunianId}")
+    public String tanyaPemilik(@PathVariable int hunianId, HttpSession session) {
+        User me = getMeGeneric(session);
+        if (me == null) return "redirect:/login";
+
+        Hunian hunian = hunianRepository.findById(hunianId).orElse(null);
+        if (hunian == null) return "redirect:/";
+
+        PemilikProperti pemilik = hunian.getPemilik();
+        if (pemilik == null || pemilik.getId() == me.getId()) {
+            return "redirect:/hunian/" + hunianId;
+        }
+
+        // Find existing chat room of type 'RESERVASI' for this hunian and user
+        Optional<ChatRoom> existingRoom = chatRoomRepository.findReservasiRoom(hunian, me);
+        if (existingRoom.isPresent()) {
+            return "redirect:/chat/" + existingRoom.get().getIdChat();
+        }
+
+        // Create new ChatRoom
+        ChatRoom room = new ChatRoom();
+        room.setChatType("RESERVASI");
+        room.setHunian(hunian);
+        room.addParticipant(me);
+        room.addParticipant(pemilik);
+        room.setCreatedAt(new Date());
+        room = chatRoomRepository.save(room);
+
+        return "redirect:/chat/" + room.getIdChat();
     }
 }
 // #/naufal(ChatRoom & Message)

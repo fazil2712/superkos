@@ -58,6 +58,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Modifying
     @Transactional
+    @Query(value = "DELETE FROM hunian_fasilitas WHERE hunian_id IN (SELECT id_hunian FROM hunian WHERE pemilik_id = ?1)", nativeQuery = true)
+    void deleteHunianFasilitasByPemilikId(int userId);
+
+    @Modifying
+    @Transactional
     @Query(value = "DELETE FROM wishlist WHERE hunian_id IN (SELECT id_hunian FROM hunian WHERE pemilik_id = ?1)", nativeQuery = true)
     void deleteWishlistHunianByPemilikId(int userId);
 
@@ -96,6 +101,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
         deleteHunianKategoriByPemilikId(userId);
         deleteHunianFotoByPemilikId(userId);
+        deleteHunianFasilitasByPemilikId(userId);
         deleteWishlistHunianByPemilikId(userId);
         deleteChatRoomMessagesByPemilikId(userId);
         deleteChatRoomParticipantsByPemilikId(userId);

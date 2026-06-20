@@ -1,9 +1,12 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+
 // #fazil(Hunian)
 @Entity
 public class Hunian {
@@ -18,7 +21,6 @@ public class Hunian {
     protected boolean statusTersedia;
     protected String tipeGender;
     protected int jumlahKamar;
-    protected String tipeUnit;
     protected Date availableDateStart;
     protected Date availableDateEnd;
 
@@ -26,22 +28,44 @@ public class Hunian {
     protected String deskripsi;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "hunian_kategori", joinColumns = @JoinColumn(name = "hunian_id"))
+    @CollectionTable(
+        name = "hunian_kategori", 
+        joinColumns = @JoinColumn(name = "hunian_id"),
+        foreignKey = @ForeignKey(
+            name = "fk_hunian_kategori_hunian",
+            foreignKeyDefinition = "FOREIGN KEY (hunian_id) REFERENCES hunian (id_hunian) ON DELETE CASCADE"
+        )
+    )
     @Column(name = "kategori")
     private List<String> kategoriSewa = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "hunian_foto", joinColumns = @JoinColumn(name = "hunian_id"))
+    @CollectionTable(
+        name = "hunian_foto", 
+        joinColumns = @JoinColumn(name = "hunian_id"),
+        foreignKey = @ForeignKey(
+            name = "fk_hunian_foto_hunian",
+            foreignKeyDefinition = "FOREIGN KEY (hunian_id) REFERENCES hunian (id_hunian) ON DELETE CASCADE"
+        )
+    )
     @Column(name = "foto_url")
     private List<String> fotoHunian = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "hunian_fasilitas", joinColumns = @JoinColumn(name = "hunian_id"))
+    @CollectionTable(
+        name = "hunian_fasilitas", 
+        joinColumns = @JoinColumn(name = "hunian_id"),
+        foreignKey = @ForeignKey(
+            name = "fk_hunian_fasilitas_hunian",
+            foreignKeyDefinition = "FOREIGN KEY (hunian_id) REFERENCES hunian (id_hunian) ON DELETE CASCADE"
+        )
+    )
     @Column(name = "fasilitas")
     private List<String> fasilitas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "pemilik_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PemilikProperti pemilik;
 
 
@@ -71,8 +95,6 @@ public class Hunian {
     public int getJumlahKamar() { return jumlahKamar; }
     public void setJumlahKamar(int jumlahKamar) { this.jumlahKamar = jumlahKamar; }
 
-    public String getTipeUnit() { return tipeUnit; }
-    public void setTipeUnit(String tipeUnit) { this.tipeUnit = tipeUnit; }
      public Date getAvailableDateStart() { return availableDateStart; }
      public void setAvailableDateStart(Date availableDateStart) { this.availableDateStart = availableDateStart; }
      public Date getAvailableDateEnd() { return availableDateEnd; }

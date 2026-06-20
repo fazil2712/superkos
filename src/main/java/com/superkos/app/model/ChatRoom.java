@@ -1,6 +1,8 @@
 package com.superkos.app.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ChatRoom {
     
     @ManyToOne
     @JoinColumn(name = "hunian_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Hunian hunian;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -61,6 +64,12 @@ public class ChatRoom {
     public void addParticipant(User user) {
         if (!isParticipant(user)) {
             participants.add(user);
+        }
+    }
+
+    public void removeParticipant(User user) {
+        if (user != null && participants != null) {
+            participants.removeIf(p -> p.getId() == user.getId());
         }
     }
 

@@ -191,28 +191,33 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Kapasitas Orang/Kamar</label>
-                        <div class="space-y-2">
-                            <select id="jumlahKamarSelect" class="input-field" onchange="toggleJumlahKamarInput()">
-                                <option value="1" th:selected="${hunian.jumlahKamar == 1}">1</option>
-                                <option value="2" th:selected="${hunian.jumlahKamar == 2}">2</option>
-                                <option value="3" th:selected="${hunian.jumlahKamar == 3}">3</option>
-                                <option value="4" th:selected="${hunian.jumlahKamar == 4}">4</option>
-                                <option value="5" th:selected="${hunian.jumlahKamar == 5}">5</option>
-                                <option value="6" th:selected="${hunian.jumlahKamar == 6}">6</option>
-                                <option value="7" th:selected="${hunian.jumlahKamar == 7}">7</option>
-                                <option value="8" th:selected="${hunian.jumlahKamar == 8}">8</option>
-                                <option value="9" th:selected="${hunian.jumlahKamar == 9}">9</option>
-                                <option value="10" th:selected="${hunian.jumlahKamar == 10}">10</option>
-                                <option value="custom" th:selected="${hunian.jumlahKamar > 10}">Jumlah Lain</option>
+                        <div class="flex items-center gap-2">
+                            <!-- name aktif saat pilihan 1-10; di-disable via JS saat "Lainnya" -->
+                            <select id="jumlahKamarSelect" name="jumlahKamar" class="input-field transition-all duration-200" onchange="toggleJumlahKamarInput()">
+                                <option value="1"  th:selected="${hunian.jumlahKamar == 1}">1 orang</option>
+                                <option value="2"  th:selected="${hunian.jumlahKamar == 2}">2 orang</option>
+                                <option value="3"  th:selected="${hunian.jumlahKamar == 3}">3 orang</option>
+                                <option value="4"  th:selected="${hunian.jumlahKamar == 4}">4 orang</option>
+                                <option value="5"  th:selected="${hunian.jumlahKamar == 5}">5 orang</option>
+                                <option value="6"  th:selected="${hunian.jumlahKamar == 6}">6 orang</option>
+                                <option value="7"  th:selected="${hunian.jumlahKamar == 7}">7 orang</option>
+                                <option value="8"  th:selected="${hunian.jumlahKamar == 8}">8 orang</option>
+                                <option value="9"  th:selected="${hunian.jumlahKamar == 9}">9 orang</option>
+                                <option value="10" th:selected="${hunian.jumlahKamar == 10}">10 orang</option>
+                                <option value="custom" th:selected="${hunian.jumlahKamar > 10}">Lainnya...</option>
                             </select>
-
-                            <div id="jumlahKamarCustomDiv" th:class="${hunian.jumlahKamar > 10 ? '' : 'hidden'}">
-                                <input type="number" id="jumlahKamarInput" name="jumlahKamar" min="1"
-                                    class="input-field" th:value="${hunian.jumlahKamar}"
-                                    placeholder="Masukkan kapasitas...">
+                            <!-- name aktif HANYA saat select = "Lainnya"; awalnya disabled -->
+                            <div id="jumlahKamarCustomDiv" th:class="${hunian.jumlahKamar > 10 ? 'flex-1' : 'flex-1 hidden'}">
+                                <input type="number" id="jumlahKamarInput"
+                                    th:name="${hunian.jumlahKamar > 10 ? 'jumlahKamar' : 'jumlahKamar_disabled'}"
+                                    th:disabled="${hunian.jumlahKamar <= 10}"
+                                    min="1" class="input-field"
+                                    th:value="${hunian.jumlahKamar > 10 ? hunian.jumlahKamar : ''}"
+                                    placeholder="Masukkan jumlah orang...">
                             </div>
                         </div>
                     </div>
+
                 </div>
 
 
@@ -262,12 +267,12 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Fasilitas Hunian</label>
-                    <div class="flex flex-wrap gap-4">
-                        <label th:each="fac : ${ {'WiFi', 'AC', 'Kasur', 'TV', 'Kamar Mandi Dalam', 'Akses 24 Jam'} }"
-                            class="flex items-center gap-2 cursor-pointer">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <label th:each="fac : ${ {'WiFi', 'AC', 'Kasur & Bantal', 'TV LED', 'Kamar Mandi Dalam', 'Akses 24 Jam', 'Parkir Motor', 'Parkir Mobil', 'Dapur Bersama', 'Laundry', 'CCTV / Keamanan', 'Kulkas', 'Lemari Pakaian', 'Meja & Kursi Belajar'} }"
+                            class="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg px-3 py-2 transition">
                             <input type="checkbox" name="fasilitas" th:value="${fac}"
                                 th:checked="${hunian.fasilitas != null && hunian.fasilitas.contains(fac)}"
-                                class="w-4 h-4 accent-purple-600">
+                                class="w-4 h-4 accent-purple-600 flex-shrink-0">
                             <span class="text-sm text-gray-700" th:text="${fac}">Fasilitas</span>
                         </label>
                     </div>
@@ -380,10 +385,12 @@
         }
     </script>
 
+    </div>
+
     <!-- Popup Hapus Foto -->
     <div id="deletePhotoPopup"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl" style="animation:popIn .2s ease">
             <div class="text-5xl mb-4">🖼️</div>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Hapus Foto</h2>
             <p class="text-gray-600 mb-6 text-sm text-center">
@@ -391,11 +398,11 @@
             </p>
             <div class="flex gap-3">
                 <button type="button" onclick="closeDeletePhotoPopup()"
-                    class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                    class="flex-1 border border-gray-300 py-3 rounded-xl font-medium hover:bg-gray-50 transition text-gray-700">
                     Batal
                 </button>
                 <button type="button" onclick="submitDeletePhotoForm()"
-                    class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
+                    class="flex-1 bg-red-600 py-3 rounded-xl text-white font-bold text-center hover:bg-red-700 transition">
                     Ya, Hapus
                 </button>
             </div>
@@ -405,7 +412,7 @@
     <!-- Popup Hapus Properti -->
     <div id="deletePropertiPopup"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl" style="animation:popIn .2s ease">
             <div class="text-5xl mb-4">🗑️</div>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Hapus Properti</h2>
             <p class="text-gray-600 mb-6 text-sm text-center">
@@ -414,32 +421,68 @@
             </p>
             <div class="flex gap-3">
                 <button type="button" onclick="closeDeletePropertiPopup()"
-                    class="flex-1 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition text-gray-700">
+                    class="flex-1 border border-gray-300 py-3 rounded-xl font-medium hover:bg-gray-50 transition text-gray-700">
                     Batal
                 </button>
                 <button type="button" onclick="submitDeletePropertiForm()"
-                    class="flex-1 bg-red-600 py-3 rounded-lg text-white font-bold text-center hover:bg-red-700 transition">
+                    class="flex-1 bg-red-600 py-3 rounded-xl text-white font-bold text-center hover:bg-red-700 transition">
                     Ya, Hapus
                 </button>
             </div>
         </div>
     </div>
 
+    <style>
+        @keyframes popIn {
+            from { transform: scale(.92); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+    </style>
+
     <script>
         function toggleJumlahKamarInput() {
-            const select = document.getElementById('jumlahKamarSelect');
+            const select    = document.getElementById('jumlahKamarSelect');
             const customDiv = document.getElementById('jumlahKamarCustomDiv');
-            const input = document.getElementById('jumlahKamarInput');
+            const input     = document.getElementById('jumlahKamarInput');
 
             if (select.value === 'custom') {
+                // Select mengecil, input muncul di sebelah kanan
+                select.classList.add('w-32', 'flex-shrink-0');
                 customDiv.classList.remove('hidden');
-                input.value = '';
+                customDiv.classList.add('flex-1');
+                select.removeAttribute('name');          // select tidak ikut submit
+                input.name     = 'jumlahKamar';          // input yang submit
+                input.disabled = false;
+                input.value    = '';
                 input.focus();
             } else {
+                // Select kembali full-width, input disembunyikan
+                select.classList.remove('w-32', 'flex-shrink-0');
                 customDiv.classList.add('hidden');
-                input.value = select.value;
+                customDiv.classList.remove('flex-1');
+                select.name    = 'jumlahKamar';          // select yang submit
+                input.name     = 'jumlahKamar_disabled'; // hindari duplikat
+                input.disabled = true;
+                input.value    = select.value;
             }
         }
+
+        // Inisialisasi state saat halaman pertama load
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById('jumlahKamarSelect');
+            const input  = document.getElementById('jumlahKamarInput');
+            if (select.value === 'custom') {
+                select.classList.add('w-32', 'flex-shrink-0');
+                select.removeAttribute('name');
+                input.name     = 'jumlahKamar';
+                input.disabled = false;
+            } else {
+                select.classList.remove('w-32', 'flex-shrink-0');
+                select.name    = 'jumlahKamar';
+                input.name     = 'jumlahKamar_disabled';
+                input.disabled = true;
+            }
+        });
 
         let deletePhotoUrl = null;
 
