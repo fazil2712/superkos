@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=2000&pause=500&color=00FF00&center=true&vCenter=true&width=600&lines=Welcome+to+SUPERKOS+✨;Aplikasi+Cari+Kos+Paling+Skena;Anti+FOMO+Anti+Ribet+😎" alt="Typing SVG" />
+ <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=2000&pause=500&color=00FF00&center=true&vCenter=true&width=600&lines=Welcome+to+SUPERKOS+✨;Aplikasi+Cari+Kos+Paling+KECE;Anti+FOMO+Anti+Ribet+😎" alt="Typing SVG" />
 </div>
 
 <p align="center">
