@@ -1,52 +1,53 @@
-
-# ⚡ 🏠 SUPERKOS 🏠 ⚡
-
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&duration=2000&pause=500&color=FF5733&center=true&vCenter=true&width=500&lines=%F0%9F%9A%80+Welcome+to+Superkos%EF%B8%8F!;%E2%9C%A8+Aplikasi+Anak+Kos+Paling+Skena%E2%9C%A8" alt="Typing SVG" />
-</p>
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=2000&pause=500&color=00FF00&center=true&vCenter=true&width=600&lines=Welcome+to+SUPERKOS+✨;Aplikasi+Cari+Kos+Paling+Skena;Anti+FOMO+Anti+Ribet+😎" alt="Typing SVG" />
+</div>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
-  <img src="https://img.shields.io/badge/Spring_Boot-3.x-green?style=for-the-badge&logo=spring-boot&logoColor=white" />
-  <img src="https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql&logoColor=white" />
-  <img src="https://img.shields.io/badge/Maven-Build-red?style=for-the-badge&logo=apache-maven&logoColor=white" />
+  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17" />
+  <img src="https://img.shields.io/badge/Spring_Boot-3.2.5-brightgreen?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
+  <img src="https://img.shields.io/badge/Thymeleaf-Template-blue?style=for-the-badge&logo=thymeleaf&logoColor=white" alt="Thymeleaf" />
+  <img src="https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/Tomcat-9-yellow?style=for-the-badge&logo=apache-tomcat&logoColor=white" alt="Tomcat 9" />
 </p>
 
 ---
 
-## 🔥 Overview
-Halo **Gen-Z Developers**! 😎 Siap buat *deployment* local paling lancar jaya sedunia? Ini adalah panduan *step-by-step* buat nge-run project **Superkos** di laptop kalian tanpa drama, tanpa *overthinking*. Let's goooo! ✨
+## 🤔 POV: Apa itu Superkos?
+**Superkos** itu *literally* sistem *backend* kece buat pencarian hunian kos-kosan yang dibangun pakai **Spring Boot Web** dan **Thymeleaf Template Engine**[cite: 1]. Project ini dibikin buat bantu anak rantau nyari kosan impian dengan *effort* minimal[cite: 1].
+
+**✨ Update Fitur yang Udah *Done* (Valid No Debat):**
+*   **Database Hunian:** Data kosan udah *ready* di dalam sistem[cite: 1].
+*   **Smart Search:** Bisa nyari kosan langsung sat-set[cite: 1].
+*   **Filter & Sort:** Gampang banget buat milih hunian sesuai *budget* dan kriteria[cite: 1].
+*   **Login & Registrasi:** Udah jalan lancar jaya buat *User* biasa[cite: 1]. Buat *role* Admin dan Seller masih *on going* ya ngab, tungguin aja![cite: 1].
 
 ---
 
-## 🛠️ 1) Starter Pack (Prasyarat)
-
-Sebelum lu nge-gas, pastiin spek perangkat lu udah *up-to-date* dan gak bikin *rehab*:
-* ☕ **Java 17** (wajib hukumnya, jangan pake yang purba)
-* 🏗️ **Maven 3.8+** (buat ngurusin dependencies biar ga *error*)
-* 🐬 **XAMPP** (minimal komponen **MySQL** di-install, jan nyari yang lain)
-
----
-
-## 🚀 2) Nyalain MySQL di XAMPP
-
-1. Buka aplikasi **XAMPP Control Panel** lu yang legendaris itu.
-2. Klik tombol **Start** di sebelah service **MySQL**.
-3. Pastiin statusnya berubah jadi hijau alias <kbd>Running</kbd>. Kalau warna kuning atau merah, tarik napas dalam-dalam, kita selesaikan di bawah.
+## 🛠️ Starter Pack (Prasyarat)
+Sebelum nge-gas buat *running* project-nya, pastiin laptop lu udah *install* *starter pack* ini biar gak kena *red flag*:
+*   ☕ **Java 17**: Wajib banget dipakai buat *environment* utama[cite: 1].
+*   🏗️ **Maven 3.9**: Harus *install* versi ini dan jangan lupa *set environmental variables* di PC/Laptop ente[cite: 1].
+*   🐱 **Tomcat 9**: Versi 9 ini hukumnya wajib ya, gak nerima nego![cite: 1].
+*   🐬 **XAMPP**: Minimal ada komponen **MySQL** dan **Apache** yang bisa di-*run*[cite: 1].
 
 ---
 
-## 🗄️ 3) Setup Database (No Ribet-Ribet Club)
+## 🚀 Step-by-Step Deployment Lokal
 
-Ini konfigurasi default koneksi kita:
-* **Host:** `localhost`
-* **Port:** `3306`
-* **DB Name:** `superkosdb`
-* **User:** `root`
-* **Password:** *(kosongin aja kayak status lu)*
+### 1️⃣ Nyalain Mesin Database (XAMPP)
+1. Buka **XAMPP Control Panel** lu[cite: 1].
+2. Klik tombol **Start** di sebelah *service* **Apache** dan **MySQL**[cite: 1].
+3. Pastiin statusnya udah warna ijo alias **Running**[cite: 1].
 
-Masuk ke **phpMyAdmin** (`http://localhost/phpmyadmin`) atau MySQL client favorit lu (DBeaver/Navicat), terus tinggal *copas* dan run query super simpel ini:
+### 2️⃣ Siapin Database (No Ribet Club)
+Kita pakai konfigurasi koneksi *default* kayak gini:
+*   **Host:** `localhost`[cite: 1]
+*   **Port:** `3306`[cite: 1]
+*   **DB:** `superkosdb`[cite: 1]
+*   **User:** `root`[cite: 1]
+*   **Password:** *(kosongin aja kayak status lu)*[cite: 1]
 
+Masuk ke `phpMyAdmin` atau *MySQL client* andalan lu, terus jalanin *query* SQL ini[cite: 1]:
 ```sql
 CREATE DATABASE IF NOT EXISTS superkosdb
     CHARACTER SET utf8mb4
@@ -56,13 +57,13 @@ USE superkosdb;
 
 ```
 
-> 💡 **INFO PENTING:** Lu **GAK PERLU** bikin tabel manual sampai pusing tujuh keliling. Aplikasi ini udah pake sihir `spring.jpa.hibernate.ddl-auto=update`, jadi tabel bakal auto-generate sendiri pas aplikasi pertama kali dinyalain! *Magical kan?* ✨
+> **💡 FYI:** Lu **GAK PERLU** repot bikin tabel manual dari awal. Aplikasi bakal otomatis nge-*create* atau *update* tabel pas pertama kali di-run berkat sihir `spring.jpa.hibernate.ddl-auto=update`.
+> 
+> 
 
----
+### 3️⃣ Cek Konfigurasi Aplikasi (Spill The T)
 
-## ⚙️ 4) Double Check Konfigurasi
-
-Coba intip dulu file `src/main/resources/application.properties`. Pastiin isi dalemannya udah se-akurat ini:
+Coba intip file `src/main/resources/application.properties` dan pastiin isinya udah valid kayak gini:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/superkosdb?useSSL=false&serverTimezone=UTC
@@ -72,64 +73,40 @@ server.port=8080
 
 ```
 
-*Notes: Kalau MySQL lu pake password root, langsung isi aja di bagian `spring.datasource.password=` ya, jangan dikosongin!*
+(Kalau MySQL lu pake password root, tinggal isi aja bagian `spring.datasource.password`-nya.)
 
----
+### 4️⃣ Jalankan Aplikasi (Let's Go!)
 
-## 🏃‍♂️ 5) Jalankan Aplikasi (Let's Go!)
-
-Buka terminal/command prompt lu, arahin ke *root project* (folder tempat si `pom.xml` berada), terus langsung eksekusi command sakti ini:
+Buka terminal/CMD lu, arahin ke *root project* (folder yang ada file `pom.xml`-nya). Terus, tinggal *run command* sakti ini:
 
 ```bash
-mvn spring-boot:run
+mvn clean spring-boot:run
 
 ```
 
-**Atau** kalau lu tim *clean-build* dulu baru jalanin file JAR-nya, pake cara ini:
+*(Atau kalau lu tim nge-build dulu, bisa pake `mvn clean package` trus `java -jar target/superkos-backend-0.0.1-SNAPSHOT.jar`)*.
 
-```bash
-mvn clean package
-java -jar target/superkos-backend-0.0.1-SNAPSHOT.jar
+### 5️⃣ Akses Webnya
 
-```
-
----
-
-## 🌐 6) Akses Aplikasi
-
-Kalau log di terminal udah tenang dan ga ada teks merah ngamuk, langsung buka browser andalan lu ke URL ini:
-
-🔗 [http://localhost:8080](https://www.google.com/search?q=http://localhost:8080)
+Kalau udah sukses *running* tanpa pesan *error* warna merah, langsung aja buka *browser* lu ke:
+👉 **[http://localhost:8080](http://localhost:8080)**
 
 ---
 
-## 👥 7) Akun Awal buat Testing (Auto-Seeded)
+## 🎫 Akun VIP buat Testing
 
-Tenang, data dummy udah otomatis masuk pas aplikasi nge-start. Lu tinggal *login* pake akun-akun di bawah ini buat nyoba *flow*-nya:
+Biar lu gak pusing, data *dummy* udah otomatis di-*seed* pas aplikasi jalan. Tinggal *login* pakai akun-akun *privilege* ini:
 
 | Role 🎭 | Email / Username 📧 | Password 🔑 |
 | --- | --- | --- |
-| **Admin** | `admin` | `admin12345` |
-| **Pemilik Properti** | `pemilik@superkos.com` | `pemilik123` |
-| **Pencari Hunian** | `ahmad@superkos.com` | `ahmad123` |
+| **Admin** | `admin`<br> | `admin12345`<br> |
+| **Pemilik Properti** | `pemilik@superkos.com`<br> | `pemilik123`<br> |
+| **Pencari Hunian** | `ahmad@superkos.com`<br> | `ahmad123`<br> |
 
 ---
 
-## 🚨 8) Troubleshooting (Anti Overthinking)
+## 🚨 Q&A & Troubleshooting (Biar Gak Overthinking)
 
-Pas nyoba malah nemu *error*? Gak usah langsung pengen *healing*, ini solusinya:
-
-* **🛑 Port 3306 Bentrok / MySQL Gagal Start**
-* *Solusi:* Biasanya ada MySQL bawaan OS yang udah jalan. Ubah port MySQL di XAMPP lu, terus samain port-nya di baris `spring.datasource.url` pada file properti tadi.
-
-
-* **🔒 Akses Ditolak buat User 'root'**
-* *Solusi:* Cek lagi username ama password di `application.properties`. Pastiin gak ada typo sekecil apapun.
-
-
-* **🚫 Port 8080 Udah Dipake Aplikasi Lain**
-* *Solusi:* Tinggal ganti aja `server.port` nya (misal jadi `8081` atau `8082`) di `application.properties`.
-
-
-
----
+> ⚠️ **WARNING KERAS:** Beres kan? Tinggal run webnya :D. **Yg ga baca tapi nanya gw cium** 💋.
+> 
+>
