@@ -18,7 +18,25 @@
 **Superkos** itu *literally* sistem *backend* kece buat pencarian hunian kos-kosan yang dibangun pakai **Spring Boot Web** dan **Thymeleaf Template Engine** . Project ini dibikin buat bantu anak rantau nyari kosan impian dengan *effort* minimal .
 
 ### 🌟 Fitur Utama (The Core Value)
-> 🔥 **HIGHLIGHT:** Fitur utama dari Superkos adalah **Roomatch (Roommate Matcher)**! Fitur cerdas ini bakal nemuin temen sekamar yang satu frekuensi sama lu, biar gak dapet *roommate* yang hobi nge-run drama atau *toxic*! 🤝✨
+Berdasarkan detail project dan *source code* terbaru, ini dia **daftar lengkap semua fitur** yang ada di project **Superkos** lu:
+
+### 🚀 1. Fitur Utama & Core Value
+
+* **Roomatch (Roommate Matcher):** Fitur utama (matchmaking) yang didesain buat nyari dan nyamain kriteria temen sekamar (*roommate*) biar dapet yang satu frekuensi dan anti-drama.
+  
+### 🔍 2. Fitur Pencarian & Eksplorasi Hunian
+
+* **Smart Search:** Fitur pencarian pintar buat nyari data kos-kosan secara instan dan sat-set.
+* **Filter & Sort:** Fitur penyaringan data hunian biar user bisa milih kosan berdasarkan kriteria tertentu dan mengurutkannya (misal dari yang paling murah/kece).
+* **Database Hunian (Content Seeding):** Data hunian kos-kosan sudah tersimpan dan otomatis di-*seed* (dimasukkan sebagai data dummy) saat aplikasi pertama kali dinyalain.
+
+### 🔐 3. Fitur Autentikasi & Manajemen Akun
+
+* **Registrasi User:** Fitur pendaftaran akun baru khusus buat akun user/pencari hunian biasa.
+* **Login Sistem:** Sistem masuk ke aplikasi yang udah mendukung multi-role awal (Admin, Pemilik Properti, dan Pencari Hunian).
+* **Auto-Generated Database Table:** Berkat Hibernate (`ddl-auto=update`), sistem bakal otomatis bikin dan nge-sinkronisasi struktur tabel database akun dan hunian pas aplikasi di-run.
+---
+
 ---
 
 ## 🛠️ Starter Pack (Prasyarat)
