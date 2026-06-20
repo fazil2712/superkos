@@ -1,6 +1,6 @@
 <div align="center">
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&duration=2000&pause=500&color=FF5733&center=true&vCenter=true&width=500&lines=🚀+Welcome+to+Superkos!;🚀+Aplikasi+Cari+Kos!;✨+Paling+Kece+✨" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&duration=2000&pause=500&color=FF5733&center=true&vCenter=true&width=500&lines=%F0%9F%9A%80+Welcome+to+Superkos!;%F0%9F%9A%80+Aplikasi+Cari+Kos!;%E2%9C%A8+Paling+Kece+%E2%9C%A8" alt="Typing SVG" />
 </p>
 </div>
 
