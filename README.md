@@ -15,41 +15,41 @@
 ---
 
 ## 🤔 POV: Apa itu Superkos?
-**Superkos** itu *literally* sistem *backend* kece buat pencarian hunian kos-kosan yang dibangun pakai **Spring Boot Web** dan **Thymeleaf Template Engine**[cite: 1]. Project ini dibikin buat bantu anak rantau nyari kosan impian dengan *effort* minimal[cite: 1].
+**Superkos** itu *literally* sistem *backend* kece buat pencarian hunian kos-kosan yang dibangun pakai **Spring Boot Web** dan **Thymeleaf Template Engine** . Project ini dibikin buat bantu anak rantau nyari kosan impian dengan *effort* minimal .
 
 **✨ Update Fitur yang Udah *Done* (Valid No Debat):**
-*   **Database Hunian:** Data kosan udah *ready* di dalam sistem[cite: 1].
-*   **Smart Search:** Bisa nyari kosan langsung sat-set[cite: 1].
-*   **Filter & Sort:** Gampang banget buat milih hunian sesuai *budget* dan kriteria[cite: 1].
-*   **Login & Registrasi:** Udah jalan lancar jaya buat *User* biasa[cite: 1]. Buat *role* Admin dan Seller masih *on going* ya ngab, tungguin aja![cite: 1].
+*   **Database Hunian:** Data kosan udah *ready* di dalam sistem .
+*   **Smart Search:** Bisa nyari kosan langsung sat-set .
+*   **Filter & Sort:** Gampang banget buat milih hunian sesuai *budget* dan kriteria .
+*   **Login & Registrasi:** Udah jalan lancar jaya buat *User* biasa . Buat *role* Admin dan Seller masih *on going* ya ngab, tungguin aja! .
 
 ---
 
 ## 🛠️ Starter Pack (Prasyarat)
 Sebelum nge-gas buat *running* project-nya, pastiin laptop lu udah *install* *starter pack* ini biar gak kena *red flag*:
-*   ☕ **Java 17**: Wajib banget dipakai buat *environment* utama[cite: 1].
-*   🏗️ **Maven 3.9**: Harus *install* versi ini dan jangan lupa *set environmental variables* di PC/Laptop ente[cite: 1].
-*   🐱 **Tomcat 9**: Versi 9 ini hukumnya wajib ya, gak nerima nego![cite: 1].
-*   🐬 **XAMPP**: Minimal ada komponen **MySQL** dan **Apache** yang bisa di-*run*[cite: 1].
+*   ☕ **Java 17**: Wajib banget dipakai buat *environment* utama .
+*   🏗️ **Maven 3.9**: Harus *install* versi ini dan jangan lupa *set environmental variables* di PC/Laptop ente .
+*   🐱 **Tomcat 9**: Versi 9 ini hukumnya wajib ya, gak nerima nego! .
+*   🐬 **XAMPP**: Minimal ada komponen **MySQL** dan **Apache** yang bisa di-*run* .
 
 ---
 
 ## 🚀 Step-by-Step Deployment Lokal
 
 ### 1️⃣ Nyalain Mesin Database (XAMPP)
-1. Buka **XAMPP Control Panel** lu[cite: 1].
-2. Klik tombol **Start** di sebelah *service* **Apache** dan **MySQL**[cite: 1].
-3. Pastiin statusnya udah warna ijo alias **Running**[cite: 1].
+1. Buka **XAMPP Control Panel** lu .
+2. Klik tombol **Start** di sebelah *service* **Apache** dan **MySQL** .
+3. Pastiin statusnya udah warna ijo alias **Running** .
 
 ### 2️⃣ Siapin Database (No Ribet Club)
 Kita pakai konfigurasi koneksi *default* kayak gini:
-*   **Host:** `localhost`[cite: 1]
-*   **Port:** `3306`[cite: 1]
-*   **DB:** `superkosdb`[cite: 1]
-*   **User:** `root`[cite: 1]
-*   **Password:** *(kosongin aja kayak status lu)*[cite: 1]
+*   **Host:** `localhost` 
+*   **Port:** `3306` 
+*   **DB:** `superkosdb` 
+*   **User:** `root` 
+*   **Password:** *(kosongin aja kayak status lu)* 
 
-Masuk ke `phpMyAdmin` atau *MySQL client* andalan lu, terus jalanin *query* SQL ini[cite: 1]:
+Masuk ke `phpMyAdmin` atau *MySQL client* andalan lu, terus jalanin *query* SQL ini :
 ```sql
 CREATE DATABASE IF NOT EXISTS superkosdb
     CHARACTER SET utf8mb4
