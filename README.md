@@ -17,12 +17,8 @@
 ## 🤔 POV: Apa itu Superkos?
 **Superkos** itu *literally* sistem *backend* kece buat pencarian hunian kos-kosan yang dibangun pakai **Spring Boot Web** dan **Thymeleaf Template Engine** . Project ini dibikin buat bantu anak rantau nyari kosan impian dengan *effort* minimal .
 
-**✨ Update Fitur yang Udah *Done* (Valid No Debat):**
-*   **Database Hunian:** Data kosan udah *ready* di dalam sistem .
-*   **Smart Search:** Bisa nyari kosan langsung sat-set .
-*   **Filter & Sort:** Gampang banget buat milih hunian sesuai *budget* dan kriteria .
-*   **Login & Registrasi:** Udah jalan lancar jaya buat *User* biasa . Buat *role* Admin dan Seller masih *on going* ya ngab, tungguin aja! .
-
+### 🌟 Fitur Utama (The Core Value)
+> 🔥 **HIGHLIGHT:** Fitur utama dari Superkos adalah **Roomatch (Roommate Matcher)**! Fitur cerdas ini bakal nemuin temen sekamar yang satu frekuensi sama lu, biar gak dapet *roommate* yang hobi nge-run drama atau *toxic*! 🤝✨
 ---
 
 ## 🛠️ Starter Pack (Prasyarat)
