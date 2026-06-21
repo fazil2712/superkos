@@ -1,7 +1,6 @@
 # 🏠 SuperKost — Kost & RooMatch Finder
 
-SuperKost adalah aplikasi pencarian hunian berbasis web yang membantu pengguna menemukan kost, kontrakan, atau apartemen sesuai kebutuhan mereka.  
-Selain itu, aplikasi ini juga menyediakan fitur **Roommate Matching** untuk membantu pengguna menemukan teman sekamar yang cocok berdasarkan preferensi dan gaya hidup.
+SuperKost adalah aplikasi pencarian hunian berbasis web yang membantu pengguna menemukan kost, kontrakan, atau apartemen sesuai kebutuhan mereka. Selain itu, aplikasi ini juga menyediakan fitur **Roommate Matching** untuk membantu pengguna menemukan teman sekamar yang cocok berdasarkan preferensi dan gaya hidup.
 
 ---
 
