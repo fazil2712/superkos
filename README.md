@@ -28,7 +28,6 @@ Selain itu, aplikasi ini juga menyediakan fitur **Roommate Matching** untuk memb
 ### ⭐ Sistem Pendukung
 - Login & Register
 - Review & Rating
-- Notifikasi Sistem
 - Dashboard Admin
 
 ---
@@ -48,22 +47,26 @@ Pengelola sistem dan moderasi aplikasi.
 
 ## 🛠️ Teknologi yang Digunakan
 
-- Java
-- Object Oriented Programming (OOP)
-- Collection & Data Structure
-- GUI
-- API Integration
-- Exception Handling
+* Java
+* Spring Boot
+* Maven
+* MySQL
+* Apache Tomcat 9
+* MVC Architecture
+* JDBC
+* Object-Oriented Programming (OOP)
 
 ---
 
 ## 📚 Konsep OOP yang Digunakan
 
-- Encapsulation
-- Inheritance
-- Polymorphism
-- Class Relationship
-- Strategy Pattern
+* Encapsulation
+* Inheritance
+* Polymorphism
+* Class Relationship
+* Collection Framework
+* Exception Handling
+* Strategy Pattern
 
 ---
 
@@ -71,31 +74,18 @@ Pengelola sistem dan moderasi aplikasi.
 
 | Nama | Role / PIC |
 |------|------|
-| Yuriko Astiani |  |
-| Zulfa Almajid Basyaasyah |  |
-| Muhammad Fazil Attaurahman |  |
-| Dini Nadia Mawaddah |  |
-| Adam Nugraha |  |
-| Muhammad Naufal Hartono |  |
-
----
-
-## 🌱 Branch Development
-
-Setiap anggota tim menggunakan branch masing-masing untuk development.
-
-Contoh:
-- `main`
-- `punya-yury`
-- `punya-babas`
-- `punyafazil`
-- `adam-feature`
+| Zulfa Almajid Basyaasyah | Report Review, Notifikasi Sistem |
+| Muhammad Fazil Attaurahman | Hunian, Registrasi, Wishlist |
+| Yuriko Astiani | PencariHunian, PemilikProperti  |
+| Dini Nadia Mawaddah | Admin, Roommate Survey |
+| Adam Nugraha | Search Engine, Roommate Request |
+| Muhammad Naufal Hartono | User, ChatRoom & Message |
 
 ---
 
 ## 🚀 Status Project
 
-🔧 Currently in development
+✅ Completed
 
 ---
 
@@ -107,5 +97,7 @@ Proposal dan diagram sistem tersedia pada folder dokumentasi project.
 
 ## 📌 Tujuan Project
 
-Project ini dibuat untuk memenuhi tugas mata kuliah Pemrograman Berorientasi Objek (PBO) di Telkom University. Alhamdulillah
+Project ini dibuat untuk memenuhi tugas Mata Kuliah **Pemrograman Berorientasi Objek (PBO)** Program Studi S1 Informatika, Fakultas Informatika, Telkom University.
+
+Kelompok 6 — IF-48-05
 
