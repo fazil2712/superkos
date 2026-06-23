@@ -219,13 +219,16 @@
                     <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
                         <div th:each="foto, iterStat : ${hunian.fotoHunian}" class="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
                             <img th:src="${foto}" class="w-full h-full object-cover" alt="foto">
-                            <form th:action="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" method="post"
-                                  class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition"
-                                  onsubmit="return confirm('Hapus foto ini?')">
-                                <button type="submit" class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button type="submit" 
+                                        th:formaction="@{'/pemilik/properti/' + ${hunian.idHunian} + '/foto/delete/' + ${iterStat.index}}" 
+                                        formmethod="post" 
+                                        formnovalidate
+                                        onclick="return confirm('Hapus foto ini?')"
+                                        class="bg-red-500 text-white text-xs px-2 py-1 rounded-lg font-bold">
                                     <i class="fas fa-trash mr-1"></i> Hapus
                                 </button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
